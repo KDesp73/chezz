@@ -28,7 +28,6 @@ void board_init(board_t* board);
 void board_print(const board_t* board);
 void board_print_highlight(const board_t* board, square_t** squares, size_t count);
 void board_init_fen(board_t* board, const char* fen);
-char board_piece_at(board_t* board, square_t square);
 
 
 #endif // BOARD_H

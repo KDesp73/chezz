@@ -10,6 +10,9 @@ typedef struct {
     char name[2];
 } square_t;
 
+#define COORDS(square) square.y][square.x
+#define PCOORDS(square) square->y][square->x
+
 #define SFC(rank, file) \
     square_from_coords(rank, file)
 #define SFN(name) \

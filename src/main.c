@@ -1,4 +1,6 @@
 #include "board.h"
+#include "move.h"
+#include "piece.h"
 #define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 #define TEST_IMPLEMENTATION
@@ -7,6 +9,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "tests.h"
+
+void move_and_print(board_t* board, const char* from, const char* to)
+{
+    move(board, from, to);
+    size_t count;
+    square_t** s = squares(&count,
+                    square_from_name(from),
+                    square_from_name(to),
+                    NULL
+                );
+
+    board_print_highlight(board, s, count);
+}
 
 int main(int argc, char** argv){
     if(argc == 2 && STREQ(argv[1], "test")){
@@ -18,15 +33,9 @@ int main(int argc, char** argv){
 
     board_t board;
     board_init(&board);
+    board_print(&board);
 
-    size_t count;
-    square_t** s = squares(&count,
-                    square_from_name("e1"),
-                    square_from_name("h8"),
-                    NULL
-                );
-
-    board_print_highlight(&board, s, count);
+    move_and_print(&board, "e2", "e4");
 
     return 0;
 }

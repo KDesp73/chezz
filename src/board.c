@@ -1,4 +1,5 @@
 #include "board.h"
+#include "square.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,7 +70,3 @@ void board_init_fen(board_t* board, const char* fen)
     // TODO: Implement FEN parsing logic
 }
 
-char board_piece_at(board_t* board, square_t square)
-{
-    return board->grid[square.file-1][square.rank-1];
-}
