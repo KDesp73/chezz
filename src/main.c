@@ -35,7 +35,5 @@ int main(int argc, char** argv){
     board_init(&board);
     board_print(&board);
 
-    move_and_print(&board, "e2", "e4");
-
     return 0;
 }

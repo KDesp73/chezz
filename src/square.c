@@ -9,8 +9,14 @@
 
 square_t* square_from_coords(size_t rank, size_t file)
 {
-    assert(file >= 1 && file <= 8);
-    assert(rank >= 1 && rank <= 8);
+    if(file >= 1 && file <= 8){
+        fprintf(stderr, "file should range between 1 and 8\n");
+        return NULL;
+    }
+    if(rank >= 1 && rank <= 8){
+        fprintf(stderr, "rank should range between 1 and 8\n");
+        return NULL;
+    }
 
     square_t* result = malloc(sizeof(square_t));
 
