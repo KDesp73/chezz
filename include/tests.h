@@ -150,7 +150,23 @@ int test_king_can_move(const char* fen, const char* from, const char* to, _Bool 
     test_king_can_move("3rkr2/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
     test_king_can_move("3rkr2/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
     test_king_can_move("2r1k1r1/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
-    test_king_can_move("2r1k1r1/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0)
+    test_king_can_move("2r1k1r1/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_king_can_move("r3k2r/8/8/8/8/8/1p5p/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_king_can_move("r3k2r/8/8/8/8/8/1p5p/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_king_can_move("r3k2r/8/8/8/8/8/2p3p1/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_king_can_move("r3k2r/8/8/8/8/8/2p3p1/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_king_can_move("r3k2r/2p3p1/8/8/8/2n3n1/8/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_king_can_move("r3k2r/2p3p1/8/8/8/2n3n1/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_king_can_move("r3k2r/2p3p1/8/8/8/1n5n/8/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_king_can_move("r3k2r/2p3p1/8/8/8/1n5n/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_king_can_move("rn2k1nr/2p3p1/8/8/8/4b3/8/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_king_can_move("rn2k1nr/2p3p1/8/8/8/4b3/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_king_can_move("rn2k1nr/2p3p1/8/8/8/8/4b3/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_king_can_move("rn2k1nr/2p3p1/8/8/8/8/4b3/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_king_can_move("rn2k1nr/2p3p1/8/8/8/8/4q3/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_king_can_move("rn2k1nr/2p3p1/8/8/8/8/4q3/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_king_can_move("rnbq2nr/2p3p1/8/8/8/8/6k1/R3K2R w KQ - 0 1", "e1", "g1", 0), \
+    test_king_can_move("rnbq2nr/2p3p1/8/8/8/8/2k5/R3K2R w KQ - 0 1", "e1", "c1", 0)
 
 
 #endif // TESTS_H

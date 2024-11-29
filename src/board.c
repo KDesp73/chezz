@@ -110,7 +110,7 @@ void board_init_fen(board_t* board, const char* fen)
 
     // Initialize castling rights to zero
     board->castling_rights = 0b0000;
-    for(size_t i = 0; i < 4; i++) {
+    for(size_t i = 0; i < strlen(castling); i++) {
         switch (castling[i]) {
         case 'K': board->castling_rights |= CASTLE_WHITE_KINGSIDE; break;
         case 'Q': board->castling_rights |= CASTLE_WHITE_QUEENSIDE; break;
