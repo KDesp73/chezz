@@ -1,17 +1,42 @@
 #include "move.h"
 #include "board.h"
+#include "extern/clib.h"
+#include "piece.h"
 #include "square.h"
 
-void move(board_t* board, const char* from, const char* to)
+void move(board_t* board, square_t* from, square_t* to)
 {
-    square_t* from_square = square_from_name(from);
-    square_t* to_square = square_from_name(to);
-
-    char from_piece = board->grid[PCOORDS(from_square)];
+    char from_piece = board->grid[PCOORDS(from)];
 
     if(from_piece == ' ') return; // No piece to move
     
-    board->grid[PCOORDS(from_square)] = ' ';
-    board->grid[PCOORDS(to_square)] = from_piece;
+    board->grid[PCOORDS(from)] = ' ';
+    board->grid[PCOORDS(to)] = from_piece;
 }
 
+_Bool piece_can_move(board_t* board, const square_t* piece, const square_t* target)
+{
+    switch (piece_at(board, piece)) {
+        case 'K':
+        case 'k':
+            return king_can_move(board, piece, target);
+        case 'Q':
+        case 'q':
+            return queen_can_move(board, piece, target);
+        case 'R':
+        case 'r':
+            return rook_can_move(board, piece, target);
+        case 'B':
+        case 'b':
+            return bishop_can_move(board, piece, target);
+        case 'N':
+        case 'n':
+            return knight_can_move(board, piece, target);
+        case 'P':
+        case 'p':
+            return pawn_can_move(board, piece, target);
+        default:
+            ERRO("Empty square");
+            return 0;
+    }
+}

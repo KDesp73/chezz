@@ -13,8 +13,3 @@ int piece_color(char piece)
 
     return (piece < 'a') == PIECE_COLOR_WHITE;
 }
-
-int piece_sees(board_t* board, const square_t* piece, const square_t* target)
-{
-    
-}

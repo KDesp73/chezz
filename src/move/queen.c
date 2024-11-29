@@ -36,7 +36,7 @@ _Bool queen_can_move(board_t *board, const square_t *piece, const square_t *targ
         if (file_diff == 0) {
             for (int r = piece->rank + step; r != target->rank; r += step) {
                 if (board->grid[r - 1][piece->file - 1] != EMPTY_SQUARE) {
-                    DEBU("Obstruction at rank: %d, file: %d", r, piece->file);
+                    DEBU("Obstruction at rank: %d, file: %zu", r, piece->file);
                     board->error = ERROR_OBSTRUCTED_PATH;
                     return 0;
                 }
@@ -46,7 +46,7 @@ _Bool queen_can_move(board_t *board, const square_t *piece, const square_t *targ
         else {
             for (int f = piece->file + step; f != target->file; f += step) {
                 if (board->grid[piece->rank - 1][f - 1] != EMPTY_SQUARE) {
-                    DEBU("Obstruction at rank: %d, file: %d", piece->rank, f);
+                    DEBU("Obstruction at rank: %zu, file: %d", piece->rank, f);
                     board->error = ERROR_OBSTRUCTED_PATH;
                     return 0;
                 }
