@@ -17,6 +17,8 @@
 #define WHITE_QUEEN 'Q'
 #define WHITE_PAWN 'P'
 
+#define EMPTY_SQUARE ' '
+
 #define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 typedef enum {

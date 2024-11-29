@@ -69,4 +69,24 @@ int test_rook_can_move(const char* fen, const char* from, const char* to, _Bool 
     test_rook_can_move("R6r/8/8/8/8/8/8/8 w - - 0 1", "a8", "a1", 1), \
     test_rook_can_move("R6r/8/8/8/8/8/8/8 w - - 0 1", "a8", "h1", 0)
 
+int test_bishop_can_move(const char* fen, const char* from, const char* to, _Bool expected);
+#define TEST_BISHOP_MOVE \
+    test_bishop_can_move(STARTING_FEN, "c1", "d2", 0), \
+    test_bishop_can_move(STARTING_FEN, "c1", "b2", 0), \
+    test_bishop_can_move(STARTING_FEN, "c1", "c3", 0), \
+    test_bishop_can_move("rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "d2", 1), \
+    test_bishop_can_move("rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "e3", 1), \
+    test_bishop_can_move("rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "f4", 1), \
+    test_bishop_can_move("rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "g5", 1), \
+    test_bishop_can_move("rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "h6", 1), \
+    test_bishop_can_move("rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "a3", 0), \
+    test_bishop_can_move("rnbqkbnr/ppppp1pp/8/8/5p2/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "d2", 1), \
+    test_bishop_can_move("rnbqkbnr/ppppp1pp/8/8/5p2/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "e3", 1), \
+    test_bishop_can_move("rnbqkbnr/ppppp1pp/8/8/5p2/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "f4", 1), \
+    test_bishop_can_move("rnbqkbnr/ppppp1pp/8/8/5p2/3P4/PPP1PPPP/RNBQKBNR w KQkq - 0 1", "c1", "g5", 0), \
+    test_bishop_can_move("8/8/8/8/8/3BB3/8/8 w - - 0 1", "d3", "h7", 1), \
+    test_bishop_can_move("8/8/8/8/8/3BB3/8/8 w - - 0 1", "d3", "e3", 0), \
+    test_bishop_can_move("8/8/8/8/8/3BB3/8/8 w - - 0 1", "d3", "g5", 0)
+
+
 #endif // TESTS_H

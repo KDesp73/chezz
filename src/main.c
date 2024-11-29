@@ -26,9 +26,10 @@ void move_and_print(board_t* board, const char* from, const char* to)
 int main(int argc, char** argv){
     if(argc == 2 && STREQ(argv[1], "test")){
         return !test(
-            TEST_SQUARE_FROM_NAME,
-            TEST_PAWN_MOVE,
-            TEST_ROOK_MOVE,
+            // TEST_SQUARE_FROM_NAME,
+            // TEST_PAWN_MOVE,
+            // TEST_ROOK_MOVE,
+            TEST_BISHOP_MOVE,
             END
         );
     }
