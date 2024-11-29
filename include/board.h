@@ -3,6 +3,7 @@
 
 #include "square.h"
 #include <stdint.h>
+
 #define BLACK_ROOK 'r'
 #define BLACK_KNIGHT 'n'
 #define BLACK_BISHOP 'b'
@@ -52,9 +53,9 @@ enum {
 };
 
 void board_init(board_t* board);
+void board_init_fen(board_t* board, const char* fen);
 void board_print(const board_t* board);
 void board_print_highlight(const board_t* board, square_t** squares, size_t count);
-void board_init_fen(board_t* board, const char* fen);
 
 int has_castling_rights(const board_t* board, uint8_t castling_right);
 void revoke_castling_rights(board_t* board, uint8_t castling_rights);
@@ -62,5 +63,9 @@ void revoke_castling_rights(board_t* board, uint8_t castling_rights);
 _Bool square_is_attacked(board_t* board, square_t* square, int color);
 _Bool square_is_attacked_coords(board_t *board, int y, int x, int color);
 _Bool square_is_attacked_fr(board_t *board, int rank, int file, int color);
+
+square_t* find_king(board_t* board, int color);
+square_t* find_king_white(board_t* board);
+square_t* find_king_black(board_t* board);
 
 #endif // BOARD_H

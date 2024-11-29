@@ -292,3 +292,82 @@ _Bool square_is_attacked_coords(board_t *board, int y, int x, int color)
 
     return 0; // Square is not under attack
 }
+
+square_t* find_king_black(board_t* board)
+{
+    square_t* home = square_from_name("e8");
+    square_t* queen_castling = square_from_name("c8");
+    square_t* king_castling = square_from_name("g8");
+
+    // Searching high chance squares first
+    if(board->grid[PCOORDS(home)] == BLACK_KING) {
+        square_free(&queen_castling);
+        square_free(&king_castling);
+        return home;
+    }
+    if(board->grid[PCOORDS(king_castling)] == BLACK_KING) {
+        square_free(&home);
+        square_free(&queen_castling);
+        return king_castling;
+    }
+    if(board->grid[PCOORDS(queen_castling)] == BLACK_KING) {
+        square_free(&home);
+        square_free(&king_castling);
+        return queen_castling;
+    }
+    square_free(&home);
+    square_free(&king_castling);
+    square_free(&queen_castling);
+
+    // Starting from a8
+    for (int i = 7; i >= 0; --i) {
+        for (int j = 0; j <= 7; ++j) {
+            if(board->grid[i][j] == BLACK_KING)
+                return square_from_coords(i, j);
+        }
+    }
+    return NULL;
+}
+
+square_t* find_king_white(board_t* board)
+{
+    square_t* home = square_from_name("e1");
+    square_t* queen_castling = square_from_name("c1");
+    square_t* king_castling = square_from_name("g1");
+
+    // Searching high chance squares first
+    if(board->grid[PCOORDS(home)] == WHITE_KING) {
+        square_free(&queen_castling);
+        square_free(&king_castling);
+        return home;
+    }
+    if(board->grid[PCOORDS(king_castling)] == WHITE_KING) {
+        square_free(&home);
+        square_free(&queen_castling);
+        return king_castling;
+    }
+    if(board->grid[PCOORDS(queen_castling)] == WHITE_KING) {
+        square_free(&home);
+        square_free(&king_castling);
+        return queen_castling;
+    }
+    square_free(&home);
+    square_free(&king_castling);
+    square_free(&queen_castling);
+
+    // Starting from a1
+    for (int i = 0; i <= 7; --i) {
+        for (int j = 0; j <= 7; ++j) {
+            if(board->grid[i][j] == WHITE_KING)
+                return square_from_coords(i, j);
+        }
+    }
+    return NULL;
+}
+
+square_t* find_king(board_t* board, int color)
+{
+    return (color == PIECE_COLOR_WHITE)
+        ? find_king_white(board)
+        : find_king_black(board);
+}

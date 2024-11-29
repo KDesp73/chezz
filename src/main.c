@@ -38,8 +38,10 @@ int main(int argc, char** argv){
     }
 
     board_t board;
-    board_init_fen(&board, "2r1k1r1/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+    board_init_fen(&board, "rnbq2nr/3p2p1/8/8/8/8/2k5/R4RK1 w Q - 0 1");
     board_print(&board);
+    square_print(*find_king_white(&board));
+    square_print(*find_king_black(&board));
 
     return 0;
 }
