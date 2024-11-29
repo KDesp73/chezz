@@ -28,24 +28,29 @@ int test(int first, ...);
 #ifdef TEST_IMPLEMENTATION
 int test(int first, ...)
 {
+    size_t passed = 0, failed = 0;
     int result = 1;
 
     va_list args;
     va_start(args, first);
 
     if (first == 0) {
+        failed++;
         result = 0;
-    }
+    } else passed++;
 
     int current;
     while ((current = va_arg(args, int)) != END) {
         if (current == 0) {
             result = 0;
-        }
+            failed++;
+        } else passed++;
     }
 
     va_end(args);
 
+    printf("\n%sPASSED: %zu/%zu%s\n", ANSI_GREEN, passed, passed + failed, ANSI_RESET);
+    printf("%sFAILED: %zu/%zu%s\n", ANSI_RED, failed, passed + failed, ANSI_RESET);
     return result;
 }
 #endif // TEST_IMPLEMENTATION

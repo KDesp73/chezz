@@ -52,6 +52,7 @@ $(BUILD_DIR): ## Create the build directory if it doesn't exist
 	@echo "[INFO] Creating build directory"
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DIR)/test
+	mkdir -p $(BUILD_DIR)/move
 
 $(TARGET): $(OBJ_FILES) ## Build the shell executable
 	@echo "[INFO] Building the project"
@@ -62,6 +63,13 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c ## Compile source files with progress
 	$(eval counter=$(shell echo $$(($(counter)+1))))
 	@echo "[$(counter)/$(TOTAL_FILES)] Compiling $< -> $@"
 	@$(CC) $(CFLAGS) -c -o $@ $<
+
+.PHONY: test
+test:  ## Build and run tests
+	make clean
+	make all
+	clear
+	./$(TARGET) test
 
 .PHONY: install
 install: all ## Install the executable to /usr/bin/
@@ -100,6 +108,7 @@ compile_commands.json: $(SRC_FILES) ## Generate compile_commands.json
 help: ## Show this help message
 	@echo "Available commands:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
 
 ## Enable verbose output for debugging
 .PHONY: verbose

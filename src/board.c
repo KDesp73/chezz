@@ -9,34 +9,17 @@
 #define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 
-void board_init(board_t* board)
-{
-    board_init_fen(board, STARTING_FEN);
-}
-
-void board_print(const board_t* board)
-{
-    for (int i = 7; i >= 0; --i) {
-        for (int j = 0; j <= 7; ++j) {
-            printf("%c ", board->grid[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
-
 void board_print_highlight(const board_t* board, square_t** squares, size_t count)
 {
-    if (count == 0 || squares == NULL) {
-        board_print(board);
-        return;
-    }
+    char* yellow_bg = (char*) COLOR_BG(214);
+    const char* reset = ANSI_RESET;
 
-    char* yellow_bg = (char*) COLOR_BG(11);
+    printf("┌───┬───┬───┬───┬───┬───┬───┬───┐\n");
 
     for (int i = 7; i >= 0; --i) {
         for (int j = 0; j <= 7; ++j) {
             int highlighted = 0;
+
             for (size_t sc = 0; sc < count; ++sc) {
                 if (i == squares[sc]->rank - 1 && j == squares[sc]->file - 1) {
                     highlighted = 1;
@@ -44,15 +27,32 @@ void board_print_highlight(const board_t* board, square_t** squares, size_t coun
                 }
             }
 
+            printf("│");
             if (highlighted) {
-                printf("%s%c%s ", yellow_bg, board->grid[i][j], ANSI_RESET);
+                printf("%s %c %s", yellow_bg, board->grid[i][j], reset);
             } else {
-                printf("%c ", board->grid[i][j]);
+                printf(" %c ", board->grid[i][j]);
             }
         }
-        printf("\n");
+        printf("│\n");
+
+        if (i > 0) {
+            printf("├───┼───┼───┼───┼───┼───┼───┼───┤\n");
+        }
     }
+    printf("└───┴───┴───┴───┴───┴───┴───┴───┘\n");
+
     free(yellow_bg);
+}
+
+void board_init(board_t* board)
+{
+    board_init_fen(board, STARTING_FEN);
+}
+
+void board_print(const board_t* board)
+{
+    board_print_highlight(board, NULL, 0);
 }
 
 _Bool is_number(const char* str) {
@@ -121,9 +121,9 @@ void board_init_fen(board_t* board, const char* fen)
     // Copy the en passant square, ensure null-terminated string
     if(!strcmp(enpassant, "- ") && (strlen(enpassant) != 2 || !square_from_name(enpassant))){
         ERRO("Invalid enpassant target square '%s'", enpassant);
-        strncpy(board->enpassant_square, "- ", 2);
+        strncpy(board->enpassant_square, "- ", 3);
     } else {
-        strncpy(board->enpassant_square, enpassant, 2);
+        strncpy(board->enpassant_square, enpassant, 3);
     }
 
     if(!is_number(halfmove)){
@@ -155,9 +155,25 @@ void board_init_fen(board_t* board, const char* fen)
                 square->x++;
             }
         } else {
-            // Place the piece on the board
-            board->grid[PCOORDS(square)] = b[i];
-            square->x++;  // Move to the next square in the row
+            switch (b[i]) {
+            case 'K':
+            case 'Q':
+            case 'R':
+            case 'B':
+            case 'N':
+            case 'P':
+            case 'k':
+            case 'q':
+            case 'r':
+            case 'b':
+            case 'n':
+            case 'p':
+                board->grid[PCOORDS(square)] = b[i];
+                square->x++;  // Move to the next square in the row
+                break;
+            default:
+                ERRO("Illegal character in layout string: %c", b[i]);
+            }
         }
 
         i++;  // Increment the index only once per loop iteration

@@ -19,14 +19,23 @@
 
 #define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
+typedef enum {
+    ERROR_INVALID_MOVE,
+    ERROR_EMPTY_SQUARE,
+    ERROR_BLOCKED_MOVE,
+    ERROR_INVALID_PIECE,
+} error_t;
+
 typedef struct {
     char grid[8][8];
     _Bool turn;
-    char enpassant_square[2];
+    char enpassant_square[2 + 1]; // +1 for null terminator
     uint8_t castling_rights;
     size_t halfmove;
     size_t fullmove;
+    error_t error;
 } board_t;
+
 
 enum {
     WHITE_KINGSIDE = 0b0001,

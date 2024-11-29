@@ -27,13 +27,13 @@ int main(int argc, char** argv){
     if(argc == 2 && STREQ(argv[1], "test")){
         return !test(
             TEST_SQUARE_FROM_NAME,
+            TEST_PAWN_MOVE,
             END
         );
     }
 
     board_t board;
     board_init(&board);
-    board_print(&board);
 
     return 0;
 }
