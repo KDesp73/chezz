@@ -1,6 +1,7 @@
 #ifndef TESTS_H
 #define TESTS_H
 
+#include "board.h"
 #include <stddef.h>
 int test_square_from_name(const char* name, size_t expected_x, size_t expected_y);
 #define TEST_SQUARE_FROM_NAME \
@@ -25,6 +26,7 @@ int test_square_from_name(const char* name, size_t expected_x, size_t expected_y
 
 int test_pawn_can_move(const char* fen, const char* from, const char* to, _Bool expected);
 #define TEST_PAWN_MOVE \
+    test_pawn_can_move(STARTING_FEN, "c2", "d3", 0), \
     test_pawn_can_move(STARTING_FEN, "a2", "a3", 1), \
     test_pawn_can_move(STARTING_FEN, "a2", "a4", 1), \
     test_pawn_can_move(STARTING_FEN, "e2", "e4", 1), \
@@ -44,5 +46,27 @@ int test_pawn_can_move(const char* fen, const char* from, const char* to, _Bool 
     test_pawn_can_move("rnbqkbnr/pppppppp/4P3/8/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1", "e7", "e5", 0), \
     test_pawn_can_move("rnbqkbnr/ppp1pppp/8/2PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1", "e5", "d6", 1), \
     test_pawn_can_move("rnbqkbnr/ppp1pppp/8/2PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1", "c5", "d6", 1)
+
+int test_rook_can_move(const char* fen, const char* from, const char* to, _Bool expected);
+#define TEST_ROOK_MOVE \
+    test_rook_can_move(STARTING_FEN, "a1", "a2", 0), \
+    test_rook_can_move(STARTING_FEN, "a1", "a3", 0), \
+    test_rook_can_move(STARTING_FEN, "a1", "a3", 0), \
+    test_rook_can_move("rnbqkbnr/pppppppp/8/8/5P2/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1", "a1", "a2", 1), \
+    test_rook_can_move("rnbqkbnr/pppppppp/8/8/5P2/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1", "a1", "a3", 1), \
+    test_rook_can_move("rnbqkbnr/pppppppp/8/8/5P2/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1", "a1", "a4", 1), \
+    test_rook_can_move("rnbqkbnr/pppppppp/8/8/5P2/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1", "a1", "a5", 1), \
+    test_rook_can_move("rnbqkbnr/pppppppp/8/8/5P2/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1", "a1", "a6", 1), \
+    test_rook_can_move("rnbqkbnr/pppppppp/8/8/5P2/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1", "a1", "a7", 1), \
+    test_rook_can_move("rnbqkbnr/pppppppp/8/8/5P2/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1", "a1", "a8", 0), \
+    test_rook_can_move("8/8/8/3Rr3/8/8/8/8 w - - 0 1", "d5", "d6", 1), \
+    test_rook_can_move("8/8/8/3Rr3/8/8/8/8 w - - 0 1", "e5", "d6", 0), \
+    test_rook_can_move("8/8/8/3Rr3/8/8/8/8 w - - 0 1", "d5", "e5", 1), \
+    test_rook_can_move("8/8/8/3Rr3/8/8/8/8 w - - 0 1", "e5", "d5", 1), \
+    test_rook_can_move("8/8/8/3Rr3/8/8/8/8 w - - 0 1", "d5", "f5", 0), \
+    test_rook_can_move("8/8/8/3Rr3/8/8/8/8 w - - 0 1", "e5", "c5", 0), \
+    test_rook_can_move("R6r/8/8/8/8/8/8/8 w - - 0 1", "a8", "h8", 1), \
+    test_rook_can_move("R6r/8/8/8/8/8/8/8 w - - 0 1", "a8", "a1", 1), \
+    test_rook_can_move("R6r/8/8/8/8/8/8/8 w - - 0 1", "a8", "h1", 0)
 
 #endif // TESTS_H

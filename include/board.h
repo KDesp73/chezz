@@ -22,8 +22,9 @@
 typedef enum {
     ERROR_INVALID_MOVE,
     ERROR_EMPTY_SQUARE,
-    ERROR_BLOCKED_MOVE,
+    ERROR_OBSTRUCTED_PATH,
     ERROR_INVALID_PIECE,
+    ERROR_FRIENDLY_PIECE,
 } error_t;
 
 typedef struct {

@@ -111,11 +111,13 @@ void board_init_fen(board_t* board, const char* fen)
     // Initialize castling rights to zero
     board->castling_rights = 0b0000;
     for(size_t i = 0; i < 4; i++) {
-        if (castling[i] == 'K') board->castling_rights |= WHITE_KINGSIDE;
-        else if (castling[i] == 'Q') board->castling_rights |= WHITE_QUEENSIDE;
-        else if (castling[i] == 'k') board->castling_rights |= BLACK_KINGSIDE;
-        else if (castling[i] == 'q') board->castling_rights |= BLACK_QUEENSIDE;
-        else WARN("Illegal character '%c' found in castling", castling[i]);
+        switch (castling[i]) {
+        case 'K': board->castling_rights |= WHITE_KINGSIDE; break;
+        case 'Q': board->castling_rights |= WHITE_QUEENSIDE; break;
+        case 'k': board->castling_rights |= BLACK_KINGSIDE; break;
+        case 'q': board->castling_rights |= BLACK_QUEENSIDE; break;
+        default: WARN("Illegal character '%c' found in castling", castling[i]); break;
+        }
     }
 
     // Copy the en passant square, ensure null-terminated string

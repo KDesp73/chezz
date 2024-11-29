@@ -28,6 +28,7 @@ int main(int argc, char** argv){
         return !test(
             TEST_SQUARE_FROM_NAME,
             TEST_PAWN_MOVE,
+            TEST_ROOK_MOVE,
             END
         );
     }

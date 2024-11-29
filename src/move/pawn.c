@@ -1,10 +1,10 @@
+#include "board.h"
 #include "extern/clib.h"
 #include "move.h"
 #include "piece.h"
 #include "square.h"
 #include <ctype.h>
 #include <stdlib.h>
-#include <string.h>
 
 _Bool pawn_can_move(board_t* board, const square_t* piece, const square_t* target)
 {
@@ -57,7 +57,7 @@ _Bool pawn_can_move(board_t* board, const square_t* piece, const square_t* targe
         square_set_rank(&intermediate, intermediate.rank + ((color == PIECE_COLOR_WHITE) ? -1 : 1));
         if (board->grid[COORDS(intermediate)] != ' ') {
             // DEBU("Path is blocked for 2-square move");
-            board->error = ERROR_BLOCKED_MOVE;
+            board->error = ERROR_OBSTRUCTED_PATH;
             return 0;
         }
     }
@@ -66,14 +66,22 @@ _Bool pawn_can_move(board_t* board, const square_t* piece, const square_t* targe
     if (abs(file_diff) == 1 && abs(rank_diff) == 1) {
         char target_piece = board->grid[PCOORDS(target)];
 
-        DEBU("%s", board->enpassant_square);
-        if(target_piece == ' ' && square_cmp(target, square_from_name(board->enpassant_square))){
+        if(
+            target_piece == ' ' && 
+            board->enpassant_square[0] != '-' && 
+            square_cmp(target, square_from_name(board->enpassant_square))
+        ){
             return 1;
         }
 
-        if (piece_color(target_piece) == color || target_piece == ' ') {
+        if(target_piece == ' ') {
+            board->error = ERROR_EMPTY_SQUARE;
+            return 0;
+        }
+
+        if (piece_color(target_piece) == color) {
             // DEBU("Invalid diagonal move");
-            board->error = ERROR_INVALID_MOVE;
+            board->error = ERROR_FRIENDLY_PIECE;
             return 0;
         }
         // Valid capture
@@ -90,7 +98,7 @@ _Bool pawn_can_move(board_t* board, const square_t* piece, const square_t* targe
     // Ensure target square is empty for straight moves
     if (board->grid[PCOORDS(target)] != ' ') {
         // DEBU("Target square is occupied");
-        board->error = ERROR_BLOCKED_MOVE;
+        board->error = ERROR_OBSTRUCTED_PATH;
         return 0;
     }
 
