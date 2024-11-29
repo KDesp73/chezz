@@ -110,5 +110,22 @@ int test_queen_can_move(const char* fen, const char* from, const char* to, _Bool
     test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "d1", 0), \
     test_queen_can_move("rnbqkbnr/pppp1ppp/8/4p3/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "f6", 0)
 
+int test_knight_can_move(const char* fen, const char* from, const char* to, _Bool expected);
+#define TEST_KNIGHT_MOVE \
+    test_knight_can_move(STARTING_FEN, "b1", "c3", 1), \
+    test_knight_can_move(STARTING_FEN, "b1", "a3", 1), \
+    test_knight_can_move(STARTING_FEN, "b1", "d2", 0), \
+    test_knight_can_move(STARTING_FEN, "g1", "f3", 1), \
+    test_knight_can_move(STARTING_FEN, "g1", "h3", 1), \
+    test_knight_can_move(STARTING_FEN, "g1", "e2", 0), \
+    test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "d7", 1), \
+    test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "f7", 1), \
+    test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "c6", 1), \
+    test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "c4", 1), \
+    test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "d3", 1), \
+    test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "f3", 1), \
+    test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "g4", 1), \
+    test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "g6", 1), \
+    test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "a1", 0)
 
 #endif // TESTS_H

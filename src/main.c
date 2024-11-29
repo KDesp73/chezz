@@ -30,7 +30,8 @@ int main(int argc, char** argv){
             // TEST_PAWN_MOVE,
             // TEST_ROOK_MOVE,
             // TEST_BISHOP_MOVE,
-            TEST_QUEEN_MOVE,
+            // TEST_QUEEN_MOVE,
+            TEST_KNIGHT_MOVE,
             END
         );
     }
