@@ -29,7 +29,8 @@ int main(int argc, char** argv){
             // TEST_SQUARE_FROM_NAME,
             // TEST_PAWN_MOVE,
             // TEST_ROOK_MOVE,
-            TEST_BISHOP_MOVE,
+            // TEST_BISHOP_MOVE,
+            TEST_QUEEN_MOVE,
             END
         );
     }

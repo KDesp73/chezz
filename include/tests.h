@@ -88,5 +88,27 @@ int test_bishop_can_move(const char* fen, const char* from, const char* to, _Boo
     test_bishop_can_move("8/8/8/8/8/3BB3/8/8 w - - 0 1", "d3", "e3", 0), \
     test_bishop_can_move("8/8/8/8/8/3BB3/8/8 w - - 0 1", "d3", "g5", 0)
 
+int test_queen_can_move(const char* fen, const char* from, const char* to, _Bool expected);
+#define TEST_QUEEN_MOVE \
+    test_queen_can_move(STARTING_FEN, "d1", "c2", 0), \
+    test_queen_can_move(STARTING_FEN, "d1", "d2", 0), \
+    test_queen_can_move(STARTING_FEN, "d1", "e2", 0), \
+    test_queen_can_move(STARTING_FEN, "d1", "d3", 0), \
+    test_queen_can_move(STARTING_FEN, "d1", "c3", 0), \
+    test_queen_can_move(STARTING_FEN, "d1", "e3", 0), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "h4", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "a4", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "c3", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "e3", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "d3", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "d6", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "d7", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "f6", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "g7", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "a7", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "b6", 1), \
+    test_queen_can_move("rnbqkbnr/pppppppp/8/8/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "d1", 0), \
+    test_queen_can_move("rnbqkbnr/pppp1ppp/8/4p3/3Q4/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1", "d4", "f6", 0)
+
 
 #endif // TESTS_H
