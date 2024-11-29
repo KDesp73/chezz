@@ -112,13 +112,15 @@ void board_init_fen(board_t* board, const char* fen)
     board->castling_rights = 0b0000;
     for(size_t i = 0; i < 4; i++) {
         switch (castling[i]) {
-        case 'K': board->castling_rights |= WHITE_KINGSIDE; break;
-        case 'Q': board->castling_rights |= WHITE_QUEENSIDE; break;
-        case 'k': board->castling_rights |= BLACK_KINGSIDE; break;
-        case 'q': board->castling_rights |= BLACK_QUEENSIDE; break;
+        case 'K': board->castling_rights |= CASTLE_WHITE_KINGSIDE; break;
+        case 'Q': board->castling_rights |= CASTLE_WHITE_QUEENSIDE; break;
+        case 'k': board->castling_rights |= CASTLE_BLACK_KINGSIDE; break;
+        case 'q': board->castling_rights |= CASTLE_BLACK_QUEENSIDE; break;
+        case '-': goto no_castling;
         default: WARN("Illegal character '%c' found in castling", castling[i]); break;
         }
     }
+no_castling:
 
     // Copy the en passant square, ensure null-terminated string
     if(!strcmp(enpassant, "- ") && (strlen(enpassant) != 2 || !square_from_name(enpassant))){
@@ -182,7 +184,7 @@ void board_init_fen(board_t* board, const char* fen)
     }
 }
 
-int can_castle(const board_t* board, uint8_t castling_rights)
+int has_castling_rights(const board_t* board, uint8_t castling_rights)
 {
     return board->castling_rights & castling_rights;
 }
@@ -190,4 +192,103 @@ int can_castle(const board_t* board, uint8_t castling_rights)
 void revoke_castling_rights(board_t* board, uint8_t castling_rights)
 {
     board->castling_rights &= ~castling_rights;
+}
+
+_Bool square_is_attacked(board_t *board, square_t* square, int color)
+{
+    int x = square->x;
+    int y = square->y;
+
+    return square_is_attacked_coords(board, y, x, color);
+}
+
+_Bool square_is_attacked_fr(board_t *board, int rank, int file, int color)
+{
+    return square_is_attacked_coords(board, rank-1, file-1, color);
+}
+
+_Bool square_is_attacked_coords(board_t *board, int y, int x, int color)
+{
+    // Ensure the square coordinates are within bounds
+    if (y < 0 || y >= BOARD_SIZE || x < 0 || x >= BOARD_SIZE) {
+        return 0;
+    }
+
+    // Get the opposing color
+    int enemy_color = (color == PIECE_COLOR_WHITE) ? PIECE_COLOR_BLACK : PIECE_COLOR_WHITE;
+
+    // Check for pawn attacks
+    char enemy_pawn = (enemy_color == PIECE_COLOR_WHITE) ? 'P' : 'p';
+    if ((y + 1 < BOARD_SIZE && x + 1 < BOARD_SIZE && board->grid[y + 1][x + 1] == enemy_pawn) ||
+        (y + 1 < BOARD_SIZE && x - 1 >= 0 && board->grid[y + 1][x - 1] == enemy_pawn) ||
+        (y - 1 >= 0 && x + 1 < BOARD_SIZE && board->grid[y - 1][x + 1] == enemy_pawn) ||
+        (y - 1 >= 0 && x - 1 >= 0 && board->grid[y - 1][x - 1] == enemy_pawn)) {
+        return 1;
+    }
+
+    // Check for knight attacks
+    char enemy_knight = (enemy_color == PIECE_COLOR_WHITE) ? 'N' : 'n';
+    int knight_moves[8][2] = {
+        {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+        {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+    };
+    for (int i = 0; i < 8; i++) {
+        int new_y = y + knight_moves[i][0];
+        int new_x = x + knight_moves[i][1];
+        if (new_y >= 0 && new_y < BOARD_SIZE && new_x >= 0 && new_x < BOARD_SIZE &&
+            board->grid[new_y][new_x] == enemy_knight) {
+            return 1;
+        }
+    }
+
+    // Check for sliding piece attacks (rook, bishop, and queen)
+    char enemy_rook = (enemy_color == PIECE_COLOR_WHITE) ? 'R' : 'r';
+    char enemy_bishop = (enemy_color == PIECE_COLOR_WHITE) ? 'B' : 'b';
+    char enemy_queen = (enemy_color == PIECE_COLOR_WHITE) ? 'Q' : 'q';
+
+    // Rook/Queen: Horizontal and Vertical
+    int directions[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    for (int i = 0; i < 4; i++) {
+        for (int j = 1; j < BOARD_SIZE; j++) {
+            int new_y = y + j * directions[i][0];
+            int new_x = x + j * directions[i][1];
+            if (new_y < 0 || new_y >= BOARD_SIZE || new_x < 0 || new_x >= BOARD_SIZE) break;
+            char square = board->grid[new_y][new_x];
+            if (square == EMPTY_SQUARE) continue;
+            if (square == enemy_rook || square == enemy_queen) return 1;
+            break;
+        }
+    }
+
+    // Bishop/Queen: Diagonals
+    int diagonals[4][2] = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    for (int i = 0; i < 4; i++) {
+        for (int j = 1; j < BOARD_SIZE; j++) {
+            int new_y = y + j * diagonals[i][0];
+            int new_x = x + j * diagonals[i][1];
+            if (new_y < 0 || new_y >= BOARD_SIZE || new_x < 0 || new_x >= BOARD_SIZE) break;
+            char square = board->grid[new_y][new_x];
+            if (square == EMPTY_SQUARE) continue;
+            if (square == enemy_bishop || square == enemy_queen) return 1;
+            break;
+        }
+    }
+
+    // Check for king attacks
+    char enemy_king = (enemy_color == PIECE_COLOR_WHITE) ? 'K' : 'k';
+    int king_moves[8][2] = {
+        {1, 1}, {1, 0}, {1, -1},
+        {0, 1},         {0, -1},
+        {-1, 1}, {-1, 0}, {-1, -1}
+    };
+    for (int i = 0; i < 8; i++) {
+        int new_y = y + king_moves[i][0];
+        int new_x = x + king_moves[i][1];
+        if (new_y >= 0 && new_y < BOARD_SIZE && new_x >= 0 && new_x < BOARD_SIZE &&
+            board->grid[new_y][new_x] == enemy_king) {
+            return 1;
+        }
+    }
+
+    return 0; // Square is not under attack
 }

@@ -31,13 +31,15 @@ int main(int argc, char** argv){
             // TEST_ROOK_MOVE,
             // TEST_BISHOP_MOVE,
             // TEST_QUEEN_MOVE,
-            TEST_KNIGHT_MOVE,
+            // TEST_KNIGHT_MOVE,
+            TEST_KING_MOVE,
             END
         );
     }
 
     board_t board;
-    board_init(&board);
+    board_init_fen(&board, "2r1k1r1/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+    board_print(&board);
 
     return 0;
 }

@@ -128,4 +128,29 @@ int test_knight_can_move(const char* fen, const char* from, const char* to, _Boo
     test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "g6", 1), \
     test_knight_can_move("rnbqkbnr/pppppppp/8/4N3/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1", "e5", "a1", 0)
 
+int test_king_can_move(const char* fen, const char* from, const char* to, _Bool expected);
+#define TEST_KING_MOVE \
+    test_king_can_move(STARTING_FEN, "e1", "e2", 0), \
+    test_king_can_move("8/8/3k4/8/3K4/8/8/8 w - - 0 1", "d4", "d3", 1), \
+    test_king_can_move("8/8/3k4/8/3K4/8/8/8 w - - 0 1", "d4", "c3", 1), \
+    test_king_can_move("8/8/3k4/8/3K4/8/8/8 w - - 0 1", "d4", "e3", 1), \
+    test_king_can_move("8/8/3k4/8/3K4/8/8/8 w - - 0 1", "d4", "e4", 1), \
+    test_king_can_move("8/8/3k4/8/3K4/8/8/8 w - - 0 1", "d4", "c4", 1), \
+    test_king_can_move("8/8/3k4/8/3K4/8/8/8 w - - 0 1", "d4", "d5", 0), \
+    test_king_can_move("8/8/3k4/8/3K4/8/8/8 w - - 0 1", "d4", "c5", 0), \
+    test_king_can_move("8/8/3k4/8/3K4/8/8/8 w - - 0 1", "d4", "e5", 0), \
+    test_king_can_move("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "g1", 1), \
+    test_king_can_move("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 1), \
+    test_king_can_move("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e8", "g8", 1), \
+    test_king_can_move("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e8", "c8", 1), \
+    test_king_can_move("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1", "e1", "g1", 0), \
+    test_king_can_move("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1", "e1", "c1", 0), \
+    test_king_can_move("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1", "e8", "g8", 0), \
+    test_king_can_move("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1", "e8", "c8", 0), \
+    test_king_can_move("3rkr2/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_king_can_move("3rkr2/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_king_can_move("2r1k1r1/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_king_can_move("2r1k1r1/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0)
+
+
 #endif // TESTS_H

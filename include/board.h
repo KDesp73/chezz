@@ -18,6 +18,7 @@
 #define WHITE_PAWN 'P'
 
 #define EMPTY_SQUARE ' '
+#define BOARD_SIZE 8
 
 #define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
@@ -27,6 +28,9 @@ typedef enum {
     ERROR_OBSTRUCTED_PATH,
     ERROR_INVALID_PIECE,
     ERROR_FRIENDLY_PIECE,
+    ERROR_KINGS_TOUCHING,
+    ERROR_INVALID_CASTLE,
+    
 } error_t;
 
 typedef struct {
@@ -41,10 +45,10 @@ typedef struct {
 
 
 enum {
-    WHITE_KINGSIDE = 0b0001,
-    WHITE_QUEENSIDE = 0b0010,
-    BLACK_KINGSIDE = 0b0100,
-    BLACK_QUEENSIDE = 0b1000,
+    CASTLE_WHITE_KINGSIDE = 0b0001,
+    CASTLE_WHITE_QUEENSIDE = 0b0010,
+    CASTLE_BLACK_KINGSIDE = 0b0100,
+    CASTLE_BLACK_QUEENSIDE = 0b1000,
 };
 
 void board_init(board_t* board);
@@ -52,7 +56,11 @@ void board_print(const board_t* board);
 void board_print_highlight(const board_t* board, square_t** squares, size_t count);
 void board_init_fen(board_t* board, const char* fen);
 
-int can_castle(const board_t* board, uint8_t castling_right);
+int has_castling_rights(const board_t* board, uint8_t castling_right);
 void revoke_castling_rights(board_t* board, uint8_t castling_rights);
+
+_Bool square_is_attacked(board_t* board, square_t* square, int color);
+_Bool square_is_attacked_coords(board_t *board, int y, int x, int color);
+_Bool square_is_attacked_fr(board_t *board, int rank, int file, int color);
 
 #endif // BOARD_H
