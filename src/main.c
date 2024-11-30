@@ -16,7 +16,6 @@ void run()
     board_t board;
     board_init(&board);
     board_print(&board);
-    printf("%s's turn\n", board.turn ? "White" : "Black");
 
     while(1) {
 
@@ -43,29 +42,31 @@ void run()
         char piece = piece_at(&board, from_square);
         if(piece == EMPTY_SQUARE){
             clib_ansi_clear_screen();
-            ERRO("Square %s is empty", from);
             board_print(&board);
-            printf("%s's turn\n", board.turn ? "White" : "Black");
             continue;
         }
 
         if(board.turn != piece_color(piece)) {
             clib_ansi_clear_screen();
-            ERRO("Cannot move opponent's pieces");
             board_print(&board);
-            printf("%s's turn\n", board.turn ? "White" : "Black");
             continue;
         }
 
         if(!piece_can_move(&board, from_square, to_square)){
             clib_ansi_clear_screen();
-            ERRO("Invalid move");
             board_print(&board);
-            printf("%s's turn\n", board.turn ? "White" : "Black");
             continue;
         }
         
         move(&board, from_square, to_square);
+        board.turn = !board.turn;
+
+        if(IN_CHECK(&board, PIECE_COLOR_WHITE)){
+            board.checks |= CHECK_WHITE_KING;
+        } else board.checks &= ~CHECK_WHITE_KING;
+        if(IN_CHECK(&board, PIECE_COLOR_BLACK)){
+            board.checks |= CHECK_BLACK_KING;
+        } else board.checks &= ~CHECK_WHITE_KING;
 
         size_t highlight_count;
         square_t** sqrs = squares(&highlight_count,
@@ -76,13 +77,9 @@ void run()
         clib_ansi_clear_screen();
         board_print_highlight(&board, sqrs, highlight_count);
 
-        board.turn = !board.turn;
-        printf("%s's turn\n", board.turn ? "White" : "Black");
-
         square_free(&from_square);
         square_free(&to_square);
     }
-
 }
 
 int main(int argc, char** argv){
@@ -94,7 +91,8 @@ int main(int argc, char** argv){
             // TEST_BISHOP_MOVE,
             // TEST_QUEEN_MOVE,
             // TEST_KNIGHT_MOVE,
-            TEST_KING_MOVE,
+            // TEST_KING_MOVE,
+            TEST_IS_PINNED,
             END
         );
     }

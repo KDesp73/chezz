@@ -105,3 +105,61 @@ _Bool pawn_can_move(board_t* board, const square_t* piece, const square_t* targe
     // Move is valid
     return 1;
 }
+
+_Bool pawn_can_attack(board_t* board, const square_t* piece, const square_t* target)
+{
+    if (!board || !piece || !target) {
+        return 0;
+    }
+
+    char _piece = board->grid[PCOORDS(piece)];
+    int color = piece_color(_piece);
+
+    // Validate that the piece is a pawn
+    if (tolower(_piece) != 'p') {
+        board->error = ERROR_INVALID_PIECE;
+        return 0;
+    }
+
+    // Validate there is a piece at the source square
+    if (color == PIECE_COLOR_NONE) {
+        board->error = ERROR_EMPTY_SQUARE;
+        return 0;
+    }
+
+    // Calculate file (horizontal) and rank (vertical) differences
+    int file_diff = abs((int)piece->file - (int)target->file);
+    int rank_diff = (int)target->rank - (int)piece->rank;
+
+    // Check movement direction based on color
+    if ((color == PIECE_COLOR_WHITE && rank_diff != 1) || 
+        (color == PIECE_COLOR_BLACK && rank_diff != -1)) {
+        board->error = ERROR_INVALID_MOVE;
+        return 0;
+    }
+
+    // Check for diagonal capture
+    if (file_diff == 1) {
+        char target_piece = board->grid[PCOORDS(target)];
+
+        // Handle en passant capture
+        if (target_piece == ' ' && 
+            board->enpassant_square[0] != '-' && 
+            square_cmp(target, square_from_name(board->enpassant_square))) {
+            return 1;
+        }
+
+        // Standard capture: target square must contain an opponent's piece
+        if (target_piece != ' ' && piece_color(target_piece) != color) {
+            return 1;
+        }
+
+        board->error = ERROR_EMPTY_SQUARE; // No valid piece to attack
+        return 0;
+    }
+
+    // Any other move is invalid for attacking
+    board->error = ERROR_INVALID_MOVE;
+    return 0;
+}
+

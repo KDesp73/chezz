@@ -14,6 +14,9 @@ void board_print_highlight(const board_t* board, square_t** squares, size_t coun
     char* yellow_bg = (char*) COLOR_BG(214);
     const char* reset = ANSI_RESET;
 
+    if(board->error > 0)
+        ERRO("%s", error_messages[board->error]);
+
     printf("┌───┬───┬───┬───┬───┬───┬───┬───┐\n");
 
     for (int i = 7; i >= 0; --i) {
@@ -42,12 +45,20 @@ void board_print_highlight(const board_t* board, square_t** squares, size_t coun
     }
     printf("└───┴───┴───┴───┴───┴───┴───┴───┘\n");
 
+    printf("%s's turn\n", board->turn ? "White" : "Black");
+
+    if(board->checks != 0b00)
+        printf("%s is in check!\n", white_in_check(board) ? "White" : "Black");
+
     free(yellow_bg);
 }
 
 void board_init(board_t* board)
 {
     board_init_fen(board, STARTING_FEN);
+    board->error = 0;
+    board->checks = 0b00;
+    board->checkmate = 0;
 }
 
 void board_print(const board_t* board)
@@ -82,6 +93,9 @@ _Bool is_number(const char* str) {
 
 void board_init_fen(board_t* board, const char* fen)
 {
+    board->error = 0;
+    board->checks = 0b00;
+
     char b[71 + 1];  // Board layout (max length 71 characters)
     char turn;
     char castling[4 + 1];  // Castling rights (max 4 characters)
@@ -184,6 +198,15 @@ no_castling:
     }
 }
 
+_Bool white_in_check(const board_t* board)
+{
+    return board->checks & CHECK_WHITE_KING;
+}
+_Bool black_in_check(const board_t* board)
+{
+    return board->checks & CHECK_BLACK_KING;
+}
+
 int has_castling_rights(const board_t* board, uint8_t castling_rights)
 {
     return board->castling_rights & castling_rights;
@@ -196,6 +219,8 @@ void revoke_castling_rights(board_t* board, uint8_t castling_rights)
 
 _Bool square_is_attacked(board_t *board, square_t* square, int color)
 {
+    assert(square != NULL);
+
     int x = square->x;
     int y = square->y;
 
@@ -293,81 +318,57 @@ _Bool square_is_attacked_coords(board_t *board, int y, int x, int color)
     return 0; // Square is not under attack
 }
 
-square_t* find_king_black(board_t* board)
-{
-    square_t* home = square_from_name("e8");
-    square_t* queen_castling = square_from_name("c8");
-    square_t* king_castling = square_from_name("g8");
-
-    // Searching high chance squares first
-    if(board->grid[PCOORDS(home)] == BLACK_KING) {
-        square_free(&queen_castling);
-        square_free(&king_castling);
-        return home;
-    }
-    if(board->grid[PCOORDS(king_castling)] == BLACK_KING) {
-        square_free(&home);
-        square_free(&queen_castling);
-        return king_castling;
-    }
-    if(board->grid[PCOORDS(queen_castling)] == BLACK_KING) {
-        square_free(&home);
-        square_free(&king_castling);
-        return queen_castling;
-    }
-    square_free(&home);
-    square_free(&king_castling);
-    square_free(&queen_castling);
-
-    // Starting from a8
-    for (int i = 7; i >= 0; --i) {
-        for (int j = 0; j <= 7; ++j) {
-            if(board->grid[i][j] == BLACK_KING)
-                return square_from_coords(i, j);
-        }
-    }
-    return NULL;
-}
-
-square_t* find_king_white(board_t* board)
-{
-    square_t* home = square_from_name("e1");
-    square_t* queen_castling = square_from_name("c1");
-    square_t* king_castling = square_from_name("g1");
-
-    // Searching high chance squares first
-    if(board->grid[PCOORDS(home)] == WHITE_KING) {
-        square_free(&queen_castling);
-        square_free(&king_castling);
-        return home;
-    }
-    if(board->grid[PCOORDS(king_castling)] == WHITE_KING) {
-        square_free(&home);
-        square_free(&queen_castling);
-        return king_castling;
-    }
-    if(board->grid[PCOORDS(queen_castling)] == WHITE_KING) {
-        square_free(&home);
-        square_free(&king_castling);
-        return queen_castling;
-    }
-    square_free(&home);
-    square_free(&king_castling);
-    square_free(&queen_castling);
-
-    // Starting from a1
-    for (int i = 0; i <= 7; --i) {
-        for (int j = 0; j <= 7; ++j) {
-            if(board->grid[i][j] == WHITE_KING)
-                return square_from_coords(i, j);
-        }
-    }
-    return NULL;
-}
-
 square_t* find_king(board_t* board, int color)
 {
-    return (color == PIECE_COLOR_WHITE)
-        ? find_king_white(board)
-        : find_king_black(board);
+    const char* home_name = (color == PIECE_COLOR_WHITE) ? "e1" : "e8";
+    const char* queen_castling_name = (color == PIECE_COLOR_WHITE) ? "c1" : "c8";
+    const char* king_castling_name = (color == PIECE_COLOR_WHITE) ? "g1" : "g8";
+    char king_piece = (color == PIECE_COLOR_WHITE) ? 'K' : 'k';
+
+    square_t* home = square_from_name(home_name);
+    square_t* queen_castling = square_from_name(queen_castling_name);
+    square_t* king_castling = square_from_name(king_castling_name);
+
+    if (!home || !queen_castling || !king_castling) {
+        square_free(&home);
+        square_free(&queen_castling);
+        square_free(&king_castling);
+        return NULL;
+    }
+
+    // Searching high probability squares first
+    if (board->grid[PCOORDS(home)] == king_piece) {
+        square_free(&queen_castling);
+        square_free(&king_castling);
+        return home;
+    }
+    if (board->grid[PCOORDS(king_castling)] == king_piece){
+        square_free(&home);
+        square_free(&queen_castling);
+        return king_castling;
+    }
+    if (board->grid[PCOORDS(queen_castling)] == king_piece) {
+        square_free(&home);
+        square_free(&king_castling);
+        return queen_castling;
+    }
+
+    square_free(&home);
+    square_free(&queen_castling);
+    square_free(&king_castling);
+
+    // Full board search
+    int row_start = (color == PIECE_COLOR_WHITE) ? 0 : 7;
+    int row_end = (color == PIECE_COLOR_WHITE) ? 8 : -1;
+    int row_step = (color == PIECE_COLOR_WHITE) ? 1 : -1;
+
+    for (int i = row_start; i != row_end; i += row_step) {
+        for (int j = 0; j < 8; ++j) {
+            if (board->grid[i][j] == king_piece) {
+                return square_from_coords(i, j); // Ensure the caller frees this memory
+            }
+        }
+    }
+
+    return NULL;
 }

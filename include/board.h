@@ -24,15 +24,26 @@
 #define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 typedef enum {
-    ERROR_INVALID_MOVE,
-    ERROR_EMPTY_SQUARE,
-    ERROR_OBSTRUCTED_PATH,
-    ERROR_INVALID_PIECE,
-    ERROR_FRIENDLY_PIECE,
-    ERROR_KINGS_TOUCHING,
-    ERROR_INVALID_CASTLE,
+    ERROR_INVALID_MOVE = 1,
+    ERROR_EMPTY_SQUARE = 2,
+    ERROR_OBSTRUCTED_PATH = 3,
+    ERROR_INVALID_PIECE = 4,
+    ERROR_FRIENDLY_PIECE = 5,
+    ERROR_KINGS_TOUCHING = 6,
+    ERROR_INVALID_CASTLE = 7,
     
 } error_t;
+
+static const char error_messages[][256] = {
+    "OK",
+    "Invalid move",
+    "Empty square",
+    "Obstructed path",
+    "Invalid piece",
+    "Attacking friendly piece",
+    "Kings cannot touch",
+    "Invalid castling"
+};
 
 typedef struct {
     char grid[8][8];
@@ -42,8 +53,14 @@ typedef struct {
     size_t halfmove;
     size_t fullmove;
     error_t error;
+    _Bool checkmate;
+    uint8_t checks;
 } board_t;
 
+enum {
+    CHECK_WHITE_KING = 0b01,
+    CHECK_BLACK_KING = 0b10,
+};
 
 enum {
     CASTLE_WHITE_KINGSIDE = 0b0001,
@@ -65,7 +82,14 @@ _Bool square_is_attacked_coords(board_t *board, int y, int x, int color);
 _Bool square_is_attacked_fr(board_t *board, int rank, int file, int color);
 
 square_t* find_king(board_t* board, int color);
-square_t* find_king_white(board_t* board);
-square_t* find_king_black(board_t* board);
+#define FIND_KING_WHITE(board) \
+    find_king(board, PIECE_COLOR_WHITE)
+#define FIND_KING_BLACK(board) \
+    find_king(board, PIECE_COLOR_BLACK)
+
+_Bool white_in_check(const board_t* board);
+_Bool black_in_check(const board_t* board);
+#define IN_CHECK(board, color) \
+    square_is_attacked(board, find_king(board, color), color)
 
 #endif // BOARD_H

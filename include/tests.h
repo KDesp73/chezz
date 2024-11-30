@@ -169,5 +169,25 @@ int test_king_can_move(const char* fen, const char* from, const char* to, _Bool 
     test_king_can_move("rnbq2nr/2p3p1/8/8/8/8/2k5/R3K2R w KQ - 0 1", "e1", "c1", 0), \
     test_king_can_move("rnbq2nr/3p2p1/8/8/8/8/2k5/R3K2R w KQha - 0 1", "e1", "c1", 0)
 
+int test_is_pinned(const char* fen, const char* square, _Bool expected);
+#define TEST_IS_PINNED \
+    test_is_pinned("rnb1k1nr/pp1ppppp/2p5/4q3/6Pb/3P1P2/PPP2N1P/RNBQKB1R w KQkq - 0 1", "f2", 1), \
+    test_is_pinned("rnb1k1nr/pp1ppppp/2p5/4q3/6Pb/3PBP2/PPP2N1P/RN1QKB1R w KQkq - 0 1", "f2", 1), \
+    test_is_pinned("rnb1k1nr/pp1ppppp/2p5/4q3/6Pb/3PBP2/PPP2N1P/RN1QKB1R w KQkq - 0 1", "e3", 1), \
+    test_is_pinned("rnb1k1nr/pp1ppppp/2p5/4q3/6Pb/3PBP2/PPP1BN1P/RN1QK2R w KQkq - 0 1", "e3", 0), \
+    test_is_pinned("rnb1kbnr/pppp1ppp/8/4p3/5P1q/4P1P1/PPPP3P/RNBQKBNR w KQkq - 0 1", "g3", 1), \
+    test_is_pinned("rnb1kbnr/pppp1ppp/8/4p3/5P1q/4P1P1/PPPP3P/RNBQKBNR w KQkq - 0 1", "f4", 0), \
+    test_is_pinned("rnb1kbnr/pppp1ppp/8/4p3/2K2P1q/4P1P1/PPPP3P/RNBQ1BNR w kq - 0 1", "f4", 1), \
+    test_is_pinned("rn2kbnr/pppp1ppp/4b3/3Pp3/2K2P1q/4P1P1/PPP4P/RNBQ1BNR w kq - 0 1", "d5", 1), \
+    test_is_pinned("r3kbnr/pppp1ppp/4b3/3Pp3/4nP1q/4P1P1/PPP2K1P/RNBQ1BNR w kq - 0 1", "g3", 1), \
+    test_is_pinned("r3kbnr/pppp1ppp/4b3/3Pp2q/4nP2/4P1P1/PPP2K1P/RNBQ1BNR w kq - 0 1", "g3", 0), \
+    test_is_pinned("r3kbnr/pppp1ppp/4b3/3Pp2q/4nP2/4P1P1/PPP2K1P/RNBQ1BNR w kq - 0 1", "a1", 0), \
+    test_is_pinned("r3kbnr/pppp1ppp/4b3/3Pp2q/4nP2/4P1P1/PPP2K1P/RNBQ1BNR w kq - 0 1", "b1", 0), \
+    test_is_pinned("r3kbnr/pppp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/RNBQK1NR w kq - 0 1", "d7", 1), \
+    test_is_pinned("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "d7", 1), \
+    test_is_pinned("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "a8", 0), \
+    test_is_pinned("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "e6", 0)
+
+
 
 #endif // TESTS_H

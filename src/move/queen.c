@@ -11,14 +11,14 @@ _Bool queen_can_move(board_t *board, const square_t *piece, const square_t *targ
 
     // Validate that the piece is a queen
     if (tolower(_piece) != 'q') {
-        DEBU("Piece is not a queen");
+        // DEBU("Piece is not a queen");
         board->error = ERROR_INVALID_PIECE;
         return 0;
     }
 
     // Validate there is a piece at the source square
     if (color == PIECE_COLOR_NONE) {
-        DEBU("No piece found at: %s", piece->name);
+        // DEBU("No piece found at: %s", piece->name);
         board->error = ERROR_EMPTY_SQUARE;
         return 0;
     }
@@ -36,7 +36,7 @@ _Bool queen_can_move(board_t *board, const square_t *piece, const square_t *targ
         if (file_diff == 0) {
             for (int r = piece->rank + step; r != target->rank; r += step) {
                 if (board->grid[r - 1][piece->file - 1] != EMPTY_SQUARE) {
-                    DEBU("Obstruction at rank: %d, file: %zu", r, piece->file);
+                    // DEBU("Obstruction at rank: %d, file: %zu", r, piece->file);
                     board->error = ERROR_OBSTRUCTED_PATH;
                     return 0;
                 }
@@ -46,7 +46,7 @@ _Bool queen_can_move(board_t *board, const square_t *piece, const square_t *targ
         else {
             for (int f = piece->file + step; f != target->file; f += step) {
                 if (board->grid[piece->rank - 1][f - 1] != EMPTY_SQUARE) {
-                    DEBU("Obstruction at rank: %zu, file: %d", piece->rank, f);
+                    // DEBU("Obstruction at rank: %zu, file: %d", piece->rank, f);
                     board->error = ERROR_OBSTRUCTED_PATH;
                     return 0;
                 }
@@ -62,7 +62,7 @@ _Bool queen_can_move(board_t *board, const square_t *piece, const square_t *targ
 
         while (current_file != target->file && current_rank != target->rank) {
             if (board->grid[current_rank - 1][current_file - 1] != EMPTY_SQUARE) {
-                DEBU("Obstruction at rank: %d, file: %d", current_rank, current_file);
+                // DEBU("Obstruction at rank: %d, file: %d", current_rank, current_file);
                 board->error = ERROR_OBSTRUCTED_PATH;
                 return 0;
             }
@@ -79,7 +79,7 @@ _Bool queen_can_move(board_t *board, const square_t *piece, const square_t *targ
     // Check if the target square contains a piece of the same color
     char target_piece = board->grid[PCOORDS(target)];
     if (target_piece != EMPTY_SQUARE && piece_color(target_piece) == color) {
-        DEBU("Target square contains a piece of the same color");
+        // DEBU("Target square contains a piece of the same color");
         board->error = ERROR_FRIENDLY_PIECE;
         return 0;
     }

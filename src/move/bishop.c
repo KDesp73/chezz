@@ -12,14 +12,14 @@ _Bool bishop_can_move(board_t *board, const square_t *piece, const square_t *tar
 
     // Validate that the piece is a bishop
     if (tolower(_piece) != 'b') {
-        DEBU("Piece is not a bishop");
+        // DEBU("Piece is not a bishop");
         board->error = ERROR_INVALID_PIECE;
         return 0;
     }
 
     // Validate there is a piece at the source square
     if (color == PIECE_COLOR_NONE) {
-        DEBU("No piece found at: %s", piece->name);
+        // DEBU("No piece found at: %s", piece->name);
         board->error = ERROR_EMPTY_SQUARE;
         return 0;
     }
@@ -30,7 +30,7 @@ _Bool bishop_can_move(board_t *board, const square_t *piece, const square_t *tar
 
     // Bishops must move diagonally (absolute differences must be equal)
     if (abs(file_diff) != abs(rank_diff)) {
-        DEBU("Invalid diagonal movement");
+        // DEBU("Invalid diagonal movement");
         board->error = ERROR_INVALID_MOVE;
         return 0;
     }
@@ -45,7 +45,7 @@ _Bool bishop_can_move(board_t *board, const square_t *piece, const square_t *tar
 
     while (current_file != target->file && current_rank != target->rank) {
         if (board->grid[current_rank - 1][current_file - 1] != EMPTY_SQUARE) {
-            DEBU("Obstruction at rank: %d, file: %d", current_rank, current_file);
+            // DEBU("Obstruction at rank: %d, file: %d", current_rank, current_file);
             board->error = ERROR_OBSTRUCTED_PATH;
             return 0;
         }
@@ -57,7 +57,7 @@ _Bool bishop_can_move(board_t *board, const square_t *piece, const square_t *tar
     // Check if the target square contains a piece of the same color
     char target_piece = board->grid[PCOORDS(target)];
     if (target_piece != EMPTY_SQUARE && piece_color(target_piece) == color) {
-        DEBU("Target square contains a piece of the same color");
+        // DEBU("Target square contains a piece of the same color");
         board->error = ERROR_FRIENDLY_PIECE;
         return 0;
     }
