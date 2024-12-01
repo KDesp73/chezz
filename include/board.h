@@ -71,8 +71,27 @@ enum {
 
 void board_init(board_t* board);
 void board_init_fen(board_t* board, const char* fen);
-void board_print(const board_t* board);
-void board_print_highlight(const board_t* board, square_t** squares, size_t count);
+
+typedef struct {
+    _Bool errors;
+    _Bool highlights;
+    _Bool turn;
+    _Bool checks;
+    _Bool coords;
+} print_config_t;
+
+#define MINIMAL_CONFIG \
+    (print_config_t) {.errors = 0,.highlights = 0,.turn = 0,.checks = 0, .coords = 1}
+#define FULL_CONFIG \
+    (print_config_t) {.errors = 1,.highlights = 1,.turn = 1,.checks = 1, .coords = 1}
+
+void board_print(const board_t* board, print_config_t config, square_t* first, ...);
+
+#define PRINT_PLAIN(board) \
+    board_print(board, MINIMAL_CONFIG, NULL)
+#define PRINT_FULL(board, first, ...) \
+    board_print(board, FULL_CONFIG, first, ##__VA_ARGS__)
+
 
 int has_castling_rights(const board_t* board, uint8_t castling_right);
 void revoke_castling_rights(board_t* board, uint8_t castling_rights);

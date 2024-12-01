@@ -8,12 +8,6 @@ int test_is_pinned(const char* fen, const char* square, _Bool expected)
 {
     board_t board;
     board_init_fen(&board, fen);
-    size_t count;
-    square_t** s = squares(&count,
-            square_from_name(square),
-            NULL
-            );
-    board_print_highlight(&board, s, count);
 
     square_t* _square = square_from_name(square);
 

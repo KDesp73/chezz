@@ -3,6 +3,7 @@
 #include "extern/clib.h"
 #include "piece.h"
 #include "square.h"
+#include <string.h>
 
 void move(board_t* board, square_t* from, square_t* to)
 {
@@ -16,6 +17,10 @@ void move(board_t* board, square_t* from, square_t* to)
 
 _Bool piece_can_move(board_t* board, const square_t* piece, const square_t* target)
 {
+    assert(piece != NULL);
+    assert(target != NULL);
+    assert(board != NULL);
+
     switch (piece_at(board, piece)) {
         case 'K':
         case 'k':

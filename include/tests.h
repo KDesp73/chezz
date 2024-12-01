@@ -186,7 +186,9 @@ int test_is_pinned(const char* fen, const char* square, _Bool expected);
     test_is_pinned("r3kbnr/pppp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/RNBQK1NR w kq - 0 1", "d7", 1), \
     test_is_pinned("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "d7", 1), \
     test_is_pinned("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "a8", 0), \
-    test_is_pinned("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "e6", 0)
+    test_is_pinned("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "e6", 0), \
+    test_is_pinned("r1bk1bnr/pp4pp/2npNp2/4P1B1/3P4/5N2/PPP3PP/R2QKB1R b KQ - 0 11", "f6", 1), \
+    test_is_pinned("r1b2bnr/pp2k1pp/2npNP2/6B1/3P4/5N2/PPP3PP/R2QKB1R b KQ - 0 12", "f6", 0)
 
 
 

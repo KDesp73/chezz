@@ -9,29 +9,52 @@
 #define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 
-void board_print_highlight(const board_t* board, square_t** squares, size_t count)
+void board_print(const board_t* board, print_config_t config, square_t* first, ...)
 {
+    square_t** squares = NULL;
+    int count = 0;
+    if(first != NULL){
+        va_list args;
+        va_start(args, first);
+
+        squares = (square_t**)malloc(100 * sizeof(square_t*));
+
+        squares[count++] = first;
+
+        square_t* next_square;
+        while ((next_square = va_arg(args, square_t*)) != NULL) {
+            squares[count++] = next_square;
+        }
+        va_end(args);
+
+        squares = (square_t**)realloc(squares, (count + 1) * sizeof(square_t*));
+    }
+
     char* yellow_bg = (char*) COLOR_BG(214);
     const char* reset = ANSI_RESET;
 
-    if(board->error > 0)
+    if(config.errors && board->error > 0)
         ERRO("%s", error_messages[board->error]);
 
-    printf("┌───┬───┬───┬───┬───┬───┬───┬───┐\n");
+    printf("%s┌───┬───┬───┬───┬───┬───┬───┬───┐\n", (config.coords) ? "  " : "");
 
     for (int i = 7; i >= 0; --i) {
+        if(config.coords) printf("%d ", i + 1);
         for (int j = 0; j <= 7; ++j) {
             int highlighted = 0;
 
-            for (size_t sc = 0; sc < count; ++sc) {
-                if (i == squares[sc]->rank - 1 && j == squares[sc]->file - 1) {
-                    highlighted = 1;
-                    break;
+            if(squares != NULL){
+                for (size_t sc = 0; sc < count; ++sc) {
+                    if(squares[sc] == NULL) continue;
+                    if (i == squares[sc]->rank - 1 && j == squares[sc]->file - 1) {
+                        highlighted = 1;
+                        break;
+                    }
                 }
             }
 
             printf("│");
-            if (highlighted) {
+            if (config.highlights && highlighted) {
                 printf("%s %c %s", yellow_bg, board->grid[i][j], reset);
             } else {
                 printf(" %c ", board->grid[i][j]);
@@ -40,14 +63,23 @@ void board_print_highlight(const board_t* board, square_t** squares, size_t coun
         printf("│\n");
 
         if (i > 0) {
-            printf("├───┼───┼───┼───┼───┼───┼───┼───┤\n");
+            printf("%s├───┼───┼───┼───┼───┼───┼───┼───┤\n", (config.coords) ? "  " : "");
         }
     }
-    printf("└───┴───┴───┴───┴───┴───┴───┴───┘\n");
+    printf("%s└───┴───┴───┴───┴───┴───┴───┴───┘\n", (config.coords) ? "  " : "");
+    
+    if(config.coords){
+        printf("  ");
+        for(int i = 0; i < BOARD_SIZE; i++){
+            printf("  %c ", 'A' + i);
+        }
+        printf("\n");
+    }
 
-    printf("%s's turn\n", board->turn ? "White" : "Black");
+    if(config.turn)
+        printf("%s's turn\n", board->turn ? "White" : "Black");
 
-    if(board->checks != 0b00)
+    if(config.checks && board->checks != 0b00)
         printf("%s is in check!\n", white_in_check(board) ? "White" : "Black");
 
     free(yellow_bg);
@@ -59,11 +91,6 @@ void board_init(board_t* board)
     board->error = 0;
     board->checks = 0b00;
     board->checkmate = 0;
-}
-
-void board_print(const board_t* board)
-{
-    board_print_highlight(board, NULL, 0);
 }
 
 _Bool is_number(const char* str) {

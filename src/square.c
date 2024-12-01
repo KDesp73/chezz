@@ -115,8 +115,9 @@ square_t* square_from_name(const char* name)
 {
     assert(strlen(name) == 2);
     assert(name != NULL);
-    assert(name[0] >= 'a' && name[0] <= 'h');
-    assert(name[1] >= '1' && name[1] <= '8');
+
+    if(name[0] < 'a' || name[0] > 'h') return NULL;
+    if(name[1] < '1' || name[1] > '8') return NULL;
 
     square_t* result = malloc(sizeof(square_t));
 
