@@ -15,7 +15,7 @@ void run()
 {
     board_t board;
     board_init(&board);
-    PRINT_PLAIN(&board);
+    PRINT_FULL(&board, NULL);
 
     while (1) {
         char move_input[6]; // +1 for \0, +1 for safety
@@ -42,7 +42,7 @@ void run()
         if (!from_square || !to_square) {
             clib_ansi_clear_screen();
             ERRO("Invalid square(s). From: %s, To: %s", from, to);
-            PRINT_PLAIN(&board);
+            PRINT_FULL(&board, NULL);
             printf("%s's turn\n", board.turn ? "White" : "Black");
             continue;
         }
@@ -51,7 +51,7 @@ void run()
         if (piece == EMPTY_SQUARE) {
             clib_ansi_clear_screen();
             printf("No piece at %s.\n", from);
-            PRINT_PLAIN(&board);
+            PRINT_FULL(&board, NULL);
             printf("%s's turn\n", board.turn ? "White" : "Black");
             square_free(&from_square);
             square_free(&to_square);
@@ -61,7 +61,7 @@ void run()
         if (board.turn != piece_color(piece)) {
             clib_ansi_clear_screen();
             printf("It's not %s's turn.\n", board.turn ? "Black" : "White");
-            PRINT_PLAIN(&board);
+            PRINT_FULL(&board, NULL);
             square_free(&from_square);
             square_free(&to_square);
             continue;
@@ -70,7 +70,7 @@ void run()
         if (!piece_can_move(&board, from_square, to_square)) {
             clib_ansi_clear_screen();
             printf("Invalid move for %c from %s to %s.\n", piece, from, to);
-            PRINT_PLAIN(&board);
+            PRINT_FULL(&board, NULL);
             square_free(&from_square);
             square_free(&to_square);
             continue;
@@ -111,7 +111,8 @@ int main(int argc, char** argv){
             // TEST_QUEEN_MOVE,
             // TEST_KNIGHT_MOVE,
             // TEST_KING_MOVE,
-            TEST_IS_PINNED,
+            // TEST_IS_PINNED,
+            TEST_VALID_MOVES,
             END
         );
     }

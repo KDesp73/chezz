@@ -13,4 +13,6 @@ _Bool bishop_can_move(board_t* board, const square_t* piece, const square_t* tar
 _Bool queen_can_move(board_t* board, const square_t* piece, const square_t* target);
 _Bool king_can_move(board_t* board, const square_t* piece, const square_t* target);
 
+square_t** valid_moves(board_t* board, const square_t* piece, size_t* count);
+
 #endif // MOVE_H

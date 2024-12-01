@@ -36,10 +36,11 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
     if(config.errors && board->error > 0)
         ERRO("%s", error_messages[board->error]);
 
-    printf("%s┌───┬───┬───┬───┬───┬───┬───┬───┐\n", (config.coords) ? "  " : "");
+    const char* padding = "   ";
+    printf("%s┌───┬───┬───┬───┬───┬───┬───┬───┐\n", (config.coords) ? padding : "");
 
     for (int i = 7; i >= 0; --i) {
-        if(config.coords) printf("%d ", i + 1);
+        if(config.coords) printf(" %d ", i + 1);
         for (int j = 0; j <= 7; ++j) {
             int highlighted = 0;
 
@@ -63,13 +64,13 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
         printf("│\n");
 
         if (i > 0) {
-            printf("%s├───┼───┼───┼───┼───┼───┼───┼───┤\n", (config.coords) ? "  " : "");
+            printf("%s├───┼───┼───┼───┼───┼───┼───┼───┤\n", (config.coords) ? padding : "");
         }
     }
-    printf("%s└───┴───┴───┴───┴───┴───┴───┴───┘\n", (config.coords) ? "  " : "");
+    printf("%s└───┴───┴───┴───┴───┴───┴───┴───┘\n", (config.coords) ? padding : "");
     
     if(config.coords){
-        printf("  ");
+        printf("%s", padding);
         for(int i = 0; i < BOARD_SIZE; i++){
             printf("  %c ", 'A' + i);
         }
@@ -77,10 +78,10 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
     }
 
     if(config.turn)
-        printf("%s's turn\n", board->turn ? "White" : "Black");
+        printf("\n%s's turn\n", board->turn ? "White" : "Black");
 
     if(config.checks && board->checks != 0b00)
-        printf("%s is in check!\n", white_in_check(board) ? "White" : "Black");
+        printf("\n%s is in check!\n", white_in_check(board) ? "White" : "Black");
 
     free(yellow_bg);
 }

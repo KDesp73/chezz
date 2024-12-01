@@ -74,6 +74,12 @@ _Bool king_can_move(board_t *board, const square_t *piece, const square_t *targe
         return 0;
     }
 
+    if(square_is_attacked(board, (square_t*)target, color)) {
+        // DEBU("King would be in check");
+        board->error = ERROR_INVALID_MOVE;
+        return 0;
+    }
+
     // Check if moving to the target square leads to the kings touching
     if(kings_touching(board, target, color)){
         // DEBU("Kings cannot touch");

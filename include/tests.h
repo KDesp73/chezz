@@ -190,6 +190,57 @@ int test_is_pinned(const char* fen, const char* square, _Bool expected);
     test_is_pinned("r1bk1bnr/pp4pp/2npNp2/4P1B1/3P4/5N2/PPP3PP/R2QKB1R b KQ - 0 11", "f6", 1), \
     test_is_pinned("r1b2bnr/pp2k1pp/2npNP2/6B1/3P4/5N2/PPP3PP/R2QKB1R b KQ - 0 12", "f6", 0)
 
+int test_valid_moves(const char* fen, const char* square, const char* first, ...);
+#define TEST_VALID_MOVES \
+    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "a1", "b1", NULL), \
+    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "a2", "a3", "a4", NULL), \
+    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "c1", "d2", NULL), \
+    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "d1", "d2", "d3", "d4", "e2", "f3", "g4", "h5", NULL), \
+    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "f4", "e5", "f5", NULL), \
+    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "f7", "f6", "f5", NULL), \
+    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "c7", "a8", "a6", "e6", NULL), \
+    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "b5", "a4", "c4", "d3", "e2", "f1", "c6", "d7", "a6", NULL), \
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "e8", "f7", "d7", NULL), \
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "a7", "a6", "a5", NULL), \
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "f6", "f5", NULL), \
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "g4", "h3", "f3", "e2", "h5", "f5", "e6", "d7", "c8", NULL), \
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "c3", "a4", "b5", "d5", "e4", "b1", NULL)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #endif // TESTS_H
