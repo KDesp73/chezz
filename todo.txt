@@ -4,6 +4,8 @@ TODO: pgn import
 TODO: pgn export
 TODO: mate check
 TODO: 50 move rule
+TODO: stalemate check
+TODO: draw due to insufficient material
 DONE: pin check
 DONE: check check
 DONE: en passant captures
