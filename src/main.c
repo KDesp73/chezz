@@ -63,15 +63,16 @@ void run(const char* fen)
             continue;
         }
 
+
+        clib_ansi_clear_screen();
+        PRINT_FULL(&board, from_square, to_square, NULL);
+
         if(board.result > 0){
             printf("%s\n", result_message[board.result]);
             square_free(&from_square);
             square_free(&to_square);
             return;
         }
-
-        clib_ansi_clear_screen();
-        PRINT_FULL(&board, from_square, to_square, NULL);
 
         square_free(&from_square);
         square_free(&to_square);
@@ -81,21 +82,24 @@ void run(const char* fen)
 int main(int argc, char** argv){
     if(argc == 2 && STREQ(argv[1], "test")){
         return !test(
-            // TEST_SQUARE_FROM_NAME,
-            // TEST_PAWN_MOVE,
-            // TEST_ROOK_MOVE,
-            // TEST_BISHOP_MOVE,
-            // TEST_QUEEN_MOVE,
-            // TEST_KNIGHT_MOVE,
-            // TEST_KING_MOVE,
-            // TEST_IS_PINNED,
-            // TEST_VALID_MOVES,
-            // TEST_MOVE_IS_VALID,
-            // TEST_PAWN_IS_ENPASSANTING,
-            // TEST_PAWN_CAN_ENPASSANT,
-            // TEST_MOVE,
-            // TEST_KING_IN_CHECK,
+            TEST_SQUARE_FROM_NAME,
+            TEST_PAWN_MOVE,
+            TEST_ROOK_MOVE,
+            TEST_BISHOP_MOVE,
+            TEST_QUEEN_MOVE,
+            TEST_KNIGHT_MOVE,
+            TEST_KING_MOVE,
+            TEST_IS_PINNED,
+            TEST_VALID_MOVES,
+            TEST_MOVE_IS_VALID,
+            TEST_PAWN_IS_ENPASSANTING,
+            TEST_PAWN_CAN_ENPASSANT,
+            TEST_MOVE,
+            TEST_KING_IN_CHECK,
             TEST_BOARD_INIT_FEN,
+            TEST_INSUFFICIENT_MATERIAL,
+            TEST_CHECKMATE,
+            TEST_STALEMATE,
             END
         );
     }

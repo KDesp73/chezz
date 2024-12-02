@@ -554,3 +554,12 @@ size_t number_of_pieces(const board_t* board, int color)
     }
     return count;
 }
+
+_Bool in_check(const board_t *board, int color)
+{
+    square_t* king = find_king(board, color);
+    _Bool ret = square_is_attacked(board, king, color);
+
+    square_free(&king);
+    return ret;
+}

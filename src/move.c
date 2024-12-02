@@ -95,7 +95,6 @@ _Bool piece_can_move(board_t* board, const square_t* piece, const square_t* targ
         case 'p':
             return pawn_can_move(board, piece, target);
         default:
-            ERRO("Empty square");
             return 0;
     }
 }
@@ -174,7 +173,7 @@ square_t** valid_moves(board_t* board, const square_t* piece, size_t* count)
                 }
             }
 
-            if (piece_can_move(board, piece, target)) {
+            if (move_is_valid(board, piece, target)) {
                 if (*count == capacity) {
                     capacity *= 2;
                     moves = realloc(moves, sizeof(square_t*) * capacity);
@@ -187,6 +186,7 @@ square_t** valid_moves(board_t* board, const square_t* piece, size_t* count)
     }
 
     moves = realloc(moves, sizeof(square_t*) * *count);
+
     return moves;
 }
 

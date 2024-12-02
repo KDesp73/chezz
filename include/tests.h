@@ -198,19 +198,20 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
     test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "c1", "d2", NULL), \
     test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "d1", "d2", "d3", "d4", "e2", "f3", "g4", "h5", NULL), \
     test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "f4", "e5", "f5", NULL), \
-    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "f7", "f6", "f5", NULL), \
+    test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "f7", NULL), \
     test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "c7", "a8", "a6", "e6", NULL), \
     test_valid_moves("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR w kq - 0 1", "b5", "a4", "c4", "d3", "e2", "f1", "c6", "d7", "a6", NULL), \
-    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "e8", "f7", "d7", NULL), \
-    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "a7", "a6", "a5", NULL), \
-    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "f6", "f5", NULL), \
-    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "g4", "h3", "f3", "e2", "h5", "f5", "e6", "d7", "c8", NULL), \
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R b Kkq - 0 1", "e8", "f7", "d7", NULL), \
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R b Kkq - 0 1", "a7", "a6", "a5", NULL), \
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R b Kkq - 0 1", "f6", "f5", NULL), \
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R b Kkq - 0 1", "g4", "h3", "f3", "e2", "h5", "f5", "e6", "d7", "c8", NULL), \
     test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "c3", "a4", "b5", "d5", "e4", "b1", NULL), \
-    test_valid_moves("r3kb1r/pp2n1pp/5p2/8/3P2b1/1BN4P/PPP1B1P1/2KR3R w Kkq - 0 1", "e8", "d7", "d8", "c8", NULL), \
+    test_valid_moves("r3kb1r/pp2n1pp/5p2/8/3P2b1/1BN4P/PPP1B1P1/2KR3R b Kkq - 0 1", "e8", "d7", "d8", "c8", NULL), \
     test_valid_moves("rnb1kbnr/ppppqppp/8/2p5/2P5/8/PPPPQPPP/RNB1KBNR w KQkq - 0 1", "e2", "e3", "e4", "e5", "e6", "e7", NULL), \
     test_valid_moves("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "e4", "f5", "g6", NULL), \
     test_valid_moves("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e3", "e4", "e6", "e7", "e8", NULL), \
-    test_valid_moves("rnbqkbnr/1p2pppp/p2p4/8/8/8/PPPPKPPP/RNBQ1BNR b kq - 0 1", "e8", "d7", NULL)
+    test_valid_moves("rnbqkbnr/1p2pppp/p2p4/8/8/8/PPPPKPPP/RNBQ1BNR b kq - 0 1", "e8", "d7", NULL), \
+    test_valid_moves("8/5p1p/6k1/6Q1/7P/8/8/3K4 b - - 0 1", "g6", NULL)
 
 int test_move_is_valid(const char* fen, const char* from, const char* to, _Bool expected);
 #define TEST_MOVE_IS_VALID \
@@ -241,7 +242,10 @@ int test_move_is_valid(const char* fen, const char* from, const char* to, _Bool 
     test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e7", 1), \
     test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e8", 1), \
     test_move_is_valid("rnbqkbnr/1p2pppp/p2p4/8/8/8/PPPPKPPP/RNBQ1BNR b kq - 0 1", "e8", "d7", 1), \
-    test_move_is_valid("rnbqkbnr/pppp1pp1/8/4p3/4P1Pp/PP6/2PP1P1P/RNBQKBNR b KQkq g3 0 1", "h4", "g3", 1)
+    test_move_is_valid("rnbqkbnr/pppp1pp1/8/4p3/4P1Pp/PP6/2PP1P1P/RNBQKBNR b KQkq g3 0 1", "h4", "g3", 1), \
+    test_move_is_valid("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR b kq - 0 1", "f7", "f6", 0), \
+    test_move_is_valid("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR b kq - 0 1", "f7", "f5", 0), \
+    test_move_is_valid("8/5p1p/6k1/6Q1/7P/8/8/3K4 b - - 0 1", "g6", "g7", 0)
 
 
 int test_pawn_is_enpassanting(const char* fen, const char* from, const char* to, _Bool expected);
@@ -305,5 +309,53 @@ int test_board_init_fen(const char* fen, _Bool turn, uint8_t castling_rights, ch
     test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 1, 0b1111, "-", 0, 1), \
     test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 20 40", 1, 0b1111, "-", 20, 40)
 
+int test_checkmate(const char* fen, _Bool expected);
+#define TEST_CHECKMATE \
+    test_checkmate("r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 1", 1), \
+    test_checkmate("3rkr2/8/4Q3/8/8/8/8/4K3 b - - 0 1", 1), \
+    test_checkmate("8/5p1p/6k1/6Q1/7P/8/8/3K4 b - - 0 1", 1), \
+    test_checkmate("8/8/8/6p1/5qk1/7Q/6K1/8 b - - 0 1", 1), \
+    test_checkmate("6kR/8/5Q2/8/8/8/6K1/8 b - - 0 1", 1), \
+    test_checkmate("6k1/5Q1R/8/8/8/8/6K1/8 b - - 0 1", 1), \
+    test_checkmate("6Q1/5Bpk/5p1p/8/8/8/8/4K3 b - - 0 1", 1), \
+    test_checkmate("4k3/8/2B2Q2/8/8/8/8/6K1 b - - 0 1", 1), \
+    test_checkmate("7k/5N2/6Q1/8/8/8/8/6K1 b - - 0 1", 1), \
+    test_checkmate("7k/5Q2/6N1/8/8/8/8/6K1 b - - 0 1", 1), \
+    test_checkmate("6k1/5p2/5N1Q/8/8/8/8/6K1 b - - 0 1", 1), \
+    test_checkmate("r3rqk1/6pQ/5pP1/8/8/1pP5/1P6/1K6 b - - 0 1", 1), \
+    test_checkmate("6k1/5pQp/5Pp1/8/8/8/8/6K1 b - - 0 1", 1), \
+    test_checkmate("4R1k1/5ppp/8/8/8/8/8/6K1 b - - 0 1", 1), \
+    test_checkmate("r4rk1/6RR/8/8/8/8/8/6K1 b - - 0 1", 1), \
+    test_checkmate("1R5k1/R7/8/8/8/8/8/6K1 b - - 0 1", 1), \
+    test_checkmate("6kR/5p2/8/8/8/8/8/B6K1 b - - 0 1", 1), \
+    test_checkmate("5rk1/5p1p/8/8/8/8/8/B5RK b - - 0 1", 1)
+
+int test_insufficient_material(const char* fen, _Bool expected);
+#define TEST_INSUFFICIENT_MATERIAL \
+    test_insufficient_material("8/8/4k3/8/8/2K5/8/8 w - - 0 1", 1), \
+    test_insufficient_material("8/8/1b2k3/8/4N3/2K5/8/8 w - - 0 1", 1), \
+    test_insufficient_material("8/4k3/8/8/3NN3/2K5/8/8 w - - 0 1", 1), \
+    test_insufficient_material("8/2b1k3/8/8/3NN3/2K5/8/8 w - - 0 1", 0), \
+    test_insufficient_material("8/2b1k3/8/8/8/2K5/8/8 w - - 0 1", 1), \
+    test_insufficient_material("8/4k3/8/6n1/8/2K5/8/8 w - - 0 1", 1)
+
+int test_stalemate(const char* fen, _Bool expected);
+#define TEST_STALEMATE  \
+    test_stalemate("6k1/8/5Q1K/8/8/8/8/8 w - - 0 1", 1), \
+    test_stalemate("2k5/2p3q1/8/6pK/5p1p/5P1P/6r1/8 w - - 2 48", 1), \
+    test_stalemate("3k4/2r4p/4K1p1/6P1/3q4/8/8/8 w - - 4 58", 1), \
+    test_stalemate("8/3q4/K7/2q5/3p4/k7/8/8 b - - 12 70", 1), \
+    test_stalemate("8/8/8/8/K7/1N6/3Q4/1k6 b - - 28 87", 1), \
+    test_stalemate("5K2/3k4/2p2pqp/1p6/1P6/8/8/8 w - - 0 47", 1), \
+    test_stalemate("8/8/8/kPK5/P2R4/8/8/8 b - - 6 54", 1), \
+    test_stalemate("8/6k1/7p/3r2pK/2p1p1P1/8/8/8 w - - 0 42", 1), \
+    test_stalemate("2r5/Kp4p1/p5kp/P7/8/1r6/8/2q5 w - - 2 54", 1), \
+    test_stalemate("8/8/8/8/8/5K1k/5Q2/8 b - - 2 61", 1), \
+    test_stalemate("r5k1/2p2pp1/2P2r2/pKPq4/P6q/8/8/8 w - - 4 49", 1), \
+    test_stalemate("6k1/6P1/6K1/8/8/8/8/8 b - - 2 61", 1), \
+    test_stalemate("8/8/2p4K/1p2kq2/6q1/8/8/8 w - - 4 46", 1), \
+    test_stalemate("8/6p1/7p/5q1k/8/6K1/4q3/8 w - - 2 55", 1), \
+    test_stalemate("8/8/7p/2N4k/5PR1/7P/PBP3P1/3R2K1 b - - 0 37", 1), \
+    test_stalemate("3QQQQQ/7R/k7/8/8/8/6K1/8 b - - 2 64", 1)
 
 #endif // TESTS_H

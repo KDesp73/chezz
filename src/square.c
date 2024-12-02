@@ -111,6 +111,15 @@ void square_free(square_t** square)
     *square = NULL;
 }
 
+void squares_free(square_t*** squares, size_t count)
+{
+    for(size_t i = 0; i < count; i++){
+        square_free(&(*squares)[0]);
+    }
+    free(*squares);
+    *squares = NULL;
+}
+
 square_t* square_from_name(const char* name)
 {
     if(name == NULL) return NULL;
@@ -169,4 +178,12 @@ _Bool square_cmp(const square_t* square1, const square_t* square2)
             square1->name[0] == square2->name[0] &&
             square1->name[1] == square2->name[1]
             );
+}
+
+void squares_print(square_t** squares, size_t count)
+{
+    for(size_t i = 0; i < count; i++){
+        printf("%s ", squares[i]->name);
+    }
+    printf("\n");
 }

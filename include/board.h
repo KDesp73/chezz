@@ -134,8 +134,10 @@ square_t* find_king(board_t* board, int color);
 _Bool king_in_check(const board_t* board, int color);
 _Bool white_in_check(const board_t* board);
 _Bool black_in_check(const board_t* board);
+
+_Bool in_check(const board_t* board, int color);
 #define IN_CHECK(board, color) \
-    square_is_attacked(board, find_king(board, color), color)
+    in_check(board, color)
 
 char* update_enpassant_square(board_t* board, const square_t* from, const square_t* to);
 void update_checks(board_t* board);
@@ -144,5 +146,10 @@ void update_halfmove(board_t* board, const square_t* from, const square_t* to, s
 void print_castling_rights(const board_t* board);
 
 size_t number_of_pieces(const board_t* board, int color);
+
+_Bool is_checkmate(board_t* board);
+_Bool is_stalemate(board_t* board);
+_Bool is_threefold_repetition(board_t* board);
+_Bool is_insufficient_material(board_t* board);
 
 #endif // BOARD_H

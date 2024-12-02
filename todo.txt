@@ -1,12 +1,13 @@
-TODO: tests for square_is_attacked
 TODO: fen export
 TODO: pgn import
 TODO: pgn export
 TODO: mate check
-TODO: 50 move rule
 TODO: stalemate check
 TODO: draw due to insufficient material
+TODO: 3 move repetition check
+TODO: promotion
 DONE: pin check
 DONE: check check
 DONE: en passant captures
 DONE: castling
+DONE: 50 move rule

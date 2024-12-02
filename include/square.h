@@ -28,8 +28,10 @@ void square_set_x(square_t* square, size_t x);
 void square_set_y(square_t* square, size_t y);
 void square_set_name(square_t* square, const char* name);
 void square_free(square_t** square);
+void squares_free(square_t*** square, size_t count);
 _Bool square_cmp(const square_t* square1, const square_t* square2);
 
 void square_print(const square_t square);
+void squares_print(square_t** squares, size_t count);
 
 #endif // COORDS_H

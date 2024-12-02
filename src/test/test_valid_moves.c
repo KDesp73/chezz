@@ -51,6 +51,7 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
     va_end(args);
 
     if (moves_count != expected_count) {
+        squares_print(moves, moves_count);
         FAIL("For fen %s square %s. Expected %zu moves, but got %zu moves.", fen, square, expected_count, moves_count);
         goto cleanup;
     }
