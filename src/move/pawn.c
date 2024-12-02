@@ -168,3 +168,40 @@ _Bool pawn_can_attack(board_t* board, const square_t* piece, const square_t* tar
     return 0;
 }
 
+_Bool pawn_is_enpassanting(const board_t* board, const square_t* from, const square_t* to)
+{
+    int file_diff = abs((int)from->file - (int)to->file);
+    char to_piece = board->grid[PCOORDS(to)];
+
+    return (
+        file_diff == 1 &&
+        to_piece == ' ');
+}
+
+_Bool pawn_can_enpassant(const board_t* board, const square_t* from, const square_t* to)
+{
+    if (tolower(piece_at(board, from)) != 'p')  return 0;
+    if(board->enpassant_square[0] == '-') return 0;
+
+    square_t* enpassant_square = square_from_name(board->enpassant_square);
+    if(enpassant_square == NULL) return 0;
+
+    _Bool ret = square_cmp(to, enpassant_square);
+    square_free(&enpassant_square);
+    return ret;
+}
+
+void pawn_enpassant(board_t* board, const square_t* from, const square_t* to)
+{
+    if(board->enpassant_square[0] == '-') return;
+
+    char _piece = board->grid[PCOORDS(from)];
+    int color = piece_color(_piece);
+
+    square_t* enpassant_square = square_from_name(board->enpassant_square);
+    square_t* opponent_pawn = square_from_coords((color == PIECE_COLOR_WHITE) ? 4 : 3, enpassant_square->x);
+
+    board->grid[PCOORDS(opponent_pawn)] = ' ';
+    move_freely(board, (square_t*) from, (square_t*) to);
+}
+

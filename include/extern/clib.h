@@ -63,6 +63,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <getopt.h>
+#include <time.h>
 
 // START [TYPES] START //
 typedef const char * Cstr;
@@ -102,28 +103,35 @@ typedef struct {
 // ANSI
 #define ANSI_RESET "\e[0;39m"
 #define ANSI_BOLD "\e[1m"
-#define ANSI_UNDERLINE "\033[4m"
+#define ANSI_UNDERLINE "\e[4m"
 #define ANSI_ITALIC "\e[3m"
 #define ANSI_CLEAR "\e[2J"
 #define ANSI_ERASE_LINE "\e[2K"
 #define ANSI_HIDE_CURSOR() printf("\e[?25l")
 #define ANSI_SHOW_CURSOR() printf("\e[?25h")
-#define ANSI_GOTOXY(x,y) printf("\033[%d;%dH", (y), (x))
-#define ANSI_MOVE_CURSOR_UP(x) printf("\033[%zuA", x)
-#define ANSI_MOVE_CURSOR_DOWN(x) printf("\033[%dB", x);
-#define ANSI_MOVE_CURSOR_RIGHT(x) printf("\033[%dC", x);
-#define ANSI_MOVE_CURSOR_LEFT(x) printf("\033[%dD", x);
-#define ANSI_CLEAR_BELOW_CURSOR printf("\033[J")
+#define ANSI_GOTOXY(x,y) printf("\e[%d;%dH", (y), (x))
+#define ANSI_MOVE_CURSOR_UP(x) printf("\e[%zuA", x)
+#define ANSI_MOVE_CURSOR_DOWN(x) printf("\e[%dB", x);
+#define ANSI_MOVE_CURSOR_RIGHT(x) printf("\e[%dC", x);
+#define ANSI_MOVE_CURSOR_LEFT(x) printf("\e[%dD", x);
+#define ANSI_CLEAR_BELOW_CURSOR printf("\e[J")
+#define ANSI_CURSOR_BLOCK() printf("\033[1 q");
+#define ANSI_CURSOR_UNDERSCORE() printf("\033[4 q");
+#define ANSI_CURSOR_BAR() printf("\033[5 q");
 
-#define ANSI_BLACK "\e[0;30m"
-#define ANSI_RED "\e[0;31m"
-#define ANSI_GREEN "\e[0;32m"
-#define ANSI_YELLOW "\e[0;33m"
-#define ANSI_BLUE "\e[0;34m"
-#define ANSI_PURPLE "\e[0;35m"
-#define ANSI_CYAN "\e[0;36m"
-#define ANSI_LGREY "\e[0;37m"
-#define ANSI_DGREY "\e[0;38m"
+CLIBAPI char* clib_ansi_combine(const char* seq1, const char* seq2);
+#define ANSI_COMBINE(seq1, seq2) \
+    clib_ansi_combine(seq1, seq2)
+
+#define ANSI_BLACK "\e[30m"
+#define ANSI_RED "\e[31m"
+#define ANSI_GREEN "\e[32m"
+#define ANSI_YELLOW "\e[33m"
+#define ANSI_BLUE "\e[34m"
+#define ANSI_PURPLE "\e[35m"
+#define ANSI_CYAN "\e[36m"
+#define ANSI_LGREY "\e[37m"
+#define ANSI_DGREY "\e[38m"
 
 CLIBAPI Cstr clib_ansi_color(int color, int bg);
 CLIBAPI void clib_ansi_clear_screen();
@@ -191,6 +199,9 @@ CLIBAPI void println(const char* fmt, ...);
 #else
     #define UNLIKELY(x) (x)
 #endif
+
+#define freec(ptr) \
+    free((void*) ptr)
 
 CLIBAPI int clib_eu_mod(int a, int b);
 
@@ -260,6 +271,15 @@ CLIBAPI void clib_log(int log_level, char* format, ...);
         LOG(stdout, "DEMO", #expr);   \
         expr;                         \
     } while(0)
+
+CLIBAPI void remote_log(const char *term, const char *format, ...);
+#ifdef DEBUG
+    #define REMOTE_LOG(term, format, ...) \
+        remote_log(term, format, ##__VA_ARGS__)
+#else
+    #define REMOTE_LOG(term, format, ...)
+#endif // DEBUG
+
 
 // MENUS
 #ifdef _WIN32
@@ -402,6 +422,61 @@ CLIBAPI int clib_menu(Cstr title, int color, ClibPrintOptionFunc print_option, C
 
 // START [IMPLEMENTATIONS] START //
 #ifdef CLIB_IMPLEMENTATION
+CLIBAPI void remote_log(const char *term, const char *format, ...)
+{
+    static FILE *log_terminal = NULL;
+
+    if (log_terminal == NULL) {
+        log_terminal = fopen(term, "w");
+        if (log_terminal == NULL) {
+            perror("Error opening remote terminal for logging");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // // Get current time
+    // time_t t = time(NULL);
+    // struct tm *tm_info = localtime(&t);
+    // char buffer[26];
+    // strftime(buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+    //
+    // // Write timestamp to log
+    // fprintf(log_terminal, "[%s] ", buffer);
+
+    va_list args;
+    va_start(args, format);
+    vfprintf(log_terminal, format, args);
+    va_end(args);
+
+    fprintf(log_terminal, "\n");
+    fflush(log_terminal);
+}
+
+CLIBAPI char* clib_ansi_combine(const char* seq1, const char* seq2)
+{
+    if (seq1 == NULL || seq2 == NULL) {
+        return NULL; // Handle null inputs
+    }
+
+    const char* prefix = "\e[";
+    const char* suffix = "m";
+
+    const char* seq1_inner = seq1 + 2; // Skip \e[
+    size_t seq1_len = strlen(seq1_inner) - 1; // Remove the trailing 'm'
+
+    const char* seq2_inner = seq2 + 2; // Skip \e[
+    size_t seq2_len = strlen(seq2_inner) - 1; // Remove the trailing 'm'
+
+    char* result = (char*)malloc(strlen(prefix) + seq1_len + 1 + seq2_len + strlen(suffix) + 1);
+    if (!result) {
+        return NULL; // Memory allocation failure
+    }
+
+    sprintf(result, "%s%.*s;%.*s%s", prefix, (int)seq1_len, seq1_inner, (int)seq2_len, seq2_inner, suffix);
+
+    return result;
+}
+
 CLIBAPI char* clib_str_buffer_init()
 {
     char* buffer = (char*) malloc(1);
@@ -1281,10 +1356,15 @@ CLIBAPI void* clib_safe_calloc(size_t nmemb, size_t size) {
 }
 
 CLIBAPI void* clib_safe_realloc(void *ptr, size_t size) {
+    if (size < 1) {
+        fprintf(stderr, "Invalid size");
+        return NULL;
+    }
+
     void *new_ptr = realloc(ptr, size);
     if (new_ptr == NULL) {
         fprintf(stderr, "Memory reallocation error\n");
-        exit(EXIT_FAILURE);
+        return NULL;
     }
     return new_ptr;
 }

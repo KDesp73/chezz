@@ -175,3 +175,61 @@ _Bool king_can_move(board_t *board, const square_t *piece, const square_t *targe
     board->error = 0;
     return 1; // Move is valid
 }
+
+_Bool king_is_castling(const board_t* board, const square_t* from, const square_t* to)
+{
+    char piece = piece_at((board_t*) board, from);
+
+    if (tolower(piece) != 'p')  return 0;
+
+    int color = piece_color(piece);
+
+    return strcmp(from->name, (color == PIECE_COLOR_WHITE) ? "e1" : "e8") == 0 &&
+        abs((int)from->file - (int)to->file) == 2;
+}
+
+_Bool king_can_castle(board_t* board, const square_t* from, const square_t* to)
+{
+    // King is not in a starting square
+    if (strcmp(from->name, "e1") && strcmp(from->name, "e8")) 
+        return 0;
+
+    char piece = piece_at(board, from);
+    int color = piece_color(piece);
+    int file_diff = (int) from->file - (int) to->file;
+
+    if (color == PIECE_COLOR_WHITE) {
+        return (file_diff == -2 && has_castling_rights(board, CASTLE_WHITE_KINGSIDE)) ||
+               (file_diff == 2 && has_castling_rights(board, CASTLE_WHITE_QUEENSIDE));
+    } else if (color == PIECE_COLOR_BLACK) {
+        return (file_diff == -2 && has_castling_rights(board, CASTLE_BLACK_KINGSIDE)) ||
+               (file_diff == 2 && has_castling_rights(board, CASTLE_BLACK_QUEENSIDE));
+    }
+
+    return 0;
+}
+
+void king_castle(board_t* board, const square_t* from, const square_t* to)
+{
+    char piece = piece_at(board, from);
+    int color = piece_color(piece);
+    int file_diff = (int) from->file - (int) to->file;
+
+    square_t* kingside_rook = square_from_name(color == PIECE_COLOR_WHITE ? "h1" : "h8");
+    square_t* queenside_rook = square_from_name(color == PIECE_COLOR_WHITE ? "a1" : "a8");
+    square_t* kingside_rook_target = square_from_name(color == PIECE_COLOR_WHITE ? "f1" : "f8");
+    square_t* queenside_rook_target = square_from_name(color == PIECE_COLOR_WHITE ? "d1" : "d8");
+
+    if(file_diff == -2){
+        move_freely(board, from, to);
+        move_freely(board,kingside_rook, kingside_rook_target);
+    } else if(file_diff == 2){
+        move_freely(board, from, to);
+        move_freely(board,queenside_rook, queenside_rook_target);
+    }
+
+    square_free(&kingside_rook);
+    square_free(&queenside_rook);
+    square_free(&kingside_rook_target);
+    square_free(&queenside_rook_target);
+}

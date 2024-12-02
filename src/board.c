@@ -33,7 +33,6 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
     char* yellow_bg = (char*) COLOR_BG(214);
     const char* reset = ANSI_RESET;
 
-    DEBU("error: %d", board->error);
     if(config.errors && board->error > 0){
         ERRO("%s", error_messages[board->error]);
     }
@@ -79,10 +78,19 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
         printf("\n");
     }
 
-    print_castling_rights(board);
+    if(config.castling){
+        printf("\n");
+        print_castling_rights(board);
+    }
+
+    if(config.enpassant){
+        printf("\nEnpassant square: %s\n", board->enpassant_square);
+    }
 
     if(config.turn)
         printf("\n%s's turn\n", board->turn ? "White" : "Black");
+
+
 
     if(config.checks && board->checks != 0b00)
         printf("\n%s is in check!\n", white_in_check(board) ? "White" : "Black");
@@ -125,6 +133,11 @@ _Bool is_number(const char* str) {
 
 void board_init_fen(board_t* board, const char* fen)
 {
+    if(fen == NULL) {
+        board_init(board);
+        return;
+    }
+
     board->error = 0;
     board->checks = 0b00;
 
@@ -411,6 +424,34 @@ square_t* find_king(board_t* board, int color)
     return NULL;
 }
 
+char* update_enpassant_square(board_t* board, const square_t* from, const square_t* to)
+{
+    char piece = piece_at(board, from);
+    int color = piece_color(piece);
+
+    if(tolower(piece) != 'p') {
+        goto no_enpassant;
+    }
+
+    int file_diff = abs((int)from->file - (int)to->file);
+    int rank_diff = (int)to->rank - (int)from->rank;
+
+    if(file_diff != 0) goto no_enpassant;
+
+    if(rank_diff != ((color) ? 2 : -2)) {
+        goto no_enpassant;
+    }
+
+    square_t* enpassant_square = square_from_coords(
+            (color) ? 2 : 5, to->x);
+    char* name = strdup(enpassant_square->name);
+    square_free(&enpassant_square);
+    return name;
+
+no_enpassant:
+    return strdup("-");
+}
+
 void update_castling_rights(board_t* board, const square_t* from)
 {
     char piece = piece_at(board, from);
@@ -429,27 +470,46 @@ void update_castling_rights(board_t* board, const square_t* from)
     }
 }
 
+void update_checks(board_t* board)
+{
+    if (IN_CHECK(board, PIECE_COLOR_WHITE)) {
+        board->checks |= CHECK_WHITE_KING;
+    } else {
+        board->checks &= ~CHECK_WHITE_KING;
+    }
+    if (IN_CHECK(board, PIECE_COLOR_BLACK)) {
+        board->checks |= CHECK_BLACK_KING;
+    } else {
+        board->checks &= ~CHECK_BLACK_KING;
+    }
+}
+
 void print_castling_rights(const board_t* board)
 {
-    char* white_kingside = has_castling_rights(board, CASTLE_WHITE_KINGSIDE)
-                                ? ANSI_GREEN
-                                : ANSI_RED;
-    char* white_queenside = has_castling_rights(board, CASTLE_WHITE_QUEENSIDE)
-                                ? ANSI_GREEN
-                                : ANSI_RED;
-    char* black_kingside = has_castling_rights(board, CASTLE_BLACK_KINGSIDE)
-                                ? ANSI_GREEN
-                                : ANSI_RED;
-    char* black_queenside = has_castling_rights(board, CASTLE_BLACK_QUEENSIDE)
-                                ? ANSI_GREEN
-                                : ANSI_RED;
+    const char* white_kingside = has_castling_rights(board, CASTLE_WHITE_KINGSIDE)
+                                ? COLOR_BG(2)
+                                : COLOR_BG(1);
+    const char* white_queenside = has_castling_rights(board, CASTLE_WHITE_QUEENSIDE)
+                                ? COLOR_BG(2)
+                                : COLOR_BG(1);
+    const char* black_kingside = has_castling_rights(board, CASTLE_BLACK_KINGSIDE)
+                                ? COLOR_BG(2) 
+                                : COLOR_BG(1);
+    const char* black_queenside = has_castling_rights(board, CASTLE_BLACK_QUEENSIDE)
+                                ? COLOR_BG(2) 
+                                : COLOR_BG(1);
 
-    printf("%s K %s Q %s k %s q %s\n", 
+    printf("Castling rights: %s K %s Q %s k %s q %s\n", 
         white_kingside,
         white_queenside,
         black_kingside,
         black_queenside,
         ANSI_RESET
         );
+
+    freec(white_kingside);
+    freec(white_queenside);
+    freec(black_kingside);
+    freec(black_queenside);
 }
 

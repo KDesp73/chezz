@@ -113,8 +113,8 @@ void square_free(square_t** square)
 
 square_t* square_from_name(const char* name)
 {
-    assert(strlen(name) == 2);
-    assert(name != NULL);
+    if(name == NULL) return NULL;
+    if(strlen(name) != 2) return NULL;
 
     if(name[0] < 'a' || name[0] > 'h') return NULL;
     if(name[1] < '1' || name[1] > '8') return NULL;

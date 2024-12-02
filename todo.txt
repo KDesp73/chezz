@@ -2,9 +2,9 @@ TODO: tests for square_is_attacked
 TODO: fen export
 TODO: pgn import
 TODO: pgn export
-TODO: pin check
-TODO: check check
 TODO: mate check
 TODO: 50 move rule
-TODO: en passant captures
-TODO: castling
+DONE: pin check
+DONE: check check
+DONE: en passant captures
+DONE: castling

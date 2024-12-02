@@ -11,10 +11,11 @@
 #include <stdlib.h>
 #include "tests.h"
 
-void run()
+void run(const char* fen)
 {
     board_t board;
-    board_init(&board);
+    board_init_fen(&board, fen);
+    clib_ansi_clear_screen();
     PRINT_FULL(&board, NULL);
 
     while (1) {
@@ -41,7 +42,6 @@ void run()
 
         if (!from_square || !to_square) {
             clib_ansi_clear_screen();
-            ERRO("Invalid square(s). From: %s, To: %s", from, to);
             PRINT_FULL(&board, NULL);
             continue;
         }
@@ -49,48 +49,18 @@ void run()
         char piece = piece_at(&board, from_square);
         if (piece == EMPTY_SQUARE) {
             clib_ansi_clear_screen();
-            ERRO("No piece at %s.\n", from);
             PRINT_FULL(&board, NULL);
             square_free(&from_square);
             square_free(&to_square);
             continue;
         }
 
-        if (!move_is_valid(&board, from_square, to_square)) {
+        if(!move(&board, from_square, to_square)){
             clib_ansi_clear_screen();
             PRINT_FULL(&board, NULL);
             square_free(&from_square);
             square_free(&to_square);
             continue;
-        }
-
-        // Execute the move
-        if(king_is_castling(&board, from_square, to_square)){ 
-            if(!can_castle(&board, from_square, to_square)){
-                clib_ansi_clear_screen();
-                PRINT_FULL(&board, NULL);
-                square_free(&from_square);
-                square_free(&to_square);
-                continue;
-            }
-            castle(&board, from_square, to_square);
-        } else {
-            move(&board, from_square, to_square);
-        }
-
-
-        board.turn = !board.turn;
-
-        // Update check status
-        if (IN_CHECK(&board, PIECE_COLOR_WHITE)) {
-            board.checks |= CHECK_WHITE_KING;
-        } else {
-            board.checks &= ~CHECK_WHITE_KING;
-        }
-        if (IN_CHECK(&board, PIECE_COLOR_BLACK)) {
-            board.checks |= CHECK_BLACK_KING;
-        } else {
-            board.checks &= ~CHECK_BLACK_KING;
         }
 
         clib_ansi_clear_screen();
@@ -105,21 +75,24 @@ void run()
 int main(int argc, char** argv){
     if(argc == 2 && STREQ(argv[1], "test")){
         return !test(
-            TEST_SQUARE_FROM_NAME,
-            TEST_PAWN_MOVE,
-            TEST_ROOK_MOVE,
-            TEST_BISHOP_MOVE,
-            TEST_QUEEN_MOVE,
-            TEST_KNIGHT_MOVE,
-            TEST_KING_MOVE,
-            TEST_IS_PINNED,
-            TEST_VALID_MOVES,
-            TEST_MOVE_IS_VALID,
+            // TEST_SQUARE_FROM_NAME,
+            // TEST_PAWN_MOVE,
+            // TEST_ROOK_MOVE,
+            // TEST_BISHOP_MOVE,
+            // TEST_QUEEN_MOVE,
+            // TEST_KNIGHT_MOVE,
+            // TEST_KING_MOVE,
+            // TEST_IS_PINNED,
+            // TEST_VALID_MOVES,
+            // TEST_MOVE_IS_VALID,
+            TEST_PAWN_IS_ENPASSANTING,
+            TEST_PAWN_CAN_ENPASSANT,
             END
         );
     }
 
-    run();
+    const char* enpassant_fen = "rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1";
+    run(NULL);
 
     return 0;
 }

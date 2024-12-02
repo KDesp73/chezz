@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char piece_at(board_t* board, const square_t* square)
+char piece_at(const board_t* board, const square_t* square)
 {
     return board->grid[PCOORDS(square)];
 }

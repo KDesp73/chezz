@@ -79,12 +79,14 @@ typedef struct {
     _Bool turn;
     _Bool checks;
     _Bool coords;
+    _Bool castling;
+    _Bool enpassant;
 } print_config_t;
 
 #define MINIMAL_CONFIG \
-    (print_config_t) {.errors = 0,.highlights = 0,.turn = 0,.checks = 0, .coords = 1}
+    (print_config_t) {.errors = 0,.highlights = 0,.turn = 0,.checks = 0, .castling = 0, .enpassant = 0, .coords = 1}
 #define FULL_CONFIG \
-    (print_config_t) {.errors = 1,.highlights = 1,.turn = 1,.checks = 1, .coords = 1}
+    (print_config_t) {.errors = 1,.highlights = 1,.turn = 1,.checks = 1, .castling = 1, .enpassant = 1, .coords = 1}
 
 void board_print(const board_t* board, print_config_t config, square_t* first, ...);
 
@@ -113,6 +115,8 @@ _Bool black_in_check(const board_t* board);
 #define IN_CHECK(board, color) \
     square_is_attacked(board, find_king(board, color), color)
 
+char* update_enpassant_square(board_t* board, const square_t* from, const square_t* to);
+void update_checks(board_t* board);
 void update_castling_rights(board_t* board, const square_t* from);
 void print_castling_rights(const board_t* board);
 
