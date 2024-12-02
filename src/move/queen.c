@@ -84,5 +84,6 @@ _Bool queen_can_move(board_t *board, const square_t *piece, const square_t *targ
         return 0;
     }
 
+    board->error = 0;
     return 1; // Move is valid
 }

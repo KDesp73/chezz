@@ -33,8 +33,10 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
     char* yellow_bg = (char*) COLOR_BG(214);
     const char* reset = ANSI_RESET;
 
-    if(config.errors && board->error > 0)
+    DEBU("error: %d", board->error);
+    if(config.errors && board->error > 0){
         ERRO("%s", error_messages[board->error]);
+    }
 
     const char* padding = "   ";
     printf("%s┌───┬───┬───┬───┬───┬───┬───┬───┐\n", (config.coords) ? padding : "");
@@ -224,6 +226,12 @@ no_castling:
 
         i++;  // Increment the index only once per loop iteration
     }
+}
+
+
+_Bool king_in_check(const board_t* board, int color)
+{
+    return (color == PIECE_COLOR_WHITE) ? white_in_check(board) : black_in_check(board);
 }
 
 _Bool white_in_check(const board_t* board)

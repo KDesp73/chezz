@@ -71,6 +71,7 @@ _Bool pawn_can_move(board_t* board, const square_t* piece, const square_t* targe
             board->enpassant_square[0] != '-' && 
             square_cmp(target, square_from_name(board->enpassant_square))
         ){
+            board->error = 0;
             return 1;
         }
 
@@ -85,6 +86,7 @@ _Bool pawn_can_move(board_t* board, const square_t* piece, const square_t* targe
             return 0;
         }
         // Valid capture
+        board->error = 0;
         return 1;
     }
 
@@ -103,6 +105,7 @@ _Bool pawn_can_move(board_t* board, const square_t* piece, const square_t* targe
     }
 
     // Move is valid
+    board->error = 0;
     return 1;
 }
 
@@ -146,11 +149,13 @@ _Bool pawn_can_attack(board_t* board, const square_t* piece, const square_t* tar
         if (target_piece == ' ' && 
             board->enpassant_square[0] != '-' && 
             square_cmp(target, square_from_name(board->enpassant_square))) {
+            board->error = 0;
             return 1;
         }
 
         // Standard capture: target square must contain an opponent's piece
         if (target_piece != ' ' && piece_color(target_piece) != color) {
+            board->error = 0;
             return 1;
         }
 

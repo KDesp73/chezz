@@ -43,7 +43,6 @@ void run()
             clib_ansi_clear_screen();
             ERRO("Invalid square(s). From: %s, To: %s", from, to);
             PRINT_FULL(&board, NULL);
-            printf("%s's turn\n", board.turn ? "White" : "Black");
             continue;
         }
 
@@ -58,18 +57,8 @@ void run()
             continue;
         }
 
-        if (board.turn != piece_color(piece)) {
+        if (!move_is_valid(&board, from_square, to_square)) {
             clib_ansi_clear_screen();
-            printf("It's not %s's turn.\n", board.turn ? "Black" : "White");
-            PRINT_FULL(&board, NULL);
-            square_free(&from_square);
-            square_free(&to_square);
-            continue;
-        }
-
-        if (!piece_can_move(&board, from_square, to_square)) {
-            clib_ansi_clear_screen();
-            printf("Invalid move for %c from %s to %s.\n", piece, from, to);
             PRINT_FULL(&board, NULL);
             square_free(&from_square);
             square_free(&to_square);
@@ -77,7 +66,12 @@ void run()
         }
 
         // Execute the move
-        move(&board, from_square, to_square);
+        if(king_is_castling(&board, from_square, to_square) && can_castle(&board, from_square, to_square)){
+            castle(&board, from_square, to_square);
+        } else {
+            move(&board, from_square, to_square);
+        }
+
         board.turn = !board.turn;
 
         // Update check status
@@ -113,6 +107,7 @@ int main(int argc, char** argv){
             // TEST_KING_MOVE,
             // TEST_IS_PINNED,
             TEST_VALID_MOVES,
+            TEST_MOVE_IS_VALID,
             END
         );
     }

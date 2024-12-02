@@ -172,5 +172,6 @@ _Bool king_can_move(board_t *board, const square_t *piece, const square_t *targe
         }
     }
 
+    board->error = 0;
     return 1; // Move is valid
 }

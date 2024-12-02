@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
+// #define MOVES
+
 int test_valid_moves(const char* fen, const char* square, const char* first, ...)
 {
     board_t board;
@@ -17,11 +19,13 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
     
     size_t moves_count = 0;
     square_t** moves = valid_moves(&board, square_from_name(square), &moves_count);
+#ifdef MOVES
     printf("Found: ");
     for(size_t i = 0; i < moves_count; i++){
         printf("%s ", moves[i]->name);
     }
     printf("\n");
+#endif
 
     // Collect expected moves from variadic arguments
     size_t expected_count = 0;
@@ -31,17 +35,23 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
     va_start(args, first);
 
     const char* current = first;
+#ifdef MOVES
     printf("Expected: ");
+#endif
     while (current != NULL) {
+#ifdef MOVES
         printf("%s ", current);
+#endif
         expected_moves[expected_count++] = square_from_name(current);
         current = va_arg(args, const char*);
     }
+#ifdef MOVES
     printf("\n");
+#endif
     va_end(args);
 
     if (moves_count != expected_count) {
-        FAIL("Expected %zu moves, but got %zu moves.", expected_count, moves_count);
+        FAIL("For fen %s square %s. Expected %zu moves, but got %zu moves.", fen, square, expected_count, moves_count);
         goto cleanup;
     }
 
@@ -56,7 +66,7 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
             }
         }
         if (!found) {
-            FAIL("Expected move %s not found.", expected_moves[i]->name);
+            FAIL("For fen %s square %s. Expected move %s not found.", fen, square, expected_moves[i]->name);
             goto cleanup;
         }
     }
@@ -72,7 +82,7 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
             }
         }
         if (!found) {
-            FAIL("Unexpected move %s found.\n", moves[j]->name);
+            FAIL("For fen %s square %s,Unexpected move %s found.\n", fen, square, moves[j]->name);
             goto cleanup;
         }
     }

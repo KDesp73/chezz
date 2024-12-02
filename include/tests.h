@@ -204,43 +204,33 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
     test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "a7", "a6", "a5", NULL), \
     test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "f6", "f5", NULL), \
     test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "g4", "h3", "f3", "e2", "h5", "f5", "e6", "d7", "c8", NULL), \
-    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "c3", "a4", "b5", "d5", "e4", "b1", NULL)
-    
+    test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "c3", "a4", "b5", "d5", "e4", "b1", NULL), \
+    test_valid_moves("r3kb1r/pp2n1pp/5p2/8/3P2b1/1BN4P/PPP1B1P1/2KR3R w Kkq - 0 1", "e8", "d7", "d8", "c8", NULL), \
+    test_valid_moves("rnb1kbnr/ppppqppp/8/2p5/2P5/8/PPPPQPPP/RNB1KBNR w KQkq - 0 1", "e2", "e3", "e4", "e5", "e6", "e7", NULL), \
+    test_valid_moves("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "e4", "f5", "g6", NULL)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+int test_move_is_valid(const char* fen, const char* from, const char* to, _Bool expected);
+#define TEST_MOVE_IS_VALID \
+    test_move_is_valid("r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1", "a2", "a3", 1), \
+    test_move_is_valid("r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 1", "f6", "e4", 1), \
+    test_move_is_valid("r1bqkb1r/pppp1ppp/2n5/3np2Q/2B1P3/5N2/PPPP1PPP/RNB1K2R b KQkq - 0 1", "f7", "f6", 0), \
+    test_move_is_valid("r1bqkb1r/pppp2pp/2n2p2/3np2Q/2B1P3/5N2/PPPP1PPP/RNB1K2R b KQkq - 0 1", "a8", "b8", 0), \
+    test_move_is_valid("r1bqkb1r/pppp2pp/2n2p2/3np2Q/2B1P3/5N2/PPPP1PPP/RNB1K2R b KQkq - 0 1", "a7", "a6", 0), \
+    test_move_is_valid("r1bqkb1r/pppp2pp/2n2p2/3np2Q/2B1P3/5N2/PPPP1PPP/RNB1K2R b KQkq - 0 1", "e8", "e7", 1), \
+    test_move_is_valid("r1bqkb1r/pppp2pp/2n2p2/3np2Q/2B1P3/5N2/PPPP1PPP/RNB1K2R b KQkq - 0 1", "g7", "g6", 1), \
+    test_move_is_valid("r1bqkb1r/pppp2pp/2n2p2/3np2Q/2B1P3/5N2/PPPP1PPP/RNB1K2R w KQkq - 0 1", "e1", "g1", 1), \
+    test_move_is_valid("r1bqkb1r/pppp2pp/2n2p2/3np2Q/2B1P3/5N2/PPPP1PPP/RNB1K2R w Qkq - 0 1", "e1", "g1", 0), \
+    test_move_is_valid("r1bqkb1r/pppp2pp/2n2p2/3np2Q/2B1P3/5N2/PPPP1PPP/RNB1K2R w Qkq - 0 1", "e1", "g1", 0), \
+    test_move_is_valid("rnb1kbnr/ppppqppp/8/2p5/2P5/8/PPPPQPPP/RNB1KBNR w KQkq - 0 1", "e2", "d1", 0), \
+    test_move_is_valid("rnb1kbnr/ppppqppp/8/2p5/2P5/8/PPPPQPPP/RNB1KBNR w KQkq - 0 1", "e2", "e3", 1), \
+    test_move_is_valid("rnb1kbnr/ppppqppp/8/2p5/2P5/8/PPPPQPPP/RNB1KBNR w KQkq - 0 1", "e2", "e4", 1), \
+    test_move_is_valid("rnb1kbnr/ppppqppp/8/2p5/2P5/8/PPPPQPPP/RNB1KBNR w KQkq - 0 1", "e2", "e5", 1), \
+    test_move_is_valid("rnb1kbnr/ppppqppp/8/2p5/2P5/8/PPPPQPPP/RNB1KBNR w KQkq - 0 1", "e2", "e6", 1), \
+    test_move_is_valid("rnb1kbnr/ppppqppp/8/2p5/2P5/8/PPPPQPPP/RNB1KBNR w KQkq - 0 1", "e2", "e7", 1), \
+    test_move_is_valid("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "c4", 0), \
+    test_move_is_valid("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "e4", 1), \
+    test_move_is_valid("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "f5", 1), \
+    test_move_is_valid("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "g6", 1)
 
 
 #endif // TESTS_H
