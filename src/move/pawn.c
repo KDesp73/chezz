@@ -170,8 +170,11 @@ _Bool pawn_can_attack(board_t* board, const square_t* piece, const square_t* tar
 
 _Bool pawn_is_enpassanting(const board_t* board, const square_t* from, const square_t* to)
 {
+    if (tolower(piece_at(board, from)) != 'p')  return 0;
+
     int file_diff = abs((int)from->file - (int)to->file);
     char to_piece = board->grid[PCOORDS(to)];
+
 
     return (
         file_diff == 1 &&

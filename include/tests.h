@@ -167,7 +167,8 @@ int test_king_can_move(const char* fen, const char* from, const char* to, _Bool 
     test_king_can_move("rn2k1nr/2p3p1/8/8/8/8/4q3/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
     test_king_can_move("rnbq2nr/2p3p1/8/8/8/8/6k1/R3K2R w KQ - 0 1", "e1", "g1", 0), \
     test_king_can_move("rnbq2nr/2p3p1/8/8/8/8/2k5/R3K2R w KQ - 0 1", "e1", "c1", 0), \
-    test_king_can_move("rnbq2nr/3p2p1/8/8/8/8/2k5/R3K2R w KQha - 0 1", "e1", "c1", 0)
+    test_king_can_move("rnbq2nr/3p2p1/8/8/8/8/2k5/R3K2R w KQha - 0 1", "e1", "c1", 0), \
+    test_king_can_move("r3k2r/8/8/4q3/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0)
 
 int test_is_pinned(const char* fen, const char* square, _Bool expected);
 #define TEST_IS_PINNED \
@@ -239,17 +240,56 @@ int test_move_is_valid(const char* fen, const char* from, const char* to, _Bool 
     test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e6", 1), \
     test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e7", 1), \
     test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e8", 1), \
-    test_move_is_valid("rnbqkbnr/1p2pppp/p2p4/8/8/8/PPPPKPPP/RNBQ1BNR b kq - 0 1", "e8", "d7", 1)
+    test_move_is_valid("rnbqkbnr/1p2pppp/p2p4/8/8/8/PPPPKPPP/RNBQ1BNR b kq - 0 1", "e8", "d7", 1), \
+    test_move_is_valid("rnbqkbnr/pppp1pp1/8/4p3/4P1Pp/PP6/2PP1P1P/RNBQKBNR b KQkq g3 0 1", "h4", "g3", 1)
+
 
 int test_pawn_is_enpassanting(const char* fen, const char* from, const char* to, _Bool expected);
 #define TEST_PAWN_IS_ENPASSANTING \
     test_pawn_is_enpassanting("rnbqkbnr/1pppp1pp/p7/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 1", "e5", "f6", 1), \
-    test_pawn_is_enpassanting("rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1", "e5", "d6", 1)
+    test_pawn_is_enpassanting("rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1", "e5", "d6", 1), \
+    test_pawn_is_enpassanting(STARTING_FEN, "b8", "c6", 0), \
+    test_pawn_is_enpassanting("rnbqkbnr/pppp1pp1/8/4p3/4P1Pp/PP6/2PP1P1P/RNBQKBNR b KQkq g3 0 1", "h4", "g3", 1)
 
 int test_pawn_can_enpassant(const char* fen, const char* from, const char* to, _Bool expected);
 #define TEST_PAWN_CAN_ENPASSANT \
     test_pawn_can_enpassant("rnbqkbnr/1pppp1pp/p7/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 1", "e5", "f6", 1), \
-    test_pawn_can_enpassant("rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1", "e5", "d6", 1)
+    test_pawn_can_enpassant("rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1", "e5", "d6", 1), \
+    test_pawn_can_enpassant("rnbqkbnr/pppp1pp1/8/4p3/4P1Pp/PP6/2PP1P1P/RNBQKBNR b KQkq g3 0 1", "h4", "g3", 1)
 
+
+int test_move(const char* fen, const char* from, const char* to, _Bool expected);
+#define TEST_MOVE \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "e2", "e4", 1), \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "e2", "e3", 1), \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", "e7", "e6", 1), \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", "e7", "e5", 1), \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "g1", "f3", 1), \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "b1", "c3", 1), \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", "g8", "f6", 1), \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", "b8", "c6", 1), \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "a1", "a2", 0), \
+    test_move("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "a1", "a3", 0), \
+    test_move("rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1", "e5", "d6", 1), \
+    test_move("rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1", "e5", "d6", 0), \
+    test_move("rnbqkbnr/pppp1pp1/8/4p3/4P1Pp/PP6/2PP1P1P/RNBQKBNR b KQkq g3 0 1", "h4", "g3", 1), \
+    test_move("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "g1", 1), \
+    test_move("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 1), \
+    test_move("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1", "e8", "g8", 1), \
+    test_move("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1", "e8", "c8", 1), \
+    test_move("3rk2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_move("3rk2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "g1", 1), \
+    test_move("3rk2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "d1", 0), \
+    test_move("3rk2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1", "e1", "d2", 0), \
+    test_move("r3k2r/8/8/2q5/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_move("r3k2r/8/8/2q5/8/8/8/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_move("r3k2r/8/8/4q3/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
+    test_move("r3k2r/8/8/8/8/6q1/5N2/R3K2R w KQkq - 0 1", "e1", "c1", 1), \
+    test_move("r3k2r/8/8/8/8/6q1/5N2/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
+    test_move("r3k2r/8/8/8/8/6q1/5N2/R3K2R w KQkq - 0 1", "f2", "e4", 0)
+
+int test_king_in_check(const char* fen, int color, _Bool expected);
+#define TEST_KING_IN_CHECK \
+    test_king_in_check("r3k2r/8/8/4q3/8/8/8/R3K2R w KQkq - 0 1", 1, 1)
 
 #endif // TESTS_H

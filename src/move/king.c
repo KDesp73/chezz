@@ -87,11 +87,11 @@ _Bool king_can_move(board_t *board, const square_t *piece, const square_t *targe
         return 0;
     }
 
-    // Check if the other king is present around the king
-
     // Castling logic
     if (file_diff == 2 && rank_diff == 0) {
-        // Castling is a horizontal move of 2 squares
+
+        if(IN_CHECK(board, color)) return 0;
+
         if (color == PIECE_COLOR_WHITE) {
             // White king castling
             if (target->file > piece->file) {
@@ -194,9 +194,12 @@ _Bool king_can_castle(board_t* board, const square_t* from, const square_t* to)
     if (strcmp(from->name, "e1") && strcmp(from->name, "e8")) 
         return 0;
 
+
     char piece = piece_at(board, from);
     int color = piece_color(piece);
     int file_diff = (int) from->file - (int) to->file;
+
+    if(IN_CHECK(board, color)) return 0;
 
     if (color == PIECE_COLOR_WHITE) {
         return (file_diff == -2 && has_castling_rights(board, CASTLE_WHITE_KINGSIDE)) ||

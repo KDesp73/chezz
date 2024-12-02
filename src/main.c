@@ -75,18 +75,20 @@ void run(const char* fen)
 int main(int argc, char** argv){
     if(argc == 2 && STREQ(argv[1], "test")){
         return !test(
-            // TEST_SQUARE_FROM_NAME,
-            // TEST_PAWN_MOVE,
-            // TEST_ROOK_MOVE,
-            // TEST_BISHOP_MOVE,
-            // TEST_QUEEN_MOVE,
-            // TEST_KNIGHT_MOVE,
-            // TEST_KING_MOVE,
-            // TEST_IS_PINNED,
-            // TEST_VALID_MOVES,
-            // TEST_MOVE_IS_VALID,
+            TEST_SQUARE_FROM_NAME,
+            TEST_PAWN_MOVE,
+            TEST_ROOK_MOVE,
+            TEST_BISHOP_MOVE,
+            TEST_QUEEN_MOVE,
+            TEST_KNIGHT_MOVE,
+            TEST_KING_MOVE,
+            TEST_IS_PINNED,
+            TEST_VALID_MOVES,
+            TEST_MOVE_IS_VALID,
             TEST_PAWN_IS_ENPASSANTING,
             TEST_PAWN_CAN_ENPASSANT,
+            TEST_MOVE,
+            TEST_KING_IN_CHECK,
             END
         );
     }

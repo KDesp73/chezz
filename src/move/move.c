@@ -25,8 +25,8 @@ _Bool move(board_t *board, const square_t *from, const square_t *to)
     }
 
     update_castling_rights(board, from);
-
     char* enpassant_square = update_enpassant_square(board, from, to);
+
     // Execute the move
     if(king_is_castling(board, from, to)){ 
         if(!king_can_castle(board, from, to)){
