@@ -9,6 +9,8 @@
 
 void move(board_t* board, square_t* from, square_t* to)
 {
+    update_castling_rights(board, from);
+
     char from_piece = board->grid[PCOORDS(from)];
 
     if(from_piece == ' ') return; // No piece to move
@@ -169,6 +171,8 @@ _Bool can_castle(board_t* board, square_t* from, square_t* to)
 
 void castle(board_t* board, square_t* from, square_t* to)
 {
+    update_castling_rights(board, from);
+
     char piece = piece_at(board, from);
     int color = piece_color(piece);
     int file_diff = (int) from->file - (int) to->file;

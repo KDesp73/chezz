@@ -113,4 +113,7 @@ _Bool black_in_check(const board_t* board);
 #define IN_CHECK(board, color) \
     square_is_attacked(board, find_king(board, color), color)
 
+void update_castling_rights(board_t* board, const square_t* from);
+void print_castling_rights(const board_t* board);
+
 #endif // BOARD_H

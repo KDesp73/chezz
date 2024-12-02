@@ -207,7 +207,8 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
     test_valid_moves("r3kb1r/ppB1n1pp/5p2/8/3P2b1/2N4P/PPP1B1P1/2KR3R w Kkq - 0 1", "c3", "a4", "b5", "d5", "e4", "b1", NULL), \
     test_valid_moves("r3kb1r/pp2n1pp/5p2/8/3P2b1/1BN4P/PPP1B1P1/2KR3R w Kkq - 0 1", "e8", "d7", "d8", "c8", NULL), \
     test_valid_moves("rnb1kbnr/ppppqppp/8/2p5/2P5/8/PPPPQPPP/RNB1KBNR w KQkq - 0 1", "e2", "e3", "e4", "e5", "e6", "e7", NULL), \
-    test_valid_moves("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "e4", "f5", "g6", NULL)
+    test_valid_moves("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "e4", "f5", "g6", NULL), \
+    test_valid_moves("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e3", "e4", "e6", "e7", "e8", NULL)
 
 int test_move_is_valid(const char* fen, const char* from, const char* to, _Bool expected);
 #define TEST_MOVE_IS_VALID \
@@ -230,7 +231,13 @@ int test_move_is_valid(const char* fen, const char* from, const char* to, _Bool 
     test_move_is_valid("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "c4", 0), \
     test_move_is_valid("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "e4", 1), \
     test_move_is_valid("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "f5", 1), \
-    test_move_is_valid("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "g6", 1)
+    test_move_is_valid("3k4/8/6b1/8/8/3B4/2K5/8 w - - 0 1", "d3", "g6", 1), \
+    test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "d5", 0), \
+    test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e3", 1), \
+    test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e4", 1), \
+    test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e6", 1), \
+    test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e7", 1), \
+    test_move_is_valid("3kr3/8/8/4R3/8/8/4K3/8 w - - 0 1", "e5", "e8", 1)
 
 
 #endif // TESTS_H

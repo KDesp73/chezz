@@ -79,6 +79,8 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
         printf("\n");
     }
 
+    print_castling_rights(board);
+
     if(config.turn)
         printf("\n%s's turn\n", board->turn ? "White" : "Black");
 
@@ -408,3 +410,46 @@ square_t* find_king(board_t* board, int color)
 
     return NULL;
 }
+
+void update_castling_rights(board_t* board, const square_t* from)
+{
+    char piece = piece_at(board, from);
+    int color = piece_color(piece);
+
+    // Moving a rook
+    if(tolower(piece) == 'r'){
+        if(color == PIECE_COLOR_WHITE && !strcmp(from->name, "h1")) revoke_castling_rights(board, CASTLE_WHITE_KINGSIDE);
+        else if(color == PIECE_COLOR_WHITE && !strcmp(from->name, "a1")) revoke_castling_rights(board, CASTLE_WHITE_QUEENSIDE);
+        else if(color == PIECE_COLOR_BLACK && !strcmp(from->name, "h8")) revoke_castling_rights(board, CASTLE_BLACK_KINGSIDE);
+        else if(color == PIECE_COLOR_BLACK && !strcmp(from->name, "a8")) revoke_castling_rights(board, CASTLE_BLACK_QUEENSIDE);
+    } else if(piece == 'k'){
+        revoke_castling_rights(board, ~0b0011);
+    } else if(piece == 'K'){
+        revoke_castling_rights(board, ~0b1100);
+    }
+}
+
+void print_castling_rights(const board_t* board)
+{
+    char* white_kingside = has_castling_rights(board, CASTLE_WHITE_KINGSIDE)
+                                ? ANSI_GREEN
+                                : ANSI_RED;
+    char* white_queenside = has_castling_rights(board, CASTLE_WHITE_QUEENSIDE)
+                                ? ANSI_GREEN
+                                : ANSI_RED;
+    char* black_kingside = has_castling_rights(board, CASTLE_BLACK_KINGSIDE)
+                                ? ANSI_GREEN
+                                : ANSI_RED;
+    char* black_queenside = has_castling_rights(board, CASTLE_BLACK_QUEENSIDE)
+                                ? ANSI_GREEN
+                                : ANSI_RED;
+
+    printf("%s K %s Q %s k %s q %s\n", 
+        white_kingside,
+        white_queenside,
+        black_kingside,
+        black_queenside,
+        ANSI_RESET
+        );
+}
+
