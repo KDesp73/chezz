@@ -292,4 +292,18 @@ int test_king_in_check(const char* fen, int color, _Bool expected);
 #define TEST_KING_IN_CHECK \
     test_king_in_check("r3k2r/8/8/4q3/8/8/8/R3K2R w KQkq - 0 1", 1, 1)
 
+int test_board_init_fen(const char* fen, _Bool turn, uint8_t castling_rights, char enpassant_square[3], size_t halfmove, size_t fullmove);
+#define TEST_BOARD_INIT_FEN \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 1, 0b1111, "-", 0, 1), \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", 0, 0b1111, "-", 0, 1), \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Qkq - 0 1", 1, 0b1110, "-", 0, 1), \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Kkq - 0 1", 1, 0b1101, "-", 0, 1), \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1", 1, 0b1011, "-", 0, 1), \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQk - 0 1", 1, 0b0111, "-", 0, 1), \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1", 1, 0b0000, "-", 0, 1), \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g3 0 1", 1, 0b1111, "g3", 0, 1), \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 1, 0b1111, "-", 0, 1), \
+    test_board_init_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 20 40", 1, 0b1111, "-", 20, 40)
+
+
 #endif // TESTS_H

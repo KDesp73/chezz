@@ -84,18 +84,23 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
     }
 
     if(config.enpassant){
-        printf("\nEnpassant square: %s\n", board->enpassant_square);
+        printf("Enpassant square: %s\n", board->enpassant_square);
     }
 
-    if(config.turn)
-        printf("\n%s's turn\n", board->turn ? "White" : "Black");
-
+    if(config.halfmove)
+        printf("Halfmove: %zu\n", board->halfmove);
+    if(config.fullmove)
+        printf("Fullmove: %zu\n", board->fullmove);
 
 
     if(config.checks && board->checks != 0b00)
-        printf("\n%s is in check!\n", white_in_check(board) ? "White" : "Black");
+        printf("%s is in check!\n", white_in_check(board) ? "White" : "Black");
+
+    if(config.turn)
+        printf("%s's turn\n", board->turn ? "White" : "Black");
 
     free(yellow_bg);
+    printf("\n");
 }
 
 void board_init(board_t* board)
@@ -140,6 +145,7 @@ void board_init_fen(board_t* board, const char* fen)
 
     board->error = 0;
     board->checks = 0b00;
+    board->checkmate = 0;
 
     char b[71 + 1];  // Board layout (max length 71 characters)
     char turn;
@@ -484,6 +490,20 @@ void update_checks(board_t* board)
     }
 }
 
+void update_halfmove(board_t* board, const square_t* from, const square_t* to, size_t piece_count_before, size_t piece_count_after, char piece)
+{
+    int color = piece_color(piece);
+    int direction = (color) ? 1 : -1;
+    _Bool is_pawn_advancement = (tolower(piece) == 'p') && (from->rank == (color == PIECE_COLOR_WHITE) ? 7 : 2 && to->rank == from->rank + direction);
+    _Bool is_capture = (piece_count_after != piece_count_before);
+
+    if (is_pawn_advancement || is_capture) {
+        board->halfmove = 0;
+    } else {
+        board->halfmove++;
+    }
+}
+
 void print_castling_rights(const board_t* board)
 {
     const char* white_kingside = has_castling_rights(board, CASTLE_WHITE_KINGSIDE)
@@ -513,3 +533,24 @@ void print_castling_rights(const board_t* board)
     freec(black_queenside);
 }
 
+size_t number_of_pieces(const board_t* board, int color)
+{
+    size_t count = 0;
+    for(size_t i = 0; i < BOARD_SIZE; i++){
+        for(size_t j = 0; j < BOARD_SIZE; j++){
+            char piece = board->grid[j][i];
+            switch(color){
+            case PIECE_COLOR_WHITE:
+                if(piece >= 'A' && piece <= 'Z') count++;
+                break;
+            case PIECE_COLOR_BLACK:
+                if(piece >= 'a' && piece <= 'z') count++;
+                break;
+            case PIECE_COLOR_NONE:
+                if(piece != ' ') count++;
+                break;
+            }
+        }
+    }
+    return count;
+}

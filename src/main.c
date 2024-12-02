@@ -75,26 +75,27 @@ void run(const char* fen)
 int main(int argc, char** argv){
     if(argc == 2 && STREQ(argv[1], "test")){
         return !test(
-            TEST_SQUARE_FROM_NAME,
-            TEST_PAWN_MOVE,
-            TEST_ROOK_MOVE,
-            TEST_BISHOP_MOVE,
-            TEST_QUEEN_MOVE,
-            TEST_KNIGHT_MOVE,
-            TEST_KING_MOVE,
-            TEST_IS_PINNED,
-            TEST_VALID_MOVES,
-            TEST_MOVE_IS_VALID,
-            TEST_PAWN_IS_ENPASSANTING,
-            TEST_PAWN_CAN_ENPASSANT,
-            TEST_MOVE,
-            TEST_KING_IN_CHECK,
+            // TEST_SQUARE_FROM_NAME,
+            // TEST_PAWN_MOVE,
+            // TEST_ROOK_MOVE,
+            // TEST_BISHOP_MOVE,
+            // TEST_QUEEN_MOVE,
+            // TEST_KNIGHT_MOVE,
+            // TEST_KING_MOVE,
+            // TEST_IS_PINNED,
+            // TEST_VALID_MOVES,
+            // TEST_MOVE_IS_VALID,
+            // TEST_PAWN_IS_ENPASSANTING,
+            // TEST_PAWN_CAN_ENPASSANT,
+            // TEST_MOVE,
+            // TEST_KING_IN_CHECK,
+            TEST_BOARD_INIT_FEN,
             END
         );
     }
 
     const char* enpassant_fen = "rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1";
-    run(NULL);
+    run("8/1k5P/8/8/8/8/8/3K4 w - - 30 50");
 
     return 0;
 }

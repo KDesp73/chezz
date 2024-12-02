@@ -1,5 +1,6 @@
 #include "move.h"
 #include "board.h"
+#define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 #include "piece.h"
 #include "square.h"
@@ -23,6 +24,9 @@ _Bool move(board_t *board, const square_t *from, const square_t *to)
         board->error = ERROR_INVALID_MOVE;
         return 0;
     }
+    char from_before = piece_at(board, from);
+
+    size_t piece_count_before = number_of_pieces(board, PIECE_COLOR_NONE); // Count all pieces before the move
 
     update_castling_rights(board, from);
     char* enpassant_square = update_enpassant_square(board, from, to);
@@ -45,7 +49,14 @@ _Bool move(board_t *board, const square_t *from, const square_t *to)
     }
     strncpy(board->enpassant_square, enpassant_square, 3);
 
+    size_t piece_count_after = number_of_pieces(board, PIECE_COLOR_NONE);
+
+    if(board->turn == PIECE_COLOR_BLACK) board->fullmove++;
+
+    update_halfmove(board, from, to, piece_count_before, piece_count_after, from_before);
+
     board->turn = !board->turn;
+
     update_checks(board);
 
     return 1;
