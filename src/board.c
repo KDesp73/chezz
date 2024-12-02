@@ -108,7 +108,7 @@ void board_init(board_t* board)
     board_init_fen(board, STARTING_FEN);
     board->error = 0;
     board->checks = 0b00;
-    board->checkmate = 0;
+    board->result = RESULT_NONE;
 }
 
 _Bool is_number(const char* str) {
@@ -145,7 +145,7 @@ void board_init_fen(board_t* board, const char* fen)
 
     board->error = 0;
     board->checks = 0b00;
-    board->checkmate = 0;
+    board->result = RESULT_NONE;
 
     char b[71 + 1];  // Board layout (max length 71 characters)
     char turn;

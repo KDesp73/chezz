@@ -59,6 +59,13 @@ _Bool move(board_t *board, const square_t *from, const square_t *to)
 
     update_checks(board);
 
+    // Check for the posibility of a result
+    if(board->halfmove >= 50) board->result = RESULT_DRAW_DUE_TO_50_MOVE_RULE;
+    // TODO: checkmate
+    // TODO: stalemate
+    // TODO: draw by repetition
+    // TODO: draw due to insufficient material
+
     return 1;
 }
 

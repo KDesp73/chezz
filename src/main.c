@@ -63,10 +63,16 @@ void run(const char* fen)
             continue;
         }
 
+        if(board.result > 0){
+            printf("%s\n", result_message[board.result]);
+            square_free(&from_square);
+            square_free(&to_square);
+            return;
+        }
+
         clib_ansi_clear_screen();
         PRINT_FULL(&board, from_square, to_square, NULL);
 
-        // Free resources
         square_free(&from_square);
         square_free(&to_square);
     }
@@ -95,7 +101,7 @@ int main(int argc, char** argv){
     }
 
     const char* enpassant_fen = "rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1";
-    run("8/1k5P/8/8/8/8/8/3K4 w - - 30 50");
+    run("8/1k5P/8/8/8/8/8/3K4 w - - 49 50");
 
     return 0;
 }

@@ -46,6 +46,26 @@ static const char error_messages[][256] = {
     "Invalid castling"
 };
 
+typedef enum {
+    RESULT_NONE,
+    RESULT_WHITE_WON,
+    RESULT_BLACK_WON,
+    RESULT_STALEMATE,
+    RESULT_DRAW_BY_REPETITION,
+    RESULT_DRAW_DUE_TO_INSUFFICIENT_MATERIAL,
+    RESULT_DRAW_DUE_TO_50_MOVE_RULE
+} result_t ;
+
+static const char result_message[][256] = {
+    "No result yet",
+    "White won",
+    "Black won",
+    "Stalemate",
+    "Draw by repetition",
+    "Draw due to insufficient material",
+    "Draw due to 50 move rule"
+};
+
 typedef struct {
     char grid[8][8];
     _Bool turn;
@@ -54,7 +74,7 @@ typedef struct {
     size_t halfmove;
     size_t fullmove;
     error_t error;
-    _Bool checkmate;
+    result_t result;
     uint8_t checks;
 } board_t;
 
