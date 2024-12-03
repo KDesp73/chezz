@@ -7,6 +7,7 @@
 #define TEST_IMPLEMENTATION
 #include "extern/test.h"
 #include "square.h"
+#include "zobrist.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "tests.h"
@@ -80,6 +81,8 @@ void run(const char* fen)
 }
 
 int main(int argc, char** argv){
+    init_zobrist();
+
     if(argc == 2 && STREQ(argv[1], "test")){
         return !test(
             TEST_SQUARE_FROM_NAME,
@@ -105,7 +108,7 @@ int main(int argc, char** argv){
     }
 
     const char* enpassant_fen = "rnbqkbnr/1pp1pppp/p7/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1";
-    run("8/1k5P/8/8/8/8/8/3K4 w - - 49 50");
+    run(NULL);
 
     return 0;
 }

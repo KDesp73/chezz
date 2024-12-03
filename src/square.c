@@ -113,8 +113,8 @@ void square_free(square_t** square)
 
 void squares_free(square_t*** squares, size_t count)
 {
-    for(size_t i = 0; i < count; i++){
-        square_free(&(*squares)[0]);
+    for (size_t i = 0; i < count; i++) {
+        square_free(&(*squares)[i]);
     }
     free(*squares);
     *squares = NULL;

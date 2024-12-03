@@ -167,7 +167,7 @@ int test_king_can_move(const char* fen, const char* from, const char* to, _Bool 
     test_king_can_move("rn2k1nr/2p3p1/8/8/8/8/4q3/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
     test_king_can_move("rnbq2nr/2p3p1/8/8/8/8/6k1/R3K2R w KQ - 0 1", "e1", "g1", 0), \
     test_king_can_move("rnbq2nr/2p3p1/8/8/8/8/2k5/R3K2R w KQ - 0 1", "e1", "c1", 0), \
-    test_king_can_move("rnbq2nr/3p2p1/8/8/8/8/2k5/R3K2R w KQha - 0 1", "e1", "c1", 0), \
+    test_king_can_move("rnbq2nr/3p2p1/8/8/8/8/2k5/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
     test_king_can_move("r3k2r/8/8/4q3/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0)
 
 int test_is_pinned(const char* fen, const char* square, _Bool expected);
@@ -341,10 +341,10 @@ int test_insufficient_material(const char* fen, _Bool expected);
 
 int test_stalemate(const char* fen, _Bool expected);
 #define TEST_STALEMATE  \
-    test_stalemate("6k1/8/5Q1K/8/8/8/8/8 w - - 0 1", 1), \
+    test_stalemate("6k1/8/5Q1K/8/8/8/8/8 b - - 0 1", 1), \
     test_stalemate("2k5/2p3q1/8/6pK/5p1p/5P1P/6r1/8 w - - 2 48", 1), \
     test_stalemate("3k4/2r4p/4K1p1/6P1/3q4/8/8/8 w - - 4 58", 1), \
-    test_stalemate("8/3q4/K7/2q5/3p4/k7/8/8 b - - 12 70", 1), \
+    test_stalemate("8/3q4/K7/2q5/3p4/k7/8/8 w - - 12 70", 1), \
     test_stalemate("8/8/8/8/K7/1N6/3Q4/1k6 b - - 28 87", 1), \
     test_stalemate("5K2/3k4/2p2pqp/1p6/1P6/8/8/8 w - - 0 47", 1), \
     test_stalemate("8/8/8/kPK5/P2R4/8/8/8 b - - 6 54", 1), \
@@ -356,6 +356,7 @@ int test_stalemate(const char* fen, _Bool expected);
     test_stalemate("8/8/2p4K/1p2kq2/6q1/8/8/8 w - - 4 46", 1), \
     test_stalemate("8/6p1/7p/5q1k/8/6K1/4q3/8 w - - 2 55", 1), \
     test_stalemate("8/8/7p/2N4k/5PR1/7P/PBP3P1/3R2K1 b - - 0 37", 1), \
-    test_stalemate("3QQQQQ/7R/k7/8/8/8/6K1/8 b - - 2 64", 1)
+    test_stalemate("3QQQQQ/7R/k7/8/8/8/6K1/8 b - - 2 64", 1), \
+    test_stalemate("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1", 0)
 
 #endif // TESTS_H

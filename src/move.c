@@ -25,6 +25,7 @@ _Bool move(board_t *board, const square_t *from, const square_t *to)
         return 0;
     }
     char from_before = piece_at(board, from);
+    int color = piece_color(from_before);
 
     size_t piece_count_before = number_of_pieces(board, PIECE_COLOR_NONE); // Count all pieces before the move
 
@@ -59,12 +60,15 @@ _Bool move(board_t *board, const square_t *from, const square_t *to)
 
     update_checks(board);
 
+
     // Check for the posibility of a result
     if(board->halfmove >= 50) board->result = RESULT_DRAW_DUE_TO_50_MOVE_RULE;
-    // TODO: checkmate
-    // TODO: stalemate
-    // TODO: draw by repetition
-    // TODO: draw due to insufficient material
+    if(is_checkmate(board)) board->result = (color == PIECE_COLOR_WHITE)
+                                            ? RESULT_WHITE_WON
+                                            : RESULT_BLACK_WON;
+    if(is_stalemate(board)) board->result = RESULT_STALEMATE;
+    if(is_insufficient_material(board)) board->result = RESULT_DRAW_DUE_TO_INSUFFICIENT_MATERIAL;
+    if(is_threefold_repetition(board)) board->result = RESULT_DRAW_BY_REPETITION;
 
     return 1;
 }

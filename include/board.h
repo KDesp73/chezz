@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "hashing.h"
 #include "square.h"
 #include <stdint.h>
 
@@ -76,6 +77,7 @@ typedef struct {
     error_t error;
     result_t result;
     uint8_t checks;
+    hash_table_t history;
 } board_t;
 
 enum {
@@ -149,7 +151,7 @@ size_t number_of_pieces(const board_t* board, int color);
 
 _Bool is_checkmate(board_t* board);
 _Bool is_stalemate(board_t* board);
-_Bool is_threefold_repetition(board_t* board);
 _Bool is_insufficient_material(board_t* board);
+_Bool is_threefold_repetition(board_t* board);
 
 #endif // BOARD_H

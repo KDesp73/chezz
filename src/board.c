@@ -103,13 +103,13 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
     printf("\n");
 }
 
-void board_init(board_t* board)
-{
-    board_init_fen(board, STARTING_FEN);
-    board->error = 0;
-    board->checks = 0b00;
-    board->result = RESULT_NONE;
-}
+#define FIELDS_INIT(board) \
+    do { \
+        board->error = 0; \
+        board->checks = 0b00; \
+        board->result = RESULT_NONE; \
+        init_hash_table(&board->history, 1000); \
+    } while(0);
 
 _Bool is_number(const char* str) {
     if (str == NULL || *str == '\0') {
@@ -139,13 +139,14 @@ _Bool is_number(const char* str) {
 void board_init_fen(board_t* board, const char* fen)
 {
     if(fen == NULL) {
-        board_init(board);
+        board_init_fen(board, STARTING_FEN);
         return;
     }
 
     board->error = 0;
     board->checks = 0b00;
     board->result = RESULT_NONE;
+    init_hash_table(&board->history, 1000);
 
     char b[71 + 1];  // Board layout (max length 71 characters)
     char turn;

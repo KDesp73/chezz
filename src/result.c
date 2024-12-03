@@ -1,7 +1,9 @@
 #include "board.h"
+#include "hashing.h"
 #include "move.h"
 #include "piece.h"
 #include "square.h"
+#include "zobrist.h"
 #include <ctype.h>
 
 _Bool is_checkmate(board_t* board)
@@ -29,7 +31,6 @@ _Bool is_stalemate_color(board_t* board, int color)
 {
     size_t valid_count;
 
-    // Check if the king is in check
     if (IN_CHECK(board, color)) {
         return 0; // Not a stalemate if the king is in check
     }
@@ -61,11 +62,15 @@ _Bool is_stalemate_color(board_t* board, int color)
 
 _Bool is_stalemate(board_t* board)
 {
-    return is_stalemate_color(board, PIECE_COLOR_WHITE) ||
-        is_stalemate_color(board, PIECE_COLOR_BLACK);
+    return (board->turn == PIECE_COLOR_WHITE && is_stalemate_color(board, PIECE_COLOR_WHITE)) ||
+        (board->turn == PIECE_COLOR_BLACK && is_stalemate_color(board, PIECE_COLOR_BLACK));
 }
 
-_Bool is_threefold_repetition(board_t* board);
+_Bool is_threefold_repetition(board_t* board)
+{
+    uint64_t hash = calculate_zobrist_hash(board);
+    return update_hash_table(&board->history, hash);
+}
 
 _Bool is_insufficient_material(board_t* board)
 {
