@@ -15,9 +15,10 @@ typedef struct {
     size_t capacity;
 } hash_table_t;
 
+void init_hash_table(hash_table_t* table, size_t capacity, const char* starting_fen);
+void init_hash_table_(hash_table_t* table, size_t capacity, uint64_t starting_hash);
 _Bool update_hash_table(hash_table_t* table, uint64_t hash);
 void free_hash_table(hash_table_t* table);
-void init_hash_table(hash_table_t* table, size_t capacity);
 
 
 #endif // HASHING_H

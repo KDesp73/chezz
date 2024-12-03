@@ -142,7 +142,7 @@ void board_init_board(board_t* board, board_t src)
     board->result = src.result;
 
     // Initialize the history hash table
-    init_hash_table(&board->history, src.history.capacity);
+    init_hash_table_(&board->history, src.history.capacity, calculate_zobrist_hash(board));
 
     // Copy history entries
     for (size_t i = 0; i < src.history.capacity; i++) {
@@ -167,7 +167,7 @@ void board_init_fen(board_t* board, const char* fen)
 
     board->error = 0;
     board->result = RESULT_NONE;
-    init_hash_table(&board->history, 1000);
+    init_hash_table(&board->history, 1000, fen);
 
     fen_import(board, fen);
 }

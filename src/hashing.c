@@ -8,7 +8,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void init_hash_table(hash_table_t* table, size_t capacity)
+void init_hash_table_(hash_table_t* table, size_t capacity, uint64_t starting_hash)
+{
+    if (!table) {
+        ERRO("hash_table_t pointer is NULL.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    table->entries = calloc(capacity, sizeof(hash_entry_t));
+    if (!table->entries) {
+        ERRO("Memory allocation failed for hash_table entries.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    table->size = 0;
+    table->capacity = capacity;
+
+    // Adding starting position
+    update_hash_table(table, starting_hash);
+}
+
+void init_hash_table(hash_table_t* table, size_t capacity, const char* starting_fen)
 {
     if (!table) {
         ERRO("hash_table_t pointer is NULL.\n");
@@ -26,7 +46,7 @@ void init_hash_table(hash_table_t* table, size_t capacity)
 
     // Adding starting position
     board_t board;
-    fen_import(&board, STARTING_FEN);
+    fen_import(&board, (starting_fen) ? starting_fen : STARTING_FEN);
     update_hash_table(table, calculate_zobrist_hash(&board));
 }
 

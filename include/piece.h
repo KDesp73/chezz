@@ -15,5 +15,6 @@ int piece_color(char piece);
 
 _Bool piece_is_pinned(board_t* board, square_t piece);
 _Bool piece_can_attack(board_t* board, square_t attacker, square_t target, _Bool strict);
+_Bool piece_is_valid(char piece);
 
 #endif // PIECE_H

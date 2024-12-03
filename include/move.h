@@ -3,7 +3,7 @@
 
 #include "board.h"
 void move_freely(board_t* board, square_t from, square_t to);
-_Bool move(board_t* board, square_t from, square_t to);
+_Bool move(board_t* board, square_t from, square_t to, char promotion);
 
 _Bool piece_can_move(board_t* board, square_t piece, square_t target);
 _Bool pawn_can_move(board_t* board, square_t piece, square_t target);
@@ -25,6 +25,8 @@ void king_castle(board_t* board, square_t from, square_t to);
 _Bool pawn_is_enpassanting(const board_t* board, square_t from, square_t to);
 _Bool pawn_can_enpassant(const board_t* board, square_t from, square_t to);
 void pawn_enpassant(board_t* board, square_t from, square_t to);
+_Bool pawn_is_promoting(const board_t* board, square_t from, square_t to);
+_Bool pawn_promote(board_t* board, square_t from, square_t to, char promotion);
 
 
 #endif // MOVE_H

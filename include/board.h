@@ -57,6 +57,15 @@ typedef enum {
     RESULT_DRAW_DUE_TO_50_MOVE_RULE
 } result_t ;
 
+static const char result_score[][8] = {
+    "-",
+    "1-0",
+    "0-1",
+    "1/2-1/2",
+    "1/2-1/2",
+    "1/2-1/2",
+    "1/2-1/2"
+};
 static const char result_message[][256] = {
     "No result yet",
     "White won",

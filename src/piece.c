@@ -84,3 +84,18 @@ _Bool piece_is_pinned(board_t* board, square_t piece)
     // The piece is pinned if removing it results to more attackers than before
     return (attackers > original_attackers);
 }
+
+_Bool piece_is_valid(char piece)
+{
+    switch(tolower(piece)){
+        case 'k':
+        case 'q':
+        case 'r':
+        case 'b':
+        case 'n':
+        case 'p':
+            return 1;
+        default:
+            return 0;
+    }
+}

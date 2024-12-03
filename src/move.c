@@ -18,7 +18,7 @@ void move_freely(board_t* board, square_t from, square_t to)
     board->grid[COORDS(to)] = from_piece;
 }
 
-_Bool move(board_t *board, square_t from, square_t to)
+_Bool move(board_t *board, square_t from, square_t to, char promotion)
 {
     if (!move_is_valid(board, from, to)) {
         board->error = ERROR_INVALID_MOVE;
@@ -45,6 +45,11 @@ _Bool move(board_t *board, square_t from, square_t to)
             return 0;
         }
         pawn_enpassant(board, from, to);
+    } else if(pawn_is_promoting(board, from, to)) {
+        if(!pawn_promote(board, from, to, promotion)) {
+            board->error = ERROR_INVALID_MOVE;
+            return 0;
+        }
     } else {
         move_freely(board, from, to);
     }

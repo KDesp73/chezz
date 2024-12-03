@@ -7,7 +7,7 @@ typedef struct {
     size_t file;
     size_t x;
     size_t y;
-    char name[2];
+    char name[3];
 } square_t;
 
 #define COORDS(square) square.y][square.x

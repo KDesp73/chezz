@@ -216,3 +216,33 @@ void pawn_enpassant(board_t* board, square_t from, square_t to)
     move_freely(board, from, to);
 }
 
+_Bool pawn_is_promoting(const board_t* board, square_t from, square_t to)
+{
+    char piece = piece_at(board, from);
+    int color = piece_color(piece);
+
+    if (piece != 'P' && piece != 'p') {
+        return 0; // Not a pawn, cannot promote
+    }
+    
+    return (color == PIECE_COLOR_WHITE)
+        ? to.rank == 8
+        : to.rank == 1;
+}
+
+_Bool pawn_promote(board_t *board, square_t from, square_t to, char promotion)
+{
+    if(!piece_is_valid(promotion) || tolower(promotion) == 'p') return 0;
+
+    char piece = piece_at(board, from);
+    int color = piece_color(piece);
+
+    if(!move_is_valid(board, from, to)) return 0;
+
+    move_freely(board, from, to);
+    board->grid[COORDS(to)] = (color == PIECE_COLOR_WHITE) 
+        ? toupper(promotion)
+        : tolower(promotion);
+
+    return 1;
+}

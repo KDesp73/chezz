@@ -29,16 +29,22 @@ void run(const char* fen)
             continue;
         }
 
-        if (strlen(move_input) != 4) {
-            printf("Invalid move format. Use 4 characters (e.g., e2e4).\n");
+        if (strlen(move_input) != 4 && strlen(move_input) != 5) {
+            printf("Invalid move format. Use 4 or 5 characters (e.g., e2e4 or h7h8Q).\n");
             continue;
         }
 
-        char from[3], to[3];
+        char from[3], to[3], promotion;
         strncpy(from, move_input, 2);
         from[2] = '\0';
         strncpy(to, move_input + 2, 2);
         to[2] = '\0';
+        promotion = move_input[4];
+
+        if(!square_is_valid(from) || !square_is_valid(to)){
+            printf("Invalid squares\n");
+            continue;
+        }
 
         square_t from_square, to_square;
         square_from_name(&from_square, from);
@@ -51,8 +57,7 @@ void run(const char* fen)
             continue;
         }
 
-        if(!move(&board, from_square, to_square)){
-            system("sleep 2");
+        if(!move(&board, from_square, to_square, promotion)){
             clib_ansi_clear_screen();
             PRINT_FULL(&board, NULL);
             continue;
@@ -63,7 +68,7 @@ void run(const char* fen)
         PRINT_FULL(&board, &from_square, &to_square, NULL);
 
         if(board.result > 0){
-            printf("%s\n", result_message[board.result]);
+            printf("%s %s\n", result_message[board.result], result_score[board.result]);
             board_free(&board);
             return;
         }
@@ -99,7 +104,7 @@ int main(int argc, char** argv){
         );
     }
 
-    run(NULL);
+    run("8/7P/1k6/8/6K1/8/2p5/8 w - - 0 1");
 
     return 0;
 }
