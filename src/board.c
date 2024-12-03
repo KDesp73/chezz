@@ -395,32 +395,6 @@ _Bool square_is_attacked_coords(const board_t *board, int y, int x, int attacked
     return 0; // Square is not under attack
 }
 
-// square_t** square_is_attacked_by(const board_t* board, square_t square, int attacked_by, size_t* count)
-// {
-//     *count = 0; // Initialize count
-//     square_t** attackers = malloc(64 * sizeof(square_t*));
-//     if (!attackers) return NULL; // Check for malloc failure
-//
-//     for (size_t i = 0; i < BOARD_SIZE; i++) {
-//         for (size_t j = 0; j < BOARD_SIZE; j++) {
-//             square_t current;
-//             square_from_coords(&current, i, j);
-//
-//             char piece = piece_at(board, current);
-//             if (piece == ' ') continue; // Skip empty squares
-//
-//             if (attack_is_valid(board, current, square, 0)) {
-//                 attackers[(*count)++] = square_new_coords(i, j);
-//             } else {
-//                 DEBU("Invalid move %s%s", current.name, square.name);
-//             }
-//         }
-//     }
-//
-//     attackers[*count] = NULL; // Null-terminate the array
-//     return attackers;
-// }
-
 square_t** square_is_attacked_by(const board_t* board, square_t square, int attacked_by, size_t* count)
 {
     if (!board || square.rank < 1 || square.rank > BOARD_SIZE || 

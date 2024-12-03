@@ -1,4 +1,5 @@
 #include "board.h"
+#include "extern/clib.h"
 #include "hashing.h"
 #include "move.h"
 #include "piece.h"
@@ -8,39 +9,53 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: check if the piece that checks the 
-//       king can be captured by another piece
-_Bool is_checkmate_color(board_t* board, int color)
-{ 
+_Bool is_checkmate_color(board_t* board, int color) { 
     size_t valid_count;
     square_t king;
     find_king(&king, board, color);
     square_t** moves = valid_moves(board, king, &valid_count);
-    if(IN_CHECK(board, color) && valid_count == 0) {
+    
+    // If the king is in check and there are no valid moves, it might be checkmate
+    if (IN_CHECK(board, color) && valid_count == 0) {
         size_t attackers_count;
         square_t** attackers = square_is_attacked_by(board, king, !color, &attackers_count);
 
-        if(attackers_count > 1) {
+        // If more than one attacker, it's checkmate
+        if (attackers_count > 1) {
             squares_free(&attackers, attackers_count);
-            return 1; // If 2 or more attackers no way to stop mate
+            DEBU("Multiple attackers");
+            return 1; // Checkmate if there are multiple attackers
         }
 
-        // If we can capture single attacker then it's not mate
-        size_t my_attackers_count;
-        square_t** my_attackers = square_is_attacked_by(board, *attackers[0], color, &my_attackers_count);
+        // If only one attacker, check if we can capture it
+        if (attackers_count == 0 || attackers[0] == NULL) {
+            squares_free(&attackers, attackers_count);
+            DEBU("No attackers");
+            return 0; // No attackers, it's not checkmate
+        }
 
-        if(my_attackers_count == 0 || my_attackers == NULL) {
+        square_t* attacker = attackers[0]; // The single attacker
+        size_t my_attackers_count;
+        square_t** my_attackers = square_is_attacked_by(board, *attacker, color, &my_attackers_count);
+
+        // Check if we have valid attackers and if the attacker can be captured or blocked
+        if (my_attackers_count == 0) {
             squares_free(&attackers, attackers_count);
             squares_free(&my_attackers, my_attackers_count);
-            return 1;
+            DEBU("No way to capture attacker");
+            return 1; // Checkmate (no way to capture or block the attacker)
         }
 
+        if(tolower(piece_at(board, *attacker) == 'k')) return 1;
+
+        // No checkmate (we can capture or block the attacker)
         squares_free(&attackers, attackers_count);
         squares_free(&my_attackers, my_attackers_count);
+        DEBU("we can capture the attacker");
         return 0;
     }
 
-    return 0;
+    return 0; // Not in checkmate
 }
 
 _Bool is_checkmate(board_t *board)

@@ -89,8 +89,8 @@ int main(int argc, char** argv){
             // TEST_MOVE_IS_VALID,
             // TEST_VALID_MOVES,
             // TEST_STALEMATE,
-            // TEST_CHECKMATE,
-            TEST_IS_ATTACKED_BY,
+            TEST_CHECKMATE,
+            // TEST_IS_ATTACKED_BY,
             END
         );
     }

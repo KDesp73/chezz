@@ -133,7 +133,7 @@ _Bool attack_is_valid(const board_t* board, square_t from, square_t to, _Bool st
 
     int color = PIECE_COLOR(board, from);
 
-    if(board->turn != color) {
+    if(strict && board->turn != color) {
         return 0;
     }
 
