@@ -14,10 +14,10 @@ typedef struct {
 #define PCOORDS(square) square->y][square->x
 
 // Stack allocation
-void square_from_fr(square_t* square, size_t rank, size_t file);
-void square_from_coords(square_t* square, size_t rank, size_t file);
-void square_from_name(square_t* square, const char* name);
-void square_from_square(square_t* square, square_t src);
+_Bool square_from_fr(square_t* square, size_t rank, size_t file);
+_Bool square_from_coords(square_t* square, size_t rank, size_t file);
+_Bool square_from_name(square_t* square, const char* name);
+_Bool square_from_square(square_t* square, square_t src);
 
 // Heap alloctation
 void square_free(square_t** square);
@@ -28,13 +28,13 @@ void squares_free(square_t*** squares, size_t count);
 square_t** squares(size_t* count, square_t* square, ...);
 
 
-
 void square_set_rank(square_t* square, size_t rank);
 void square_set_file(square_t* square, size_t file);
 void square_set_x(square_t* square, size_t x);
 void square_set_y(square_t* square, size_t y);
 void square_set_name(square_t* square, const char* name);
 
+_Bool square_is_valid(const char* name);
 _Bool square_cmp(square_t square1, square_t square2);
 
 void square_print(const square_t square);

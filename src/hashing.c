@@ -83,7 +83,11 @@ uint64_t calculate_zobrist_hash(board_t* board)
             square_from_coords(&square, rank, file);
             char piece = piece_at(board, square);
             if (piece != EMPTY_SQUARE) {
-                hash ^= zobrist_table[piece][rank][file];
+                if (piece >= 0 && piece < PIECE_TYPES) {
+                    hash ^= zobrist_table[piece][rank][file];
+                } else {
+                    fprintf(stderr, "Invalid piece '%c' at rank %d, file %d\n", piece, rank, file);
+                }
             }
         }
     }
@@ -97,8 +101,15 @@ uint64_t calculate_zobrist_hash(board_t* board)
     // Add en passant target square
     if (board->enpassant_square[0] != '-') {
         square_t enpassant_square;
-        square_from_name(&enpassant_square, board->enpassant_square);
-        hash ^= zobrist_en_passant[enpassant_square.x];
+        if (square_from_name(&enpassant_square, board->enpassant_square)) {
+            if (enpassant_square.x >= 0 && enpassant_square.x < BOARD_SIZE) {
+                hash ^= zobrist_en_passant[enpassant_square.x];
+            } else {
+                fprintf(stderr, "Invalid en passant square: %s\n", board->enpassant_square);
+            }
+        } else {
+            fprintf(stderr, "Failed to parse en passant square: %s\n", board->enpassant_square);
+        }
     }
 
     return hash;

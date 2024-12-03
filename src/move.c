@@ -65,7 +65,7 @@ _Bool move(board_t *board, square_t from, square_t to)
                                             : RESULT_BLACK_WON;
     if(is_stalemate(board)) board->result = RESULT_STALEMATE;
     if(is_insufficient_material(board)) board->result = RESULT_DRAW_DUE_TO_INSUFFICIENT_MATERIAL;
-    // if(is_threefold_repetition(board)) board->result = RESULT_DRAW_BY_REPETITION;
+    if(is_threefold_repetition(board)) board->result = RESULT_DRAW_BY_REPETITION;
 
     return 1;
 }

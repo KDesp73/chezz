@@ -70,6 +70,8 @@ void square_set_y(square_t* square, size_t y)
 
 void square_set_name(square_t* square, const char* name)
 {
+    if(!square_is_valid(name)) return;
+
     square_t temp;
     square_from_name(&temp, name);
     strncpy(square->name, name, 3);
@@ -80,22 +82,20 @@ void square_set_name(square_t* square, const char* name)
     square->file = temp.file;
 }
 
-void square_from_coords(square_t* square, size_t y, size_t x)
+_Bool square_from_coords(square_t* square, size_t y, size_t x)
 {
-    square_from_fr(square, y+1, x+1);
+    return square_from_fr(square, y+1, x+1);
 }
 
-void square_from_fr(square_t* square, size_t rank, size_t file)
+_Bool square_from_fr(square_t* square, size_t rank, size_t file)
 {
     if(file < 1 || file > 8){
         ERRO("file should range between 1 and 8. Found: %zu", file);
-        square = NULL;
-        return;
+        return 0;
     }
     if(rank < 1 || rank > 8){
         ERRO("rank should range between 1 and 8. Found: %zu", rank);
-        square = NULL;
-        return;
+        return 0;
     }
 
     square->file = file;
@@ -107,24 +107,30 @@ void square_from_fr(square_t* square, size_t rank, size_t file)
     square->name[0] = 'a' + (file-1);
     square->name[1] = '1' + (rank-1);
     square->name[2] = '\0';
+
+    return 1;
 }
 
-void square_from_name(square_t* square, const char* name)
+_Bool square_is_valid(const char* name)
 {
-    if(name == NULL) goto error;
-    if(strlen(name) != 2) goto error;
-    if(name[0] < 'a' || name[0] > 'h') goto error;
-    if(name[1] < '1' || name[1] > '8') goto error;
+    if(name == NULL) return 0;
+    if(strlen(name) != 2) return 0;
+    if(name[0] < 'a' || name[0] > 'h') return 0;
+    if(name[1] < '1' || name[1] > '8') return 0;
+    
+    return 1;
+}
 
+_Bool square_from_name(square_t* square, const char* name)
+{
+    if(!square_is_valid(name)) return 0;
 
     strcpy(square->name, name);
     square->file = name[0] - 'a' + 1;
     square->rank = name[1] - '1' + 1;
     square->y = square->rank-1;
     square->x = square->file-1;
-
-error:
-    square = NULL;
+    return 1;
 }
 
 void square_print(const square_t square)
@@ -177,9 +183,9 @@ void squares_print(square_t** squares, size_t count)
 }
 
 
-void square_from_square(square_t* square, square_t src)
+_Bool square_from_square(square_t* square, square_t src)
 {
-    if(square == NULL) return;
+    if(square == NULL) return 0;
 
     square->x = src.x;
     square->y = src.y;
@@ -187,6 +193,8 @@ void square_from_square(square_t* square, square_t src)
     square->rank = src.rank;
     strncpy(square->name, src.name, 2);
     square->name[2] = '\0';
+
+    return 1;
 }
 
 // Heap allocation methods
