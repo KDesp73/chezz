@@ -13,23 +13,29 @@ typedef struct {
 #define COORDS(square) square.y][square.x
 #define PCOORDS(square) square->y][square->x
 
-#define SFC(rank, file) \
-    square_from_coords(rank, file)
-#define SFN(name) \
-    square_from_name(name)
+// Stack allocation
+void square_from_fr(square_t* square, size_t rank, size_t file);
+void square_from_coords(square_t* square, size_t rank, size_t file);
+void square_from_name(square_t* square, const char* name);
+void square_from_square(square_t* square, square_t src);
 
-square_t* square_from_fr(size_t rank, size_t file);
-square_t* square_from_coords(size_t rank, size_t file);
-square_t* square_from_name(const char* name);
+// Heap alloctation
+void square_free(square_t** square);
+square_t* square_new_name(const char* name);
+square_t* square_new_coords(size_t y, size_t x);
+square_t* square_new_fr(size_t rank, size_t file);
+void squares_free(square_t*** squares, size_t count);
 square_t** squares(size_t* count, square_t* square, ...);
+
+
+
 void square_set_rank(square_t* square, size_t rank);
 void square_set_file(square_t* square, size_t file);
 void square_set_x(square_t* square, size_t x);
 void square_set_y(square_t* square, size_t y);
 void square_set_name(square_t* square, const char* name);
-void square_free(square_t** square);
-void squares_free(square_t*** square, size_t count);
-_Bool square_cmp(const square_t* square1, const square_t* square2);
+
+_Bool square_cmp(square_t square1, square_t square2);
 
 void square_print(const square_t square);
 void squares_print(square_t** squares, size_t count);

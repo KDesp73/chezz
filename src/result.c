@@ -5,26 +5,48 @@
 #include "square.h"
 #include "zobrist.h"
 #include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
 
-_Bool is_checkmate(board_t* board)
+// TODO: check if the piece that checks the 
+//       king can be captured by another piece
+_Bool is_checkmate_color(board_t* board, int color)
 { 
-
     size_t valid_count;
-    square_t** moves = valid_moves(board, find_king(board, PIECE_COLOR_WHITE), &valid_count);
-    if(IN_CHECK(board, PIECE_COLOR_WHITE) && valid_count == 0) {
-        squares_free(&moves, valid_count);
-        return 1;
+    square_t king;
+    find_king(&king, board, color);
+    square_t** moves = valid_moves(board, king, &valid_count);
+    if(IN_CHECK(board, color) && valid_count == 0) {
+        size_t attackers_count;
+        square_t** attackers = square_is_attacked_by(board, king, !color, &attackers_count);
+
+        if(attackers_count > 1) {
+            squares_free(&attackers, attackers_count);
+            return 1; // If 2 or more attackers no way to stop mate
+        }
+
+        // If we can capture single attacker then it's not mate
+        size_t my_attackers_count;
+        square_t** my_attackers = square_is_attacked_by(board, *attackers[0], color, &my_attackers_count);
+
+        if(my_attackers_count == 0 || my_attackers == NULL) {
+            squares_free(&attackers, attackers_count);
+            squares_free(&my_attackers, my_attackers_count);
+            return 1;
+        }
+
+        squares_free(&attackers, attackers_count);
+        squares_free(&my_attackers, my_attackers_count);
+        return 0;
     }
 
-    squares_free(&moves, valid_count);
-    moves = valid_moves(board, find_king(board, PIECE_COLOR_BLACK), &valid_count);
-    if(IN_CHECK(board, PIECE_COLOR_BLACK) && valid_count == 0) {
-        squares_free(&moves, valid_count);
-        return 1;
-    }
-
-    squares_free(&moves, valid_count);
     return 0;
+}
+
+_Bool is_checkmate(board_t *board)
+{
+    return is_checkmate_color(board, PIECE_COLOR_WHITE) ||
+        is_checkmate_color(board, PIECE_COLOR_BLACK);
 }
 
 _Bool is_stalemate_color(board_t* board, int color)
@@ -38,7 +60,8 @@ _Bool is_stalemate_color(board_t* board, int color)
     // Iterate through all squares to find pieces of the given color
     for (int rank = 0; rank < BOARD_SIZE; rank++) {
         for (int file = 0; file < BOARD_SIZE; file++) {
-            square_t* square = square_from_coords(rank, file);
+            square_t square;
+            square_from_coords(&square, rank, file);
             char piece = piece_at(board, square);
 
             // Check if the piece belongs to the player
@@ -47,11 +70,8 @@ _Bool is_stalemate_color(board_t* board, int color)
 
                 // If any valid move exists, it's not a stalemate
                 if (valid_count > 0) {
-                    squares_free(&moves, valid_count);
                     return 0;
                 }
-
-                squares_free(&moves, valid_count);
             }
         }
     }
@@ -80,7 +100,8 @@ _Bool is_insufficient_material(board_t* board)
 
     for (int rank = 0; rank < BOARD_SIZE; rank++) {
         for (int file = 0; file < BOARD_SIZE; file++) {
-            square_t* square = square_from_coords(rank, file);
+            square_t square;
+            square_from_coords(&square, rank, file);
             char piece = piece_at(board, square);
 
             if (piece == EMPTY_SQUARE) continue;

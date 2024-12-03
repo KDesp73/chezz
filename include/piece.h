@@ -8,9 +8,12 @@
 #define PIECE_COLOR_WHITE 1
 #define PIECE_COLOR_NONE -1
 
-char piece_at(const board_t* board, const square_t* square);
+char piece_at(const board_t* board, square_t square);
 int piece_color(char piece);
-_Bool piece_is_pinned(board_t* board, const square_t* square);
-_Bool piece_can_attack(board_t* board, const square_t* attacker, const square_t* target);
+#define PIECE_COLOR(board, square) \
+    piece_color(piece_at(board, square))
+
+_Bool piece_is_pinned(board_t* board, square_t piece);
+_Bool piece_can_attack(board_t* board, square_t attacker, square_t target, _Bool strict);
 
 #endif // PIECE_H

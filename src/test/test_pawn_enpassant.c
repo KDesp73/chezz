@@ -9,7 +9,11 @@ int test_pawn_is_enpassanting(const char* fen, const char* from, const char* to,
     board_t board;
     board_init_fen(&board, fen);
 
-    if(expected != pawn_is_enpassanting(&board, square_from_name(from), square_from_name(to))){
+    square_t from_square, to_square;
+    square_from_name(&from_square, from);
+    square_from_name(&to_square, to);
+
+    if(expected != pawn_is_enpassanting(&board, from_square, to_square)){
         FAIL("For fen %s, move %s%s. Expected %d. Found %d", fen, from, to, expected, !expected);
         return 0;
     }
@@ -23,7 +27,11 @@ int test_pawn_can_enpassant(const char* fen, const char* from, const char* to, _
     board_t board;
     board_init_fen(&board, fen);
 
-    if(expected != pawn_can_enpassant(&board, square_from_name(from), square_from_name(to))){
+    square_t from_square, to_square;
+    square_from_name(&from_square, from);
+    square_from_name(&to_square, to);
+
+    if(expected != pawn_can_enpassant(&board, from_square, to_square)){
         FAIL("For fen %s, move %s%s. Expected %d. Found %d", fen, from, to, expected, !expected);
         return 0;
     }

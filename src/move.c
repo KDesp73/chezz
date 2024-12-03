@@ -8,17 +8,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-void move_freely(board_t* board, const square_t* from, const square_t* to)
+void move_freely(board_t* board, square_t from, square_t to)
 {
-    char from_piece = board->grid[PCOORDS(from)];
+    char from_piece = board->grid[COORDS(from)];
 
     if(from_piece == ' ') return; // No piece to move
     
-    board->grid[PCOORDS(from)] = ' ';
-    board->grid[PCOORDS(to)] = from_piece;
+    board->grid[COORDS(from)] = ' ';
+    board->grid[COORDS(to)] = from_piece;
 }
 
-_Bool move(board_t *board, const square_t *from, const square_t *to)
+_Bool move(board_t *board, square_t from, square_t to)
 {
     if (!move_is_valid(board, from, to)) {
         board->error = ERROR_INVALID_MOVE;
@@ -58,9 +58,6 @@ _Bool move(board_t *board, const square_t *from, const square_t *to)
 
     board->turn = !board->turn;
 
-    update_checks(board);
-
-
     // Check for the posibility of a result
     if(board->halfmove >= 50) board->result = RESULT_DRAW_DUE_TO_50_MOVE_RULE;
     if(is_checkmate(board)) board->result = (color == PIECE_COLOR_WHITE)
@@ -68,34 +65,26 @@ _Bool move(board_t *board, const square_t *from, const square_t *to)
                                             : RESULT_BLACK_WON;
     if(is_stalemate(board)) board->result = RESULT_STALEMATE;
     if(is_insufficient_material(board)) board->result = RESULT_DRAW_DUE_TO_INSUFFICIENT_MATERIAL;
-    if(is_threefold_repetition(board)) board->result = RESULT_DRAW_BY_REPETITION;
+    // if(is_threefold_repetition(board)) board->result = RESULT_DRAW_BY_REPETITION;
 
     return 1;
 }
 
-_Bool piece_can_move(board_t* board, const square_t* piece, const square_t* target)
+_Bool piece_can_move(board_t* board, square_t piece, square_t target)
 {
-    assert(piece != NULL);
-    assert(target != NULL);
     assert(board != NULL);
 
-    switch (piece_at(board, piece)) {
-        case 'K':
+    switch (tolower(piece_at(board, piece))) {
         case 'k':
             return king_can_move(board, piece, target);
-        case 'Q':
         case 'q':
             return queen_can_move(board, piece, target);
-        case 'R':
         case 'r':
             return rook_can_move(board, piece, target);
-        case 'B':
         case 'b':
             return bishop_can_move(board, piece, target);
-        case 'N':
         case 'n':
             return knight_can_move(board, piece, target);
-        case 'P':
         case 'p':
             return pawn_can_move(board, piece, target);
         default:
@@ -103,14 +92,13 @@ _Bool piece_can_move(board_t* board, const square_t* piece, const square_t* targ
     }
 }
 
-_Bool move_is_valid(const board_t* board, const square_t* from, const square_t* to)
+_Bool move_is_valid(const board_t* board, square_t from, square_t to)
 {
     if(!piece_can_move((board_t*) board, from, to)) {
         return 0;
     }
 
-    char piece = piece_at((board_t*)board, from);
-    int color = piece_color(piece);
+    int color = PIECE_COLOR(board, from);
 
     if(board->turn != color) {
         return 0;
@@ -120,7 +108,7 @@ _Bool move_is_valid(const board_t* board, const square_t* from, const square_t* 
         board_t temp;
         memcpy(temp.grid, board->grid, 64);
 
-        move_freely(&temp, (square_t*) from, (square_t*) to);
+        move_freely(&temp, from, to);
         return !IN_CHECK(&temp, color);
     }
 
@@ -128,16 +116,49 @@ _Bool move_is_valid(const board_t* board, const square_t* from, const square_t* 
     // If the king is in check make a move that resolves the check
     if(IN_CHECK((board_t*) board, color)){
         board_t temp;
-        memcpy(temp.grid, board->grid, 64);
+        board_init_board(&temp, *board);
 
-        move_freely(&temp, (square_t*) from, (square_t*) to);
+        move_freely(&temp, from, to);
         return !IN_CHECK(&temp, color);
     }
 
     return 1;
 }
 
-square_t** valid_moves(board_t* board, const square_t* piece, size_t* count)
+_Bool attack_is_valid(const board_t* board, square_t from, square_t to, _Bool strict)
+{
+    if(!piece_can_attack((board_t*) board, from, to, strict)) {
+        return 0;
+    }
+
+    int color = PIECE_COLOR(board, from);
+
+    if(board->turn != color) {
+        return 0;
+    }
+
+    if (piece_is_pinned((board_t*) board, from)) {
+        board_t temp;
+        memcpy(temp.grid, board->grid, 64);
+
+        move_freely(&temp, from, to);
+        return !IN_CHECK(&temp, color);
+    }
+
+
+    // If the king is in check make a move that resolves the check
+    if(IN_CHECK((board_t*) board, color)){
+        board_t temp;
+        board_init_board(&temp, *board);
+
+        move_freely(&temp, from, to);
+        return !IN_CHECK(&temp, color);
+    }
+
+    return 1;
+}
+
+square_t** valid_moves(board_t* board, square_t piece, size_t* count)
 {
     char _piece = piece_at(board, piece);
     int color = piece_color(_piece);
@@ -145,51 +166,60 @@ square_t** valid_moves(board_t* board, const square_t* piece, size_t* count)
     size_t capacity = 10;
     *count = 0;
     square_t** moves = malloc(sizeof(square_t*) * capacity);
+    if (!moves) return NULL;
 
     for (int rank = 0; rank < BOARD_SIZE; rank++) {
         for (int file = 0; file < BOARD_SIZE; file++) {
-            square_t* target = square_from_coords(rank, file);
+            square_t target;
+            square_from_coords(&target, rank, file);
             char target_piece = piece_at(board, target);
 
             // Skip the piece's current square
-            if (piece->rank == target->rank && piece->file == target->file) {
-                square_free(&target);
+            if (piece.rank == target.rank && piece.file == target.file) {
                 continue;
             }
 
+            // Skip king-related moves (if rule requires it)
             if (tolower(target_piece) == 'k') {
-                square_free(&target);
                 continue;
             }
 
+            // Handle pinned pieces
             if (piece_is_pinned(board, piece)) {
-                if(tolower(target_piece) == 'n') {
-                    square_free(&target);
-                    continue;
-                }
-
-                board_t temp = *board;
-                move_freely(&temp, (square_t*)piece, target);
+                board_t temp;
+                memcpy(temp.grid, board->grid, 64);
+                move_freely(&temp, piece, target);
 
                 if (IN_CHECK(&temp, color)) {
-                    square_free(&target);
                     continue;
                 }
             }
 
+            // Check move validity
             if (move_is_valid(board, piece, target)) {
                 if (*count == capacity) {
-                    capacity *= 2;
-                    moves = realloc(moves, sizeof(square_t*) * capacity);
+                    void* temp = realloc(moves, sizeof(square_t*) * (capacity *= 2));
+                    if (!temp) {
+                        free(moves);
+                        return NULL;
+                    }
+                    moves = temp;
                 }
-                moves[(*count)++] = target;
-            } else {
-                square_free(&target);
+                moves[*count] = malloc(sizeof(square_t));
+                if (!moves[*count]) {
+                    for (size_t i = 0; i < *count; i++) free(moves[i]);
+                    free(moves);
+                    return NULL;
+                }
+                square_from_square(moves[*count], target);
+                (*count)++;
             }
         }
     }
 
-    moves = realloc(moves, sizeof(square_t*) * *count);
+    // Optional: Shrink to fit
+    void* temp = realloc(moves, sizeof(square_t*) * *count);
+    if (temp) moves = temp;
 
     return moves;
 }

@@ -79,7 +79,9 @@ uint64_t calculate_zobrist_hash(board_t* board)
     // Add piece positions
     for (int rank = 0; rank < BOARD_SIZE; rank++) {
         for (int file = 0; file < BOARD_SIZE; file++) {
-            char piece = piece_at(board, square_from_coords(rank, file));
+            square_t square;
+            square_from_coords(&square, rank, file);
+            char piece = piece_at(board, square);
             if (piece != EMPTY_SQUARE) {
                 hash ^= zobrist_table[piece][rank][file];
             }
@@ -94,9 +96,9 @@ uint64_t calculate_zobrist_hash(board_t* board)
 
     // Add en passant target square
     if (board->enpassant_square[0] != '-') {
-        square_t* enpassant_square = square_from_name(board->enpassant_square);
-        hash ^= zobrist_en_passant[enpassant_square->x];
-        square_free(&enpassant_square);
+        square_t enpassant_square;
+        square_from_name(&enpassant_square, board->enpassant_square);
+        hash ^= zobrist_en_passant[enpassant_square.x];
     }
 
     return hash;

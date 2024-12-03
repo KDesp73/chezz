@@ -76,7 +76,6 @@ typedef struct {
     size_t fullmove;
     error_t error;
     result_t result;
-    uint8_t checks;
     hash_table_t history;
 } board_t;
 
@@ -94,6 +93,7 @@ enum {
 
 void board_init(board_t* board);
 void board_init_fen(board_t* board, const char* fen);
+void board_init_board(board_t* board, board_t src);
 
 typedef struct {
     _Bool errors;
@@ -119,33 +119,25 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
 #define PRINT_FULL(board, first, ...) \
     board_print(board, FULL_CONFIG, first, ##__VA_ARGS__)
 
+void print_castling_rights(const board_t* board);
 
 int has_castling_rights(const board_t* board, uint8_t castling_right);
 void revoke_castling_rights(board_t* board, uint8_t castling_rights);
 
-_Bool square_is_attacked(board_t* board, square_t* square, int color);
-_Bool square_is_attacked_coords(board_t *board, int y, int x, int color);
-_Bool square_is_attacked_fr(board_t *board, int rank, int file, int color);
+_Bool square_is_attacked(const board_t* board, square_t square, int attacked_by);
+_Bool square_is_attacked_coords(const board_t *board, int y, int x, int attacked_by);
+_Bool square_is_attacked_fr(const board_t *board, int rank, int file, int attacked_by);
+square_t** square_is_attacked_by(const board_t* board, square_t square, int attacked_by, size_t* count);
 
-square_t* find_king(board_t* board, int color);
-#define FIND_KING_WHITE(board) \
-    find_king(board, PIECE_COLOR_WHITE)
-#define FIND_KING_BLACK(board) \
-    find_king(board, PIECE_COLOR_BLACK)
-
-_Bool king_in_check(const board_t* board, int color);
-_Bool white_in_check(const board_t* board);
-_Bool black_in_check(const board_t* board);
+void find_king(square_t* square, const board_t* board, int color);
 
 _Bool in_check(const board_t* board, int color);
 #define IN_CHECK(board, color) \
     in_check(board, color)
 
-char* update_enpassant_square(board_t* board, const square_t* from, const square_t* to);
-void update_checks(board_t* board);
-void update_castling_rights(board_t* board, const square_t* from);
-void update_halfmove(board_t* board, const square_t* from, const square_t* to, size_t piece_count_before, size_t piece_count_after, char piece);
-void print_castling_rights(const board_t* board);
+char* update_enpassant_square(board_t* board, square_t from, square_t to);
+void update_castling_rights(board_t* board, square_t from);
+void update_halfmove(board_t* board, square_t from, square_t to, size_t piece_count_before, size_t piece_count_after, char piece);
 
 size_t number_of_pieces(const board_t* board, int color);
 

@@ -294,7 +294,8 @@ int test_move(const char* fen, const char* from, const char* to, _Bool expected)
 
 int test_king_in_check(const char* fen, int color, _Bool expected);
 #define TEST_KING_IN_CHECK \
-    test_king_in_check("r3k2r/8/8/4q3/8/8/8/R3K2R w KQkq - 0 1", 1, 1)
+    test_king_in_check("r3k2r/8/8/4q3/8/8/8/R3K2R w KQkq - 0 1", 1, 1), \
+    test_king_in_check("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR b kq - 0 1", 0, 1)
 
 int test_board_init_fen(const char* fen, _Bool turn, uint8_t castling_rights, char enpassant_square[3], size_t halfmove, size_t fullmove);
 #define TEST_BOARD_INIT_FEN \
@@ -328,7 +329,8 @@ int test_checkmate(const char* fen, _Bool expected);
     test_checkmate("r4rk1/6RR/8/8/8/8/8/6K1 b - - 0 1", 1), \
     test_checkmate("1R5k1/R7/8/8/8/8/8/6K1 b - - 0 1", 1), \
     test_checkmate("6kR/5p2/8/8/8/8/8/B6K1 b - - 0 1", 1), \
-    test_checkmate("5rk1/5p1p/8/8/8/8/8/B5RK b - - 0 1", 1)
+    test_checkmate("5rk1/5p1p/8/8/8/8/8/B5RK b - - 0 1", 1), \
+    test_checkmate("rnbqkb1r/ppppp2p/5n2/5ppQ/8/4P3/PPPP1PPP/RNB1KBNR w KQkq - 0 1", 0)
 
 int test_insufficient_material(const char* fen, _Bool expected);
 #define TEST_INSUFFICIENT_MATERIAL \
@@ -358,5 +360,12 @@ int test_stalemate(const char* fen, _Bool expected);
     test_stalemate("8/8/7p/2N4k/5PR1/7P/PBP3P1/3R2K1 b - - 0 37", 1), \
     test_stalemate("3QQQQQ/7R/k7/8/8/8/6K1/8 b - - 2 64", 1), \
     test_stalemate("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1", 0)
+
+int test_is_attacked_by(const char* fen, const char* square, int attacked_by, char* first, ...);
+#define TEST_IS_ATTACKED_BY \
+    test_is_attacked_by("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "b3", 1, "a2", "c2", NULL), \
+    test_is_attacked_by("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "a3", 1, "b2", "b1", NULL), \
+    test_is_attacked_by("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "c3", 1, "b1", "b2", "d2",  NULL), \
+    test_is_attacked_by("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", "c6", 0, "b8", "b7", "d7", NULL)
 
 #endif // TESTS_H

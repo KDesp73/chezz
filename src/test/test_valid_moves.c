@@ -10,18 +10,21 @@
 #include <stdio.h>
 #include <string.h>
 
-// #define MOVES
+#define MOVES
 
 int test_valid_moves(const char* fen, const char* square, const char* first, ...)
 {
     board_t board;
     board_init_fen(&board, fen);
-    
+
+    square_t sqr;
+    square_from_name(&sqr, square);
+
     size_t moves_count = 0;
-    square_t** moves = valid_moves(&board, square_from_name(square), &moves_count);
+    square_t** moves = valid_moves(&board, sqr, &moves_count);
 #ifdef MOVES
     printf("Found: ");
-    for(size_t i = 0; i < moves_count; i++){
+    for (size_t i = 0; i < moves_count; i++) {
         printf("%s ", moves[i]->name);
     }
     printf("\n");
@@ -29,7 +32,7 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
 
     // Collect expected moves from variadic arguments
     size_t expected_count = 0;
-    square_t** expected_moves = malloc(64 * sizeof(square_t*)); // Max 64 moves, adjust if needed
+    square_t** expected_moves = malloc(64 * sizeof(square_t*)); // Max 64 moves
 
     va_list args;
     va_start(args, first);
@@ -42,7 +45,9 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
 #ifdef MOVES
         printf("%s ", current);
 #endif
-        expected_moves[expected_count++] = square_from_name(current);
+        expected_moves[expected_count] = malloc(sizeof(square_t));
+        square_from_name(expected_moves[expected_count], current);
+        expected_count++;
         current = va_arg(args, const char*);
     }
 #ifdef MOVES
@@ -51,7 +56,6 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
     va_end(args);
 
     if (moves_count != expected_count) {
-        squares_print(moves, moves_count);
         FAIL("For fen %s square %s. Expected %zu moves, but got %zu moves.", fen, square, expected_count, moves_count);
         goto cleanup;
     }
@@ -83,24 +87,15 @@ int test_valid_moves(const char* fen, const char* square, const char* first, ...
             }
         }
         if (!found) {
-            FAIL("For fen %s square %s,Unexpected move %s found.\n", fen, square, moves[j]->name);
+            FAIL("For fen %s square %s. Unexpected move %s found.", fen, square, moves[j]->name);
             goto cleanup;
         }
     }
 
-    // Test passed
-    for (size_t i = 0; i < expected_count; i++) {
-        square_free(&expected_moves[i]);
-    }
-    free(expected_moves);
 
     SUCC("Passed for fen %s, piece %s", fen, square);
     return 1;
 
 cleanup:
-    for (size_t i = 0; i < expected_count; i++) {
-        square_free(&expected_moves[i]);
-    }
-    free(expected_moves);
     return 0;
 }
