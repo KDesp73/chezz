@@ -3,8 +3,6 @@ TODO: pgn import
 TODO: pgn export
 TODO: 3 move repetition check
 TODO: promotion
-TODO: stack allocations when possible (refactoring)
-TODO: checkmate fix case where mate but piece can be taken
 DONE: pin check
 DONE: check check
 DONE: en passant captures
@@ -13,3 +11,5 @@ DONE: 50 move rule
 DONE: draw due to insufficient material
 DONE: stalemate check
 DONE: mate check
+DONE: stack allocations when possible (refactoring)
+DONE: checkmate fix case where mate but piece can be taken

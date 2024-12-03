@@ -1,5 +1,6 @@
 #include "hashing.h"
 #include "extern/clib.h"
+#include "notation.h"
 #include "zobrist.h"
 #include "board.h"
 #include "piece.h"
@@ -22,6 +23,11 @@ void init_hash_table(hash_table_t* table, size_t capacity)
 
     table->size = 0;
     table->capacity = capacity;
+
+    // Adding starting position
+    board_t board;
+    fen_import(&board, STARTING_FEN);
+    update_hash_table(table, calculate_zobrist_hash(&board));
 }
 
 void free_hash_table(hash_table_t* table)
@@ -49,14 +55,16 @@ _Bool update_hash_table(hash_table_t* table, uint64_t hash)
 
 void init_zobrist()
 {
-    // Seed the random generator for reproducibility
-    srand(12345);
+    srand(12345);  // Fixed seed for reproducibility
 
     // Initialize zobrist_table
     for (int piece = 0; piece < PIECE_TYPES; piece++) {
         for (int rank = 0; rank < BOARD_SIZE; rank++) {
             for (int file = 0; file < BOARD_SIZE; file++) {
-                zobrist_table[piece][rank][file] = ((uint64_t)rand() << 32) | rand();
+                uint64_t high = ((uint64_t)rand() & 0xFFFF) << 48;
+                uint64_t mid = ((uint64_t)rand() & 0xFFFF) << 32;
+                uint64_t low = ((uint64_t)rand() & 0xFFFFFFFF);
+                zobrist_table[piece][rank][file] = high | mid | low;
             }
         }
     }
@@ -72,7 +80,26 @@ void init_zobrist()
     }
 }
 
-uint64_t calculate_zobrist_hash(board_t* board)
+int piece_to_index(char piece)
+{
+    switch (piece) {
+        case 'P': return 0;  // White Pawn
+        case 'N': return 1;  // White Knight
+        case 'B': return 2;  // White Bishop
+        case 'R': return 3;  // White Rook
+        case 'Q': return 4;  // White Queen
+        case 'K': return 5;  // White King
+        case 'p': return 6;  // Black Pawn
+        case 'n': return 7;  // Black Knight
+        case 'b': return 8;  // Black Bishop
+        case 'r': return 9;  // Black Rook
+        case 'q': return 10; // Black Queen
+        case 'k': return 11; // Black King
+        default:  return -1; // Invalid piece
+    }
+}
+
+uint64_t calculate_zobrist_hash(const board_t* board)
 {
     uint64_t hash = 0;
 
@@ -82,9 +109,11 @@ uint64_t calculate_zobrist_hash(board_t* board)
             square_t square;
             square_from_coords(&square, rank, file);
             char piece = piece_at(board, square);
+
             if (piece != EMPTY_SQUARE) {
-                if (piece >= 0 && piece < PIECE_TYPES) {
-                    hash ^= zobrist_table[piece][rank][file];
+                int piece_index = piece_to_index(piece);
+                if (piece_index >= 0 && piece_index < PIECE_TYPES) {
+                    hash ^= zobrist_table[piece_index][rank][file];
                 } else {
                     fprintf(stderr, "Invalid piece '%c' at rank %d, file %d\n", piece, rank, file);
                 }

@@ -369,4 +369,8 @@ int test_is_attacked_by(const char* fen, const char* square, int attacked_by, ch
     test_is_attacked_by("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", "c6", 0, "b8", "b7", "d7", NULL), \
     test_is_attacked_by("3rkr2/8/4Q3/8/8/8/8/4K3 b - - 0 1", "e8", 1, "e6", NULL)
 
+int test_hash_uniqueness();
+#define TEST_ZOBRIST \
+    test_hash_uniqueness()
+
 #endif // TESTS_H

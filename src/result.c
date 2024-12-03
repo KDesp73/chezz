@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#undef DEBU
+#define DEBU(fmt, ...)
+
 _Bool is_checkmate_color(board_t* board, int color) { 
     size_t valid_count;
     square_t king;

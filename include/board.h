@@ -91,9 +91,9 @@ enum {
     CASTLE_BLACK_QUEENSIDE = 0b1000,
 };
 
-void board_init(board_t* board);
 void board_init_fen(board_t* board, const char* fen);
 void board_init_board(board_t* board, board_t src);
+void board_free(board_t* board);
 
 typedef struct {
     _Bool errors;
@@ -105,12 +105,13 @@ typedef struct {
     _Bool enpassant;
     _Bool halfmove;
     _Bool fullmove;
+    _Bool hash;
 } print_config_t;
 
 #define MINIMAL_CONFIG \
-    (print_config_t) {.errors = 0,.highlights = 0,.turn = 0,.checks = 0, .castling = 0, .enpassant = 0, .halfmove = 0, .fullmove = 0, .coords = 1}
+    (print_config_t) {.errors = 0,.highlights = 0,.turn = 0,.checks = 0, .castling = 0, .enpassant = 0, .halfmove = 0, .fullmove = 0, .hash = 0, .coords = 1}
 #define FULL_CONFIG \
-    (print_config_t) {.errors = 1,.highlights = 1,.turn = 1,.checks = 1, .castling = 1, .enpassant = 1, .halfmove = 1, .fullmove = 1, .coords = 1}
+    (print_config_t) {.errors = 1,.highlights = 1,.turn = 1,.checks = 1, .castling = 1, .enpassant = 1, .halfmove = 1, .fullmove = 1, .hash = 1, .coords = 1}
 
 void board_print(const board_t* board, print_config_t config, square_t* first, ...);
 
