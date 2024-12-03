@@ -20,6 +20,7 @@ int piece_color(char piece)
 _Bool piece_can_attack(board_t* board, square_t attacker, square_t target, _Bool strict)
 {
     if (!board) {
+        DEBU("No board");
         return 0;
     }
 

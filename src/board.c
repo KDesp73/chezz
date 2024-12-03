@@ -395,145 +395,144 @@ _Bool square_is_attacked_coords(const board_t *board, int y, int x, int attacked
     return 0; // Square is not under attack
 }
 
+// square_t** square_is_attacked_by(const board_t* board, square_t square, int attacked_by, size_t* count)
+// {
+//     *count = 0; // Initialize count
+//     square_t** attackers = malloc(64 * sizeof(square_t*));
+//     if (!attackers) return NULL; // Check for malloc failure
+//
+//     for (size_t i = 0; i < BOARD_SIZE; i++) {
+//         for (size_t j = 0; j < BOARD_SIZE; j++) {
+//             square_t current;
+//             square_from_coords(&current, i, j);
+//
+//             char piece = piece_at(board, current);
+//             if (piece == ' ') continue; // Skip empty squares
+//
+//             if (attack_is_valid(board, current, square, 0)) {
+//                 attackers[(*count)++] = square_new_coords(i, j);
+//             } else {
+//                 DEBU("Invalid move %s%s", current.name, square.name);
+//             }
+//         }
+//     }
+//
+//     attackers[*count] = NULL; // Null-terminate the array
+//     return attackers;
+// }
+
 square_t** square_is_attacked_by(const board_t* board, square_t square, int attacked_by, size_t* count)
 {
-    *count = 0; // Initialize count
+    if (!board || square.rank < 1 || square.rank > BOARD_SIZE || 
+        square.file < 1 || square.file > BOARD_SIZE) {
+        return NULL;
+    }
+
+    // Set the enemy piece characters based on the color
+    char enemy_pawn = (attacked_by == PIECE_COLOR_WHITE) ? 'P' : 'p';
+    char enemy_knight = (attacked_by == PIECE_COLOR_WHITE) ? 'N' : 'n';
+    char enemy_rook = (attacked_by == PIECE_COLOR_WHITE) ? 'R' : 'r';
+    char enemy_bishop = (attacked_by == PIECE_COLOR_WHITE) ? 'B' : 'b';
+    char enemy_queen = (attacked_by == PIECE_COLOR_WHITE) ? 'Q' : 'q';
+    char enemy_king = (attacked_by == PIECE_COLOR_WHITE) ? 'K' : 'k';
+
+    // Allocate memory for up to 64 attacking squares (maximum possible)
     square_t** attackers = malloc(64 * sizeof(square_t*));
-    if (!attackers) return NULL; // Check for malloc failure
+    if (!attackers) return NULL;  // Check for malloc failure
 
-    for (size_t i = 0; i < BOARD_SIZE; i++) {
-        for (size_t j = 0; j < BOARD_SIZE; j++) {
-            square_t current;
-            square_from_coords(&current, i, j);
+    size_t attacker_count = 0;
 
-            char piece = piece_at(board, current);
-            if (piece == ' ') continue; // Skip empty squares
+    // Convert rank and file (1->8) to x and y (0->7)
+    int y = square.rank - 1;
+    int x = square.file - 1;
 
-            if (attack_is_valid(board, current, square, 0)) {
-                attackers[(*count)++] = square_new_coords(i, j);
-            } else {
-                DEBU("Invalid move %s%s", current.name, square.name);
-            }
+    // Check for pawn attacks
+    if (attacked_by == PIECE_COLOR_BLACK) { // Black pawn attacks diagonally upwards
+        if (y + 1 < BOARD_SIZE && x - 1 >= 0 && board->grid[y + 1][x - 1] == enemy_pawn) {
+            attackers[attacker_count++] = square_new_coords(y + 1, x - 1);
+        }
+        if (y + 1 < BOARD_SIZE && x + 1 < BOARD_SIZE && board->grid[y + 1][x + 1] == enemy_pawn) {
+            attackers[attacker_count++] = square_new_coords(y + 1, x + 1);
+        }
+    } else { // Attacked by white pawn, attacks diagonally downwards
+        if (y - 1 >= 0 && x - 1 >= 0 && board->grid[y - 1][x - 1] == enemy_pawn) {
+            attackers[attacker_count++] = square_new_coords(y - 1, x - 1);
+        }
+        if (y - 1 >= 0 && x + 1 < BOARD_SIZE && board->grid[y - 1][x + 1] == enemy_pawn) {
+            attackers[attacker_count++] = square_new_coords(y - 1, x + 1);
         }
     }
 
-    attackers[*count] = NULL; // Null-terminate the array
+    // Check for knight attacks
+    int knight_moves[8][2] = {
+        {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+        {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+    };
+    for (int i = 0; i < 8; i++) {
+        int new_y = y + knight_moves[i][0];
+        int new_x = x + knight_moves[i][1];
+        if (new_y >= 0 && new_y < BOARD_SIZE && new_x >= 0 && new_x < BOARD_SIZE &&
+            board->grid[new_y][new_x] == enemy_knight) {
+            attackers[attacker_count++] = square_new_coords(new_y, new_x);
+        }
+    }
+
+    // Check for sliding piece attacks (rook, bishop, and queen)
+    int directions[8][2] = {
+        {0, 1}, {0, -1}, {1, 0}, {-1, 0}, // Rook/Queen directions
+        {1, 1}, {1, -1}, {-1, 1}, {-1, -1} // Bishop/Queen directions
+    };
+    for (int i = 0; i < 8; i++) {
+        for (int j = 1; j < BOARD_SIZE; j++) {
+            int new_y = y + j * directions[i][0];
+            int new_x = x + j * directions[i][1];
+            if (new_y < 0 || new_y >= BOARD_SIZE || new_x < 0 || new_x >= BOARD_SIZE) break;
+            char square = board->grid[new_y][new_x];
+            if (square == EMPTY_SQUARE) continue;
+            if ((i < 4 && (square == enemy_rook || square == enemy_queen)) || // Rook/Queen
+                (i >= 4 && (square == enemy_bishop || square == enemy_queen))) { // Bishop/Queen
+                attackers[attacker_count++] = square_new_coords(new_y, new_x);
+            }
+            break; // Blocked by another piece
+        }
+    }
+
+    // Check for king attacks
+    int king_moves[8][2] = {
+        {1, 1}, {1, 0}, {1, -1},
+        {0, 1},         {0, -1},
+        {-1, 1}, {-1, 0}, {-1, -1}
+    };
+    for (int i = 0; i < 8; i++) {
+        int new_y = y + king_moves[i][0];
+        int new_x = x + king_moves[i][1];
+        if (new_y >= 0 && new_y < BOARD_SIZE && new_x >= 0 && new_x < BOARD_SIZE &&
+            board->grid[new_y][new_x] == enemy_king) {
+            attackers[attacker_count++] = square_new_coords(new_y, new_x);
+        }
+    }
+
+    // Terminate the array
+    attackers[attacker_count] = NULL;
+    *count = attacker_count;
+
+    size_t i = 0;
+    square_t* current = attackers[i];
+
+    while (current != NULL) {
+        if (!attack_is_valid(board, *current, square, 0)) {
+            for (size_t j = i; attackers[j] != NULL; j++) {
+                attackers[j] = attackers[j + 1];
+            }
+            *count -= 1;
+        } else {
+            i++;
+        }
+        current = attackers[i];
+    }
+
     return attackers;
 }
-
-// square_t** square_is_attacked_by(const board_t* board, square_t square, int attacked_by, size_t* count)
-// {
-//     if (!board || square.rank < 1 || square.rank > BOARD_SIZE || 
-//         square.file < 1 || square.file > BOARD_SIZE) {
-//         return NULL;
-//     }
-//
-//     // Set the enemy piece characters based on the color
-//     char enemy_pawn = (attacked_by == PIECE_COLOR_WHITE) ? 'P' : 'p';
-//     char enemy_knight = (attacked_by == PIECE_COLOR_WHITE) ? 'N' : 'n';
-//     char enemy_rook = (attacked_by == PIECE_COLOR_WHITE) ? 'R' : 'r';
-//     char enemy_bishop = (attacked_by == PIECE_COLOR_WHITE) ? 'B' : 'b';
-//     char enemy_queen = (attacked_by == PIECE_COLOR_WHITE) ? 'Q' : 'q';
-//     char enemy_king = (attacked_by == PIECE_COLOR_WHITE) ? 'K' : 'k';
-//
-//     // Allocate memory for up to 64 attacking squares (maximum possible)
-//     square_t** attackers = malloc(64 * sizeof(square_t*));
-//     if (!attackers) return NULL;  // Check for malloc failure
-//
-//     size_t attacker_count = 0;
-//
-//     // Convert rank and file (1->8) to x and y (0->7)
-//     int y = square.rank - 1;
-//     int x = square.file - 1;
-//
-//     // Check for pawn attacks
-//     if (attacked_by == PIECE_COLOR_BLACK) { // Black pawn attacks diagonally upwards
-//         if (y + 1 < BOARD_SIZE && x - 1 >= 0 && board->grid[y + 1][x - 1] == enemy_pawn) {
-//             attackers[attacker_count++] = square_new_coords(y + 1, x - 1);
-//         }
-//         if (y + 1 < BOARD_SIZE && x + 1 < BOARD_SIZE && board->grid[y + 1][x + 1] == enemy_pawn) {
-//             attackers[attacker_count++] = square_new_coords(y + 1, x + 1);
-//         }
-//     } else { // Attacked by white pawn, attacks diagonally downwards
-//         if (y - 1 >= 0 && x - 1 >= 0 && board->grid[y - 1][x - 1] == enemy_pawn) {
-//             attackers[attacker_count++] = square_new_coords(y - 1, x - 1);
-//         }
-//         if (y - 1 >= 0 && x + 1 < BOARD_SIZE && board->grid[y - 1][x + 1] == enemy_pawn) {
-//             attackers[attacker_count++] = square_new_coords(y - 1, x + 1);
-//         }
-//     }
-//
-//     // Check for knight attacks
-//     int knight_moves[8][2] = {
-//         {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
-//         {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
-//     };
-//     for (int i = 0; i < 8; i++) {
-//         int new_y = y + knight_moves[i][0];
-//         int new_x = x + knight_moves[i][1];
-//         if (new_y >= 0 && new_y < BOARD_SIZE && new_x >= 0 && new_x < BOARD_SIZE &&
-//             board->grid[new_y][new_x] == enemy_knight) {
-//             attackers[attacker_count++] = square_new_coords(new_y, new_x);
-//         }
-//     }
-//
-//     // Check for sliding piece attacks (rook, bishop, and queen)
-//     int directions[8][2] = {
-//         {0, 1}, {0, -1}, {1, 0}, {-1, 0}, // Rook/Queen directions
-//         {1, 1}, {1, -1}, {-1, 1}, {-1, -1} // Bishop/Queen directions
-//     };
-//     for (int i = 0; i < 8; i++) {
-//         for (int j = 1; j < BOARD_SIZE; j++) {
-//             int new_y = y + j * directions[i][0];
-//             int new_x = x + j * directions[i][1];
-//             if (new_y < 0 || new_y >= BOARD_SIZE || new_x < 0 || new_x >= BOARD_SIZE) break;
-//             char square = board->grid[new_y][new_x];
-//             if (square == EMPTY_SQUARE) continue;
-//             if ((i < 4 && (square == enemy_rook || square == enemy_queen)) || // Rook/Queen
-//                 (i >= 4 && (square == enemy_bishop || square == enemy_queen))) { // Bishop/Queen
-//                 attackers[attacker_count++] = square_new_coords(new_y, new_x);
-//             }
-//             break; // Blocked by another piece
-//         }
-//     }
-//
-//     // Check for king attacks
-//     int king_moves[8][2] = {
-//         {1, 1}, {1, 0}, {1, -1},
-//         {0, 1},         {0, -1},
-//         {-1, 1}, {-1, 0}, {-1, -1}
-//     };
-//     for (int i = 0; i < 8; i++) {
-//         int new_y = y + king_moves[i][0];
-//         int new_x = x + king_moves[i][1];
-//         if (new_y >= 0 && new_y < BOARD_SIZE && new_x >= 0 && new_x < BOARD_SIZE &&
-//             board->grid[new_y][new_x] == enemy_king) {
-//             attackers[attacker_count++] = square_new_coords(new_y, new_x);
-//         }
-//     }
-//
-//     // Terminate the array
-//     attackers[attacker_count] = NULL;
-//     *count = attacker_count;
-//
-//     size_t i = 0;
-//     square_t* current = attackers[i];
-//
-//     while (current != NULL) {
-//         if (!move_is_valid(board, *current, square)) {
-//             DEBU("Invalid move %s%s", current->name, square.name);
-//             for (size_t j = i; attackers[j] != NULL; j++) {
-//                 attackers[j] = attackers[j + 1];
-//             }
-//             *count -= 1;
-//         } else {
-//             i++;
-//         }
-//         current = attackers[i];
-//     }
-//
-//     return attackers;
-// }
 
 void find_king(square_t* square, const board_t* board, int color)
 {

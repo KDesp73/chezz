@@ -1,4 +1,5 @@
 #include "board.h"
+#include "extern/clib.h"
 #include "piece.h"
 #include "square.h"
 #include "tests.h"
@@ -9,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define PIECES
+// #define PIECES
 
 int test_is_attacked_by(const char* fen, const char* square, int attacked_by, char* first, ...)
 {
@@ -21,6 +22,7 @@ int test_is_attacked_by(const char* fen, const char* square, int attacked_by, ch
 
     size_t moves_count = 0;
     square_t** moves = square_is_attacked_by(&board, sqr, attacked_by, &moves_count);
+
 #ifdef PIECES
     printf("Found: ");
     for (size_t i = 0; i < moves_count; i++) {

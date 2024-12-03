@@ -131,7 +131,7 @@ _Bool pawn_can_attack(board_t* board, square_t piece, square_t target, _Bool str
     }
 
     // Validate there is a piece at the source square
-    if (strict && _piece == ' ') {
+    if (_piece == ' ') {
         board->error = ERROR_EMPTY_SQUARE;
         return 0;
     }
@@ -167,6 +167,7 @@ _Bool pawn_can_attack(board_t* board, square_t piece, square_t target, _Bool str
             return 1;
         }
 
+        if(!strict) return 1;
         board->error = ERROR_EMPTY_SQUARE; // No valid piece to attack
         return 0;
     }
