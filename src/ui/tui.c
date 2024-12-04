@@ -12,6 +12,9 @@
 
 void tui_run(const char* fen)
 {
+    game_t game;
+    game_init(&game, NULL, "KDesp73 Chess", NULL, NULL, fen);
+
     board_t board;
     board_init_fen(&board, fen);
     clib_ansi_clear_screen();
@@ -62,8 +65,7 @@ void tui_run(const char* fen)
             continue;
         }
 
-        printf("%s\n", san.move);
-        sleep(2);
+        game_add_move(&game, san);
 
         clib_ansi_clear_screen();
         PRINT_FULL(&board, &from_square, &to_square, NULL);
@@ -71,6 +73,12 @@ void tui_run(const char* fen)
         if(board.result > 0){
             printf("%s %s\n", result_message[board.result], result_score[board.result]);
             board_free(&board);
+
+            game_set_result(&game, result_score[board.result]);
+            char pgn_string[2048];
+            pgn_export(&game, pgn_string);
+
+            printf("PGN:\n%s\n", pgn_string);
             return;
         }
     }

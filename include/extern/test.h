@@ -7,8 +7,11 @@
 #define END -1
 int test(int first, ...);
 
+#undef ANSI_RED
 #define ANSI_RED "\e[0;31m"
+#undef ANSI_RESET
 #define ANSI_RESET "\e[0;39m"
+#undef ANSI_GREEN
 #define ANSI_GREEN "\e[0;32m"
 
 #define FAIL(fmt, ...) \

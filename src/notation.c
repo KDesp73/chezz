@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#undef DEBU
+#define DEBU(fmt, ...)
+
 _Bool is_number(const char* str) {
     if (str == NULL || *str == '\0') {
         return false; // Null or empty string is not a number
@@ -202,14 +205,22 @@ void fen_export(board_t* board, char fen[]) {
             fullmove_number);      // Fullmove number
 }
 
+#define IS_EMPTY(x) (x[0] == '\0')
+
 void pgn_export(game_t* game, char* pgn)
 {
-    sprintf(pgn, "[Event \"%s\"]\n", game->event);
-    sprintf(pgn + strlen(pgn), "[Site \"%s\"]\n", game->site);
-    sprintf(pgn + strlen(pgn), "[Date \"%s\"]\n", game->date);
-    sprintf(pgn + strlen(pgn), "[White \"%s\"]\n", game->white);
-    sprintf(pgn + strlen(pgn), "[Black \"%s\"]\n", game->black);
-    sprintf(pgn + strlen(pgn), "[Result \"%s\"]\n", game->result);
+    sprintf(pgn, "[Event \"%s\"]\n", IS_EMPTY(game->event) ? "??" : game->event);
+    sprintf(pgn + strlen(pgn), "[Site \"%s\"]\n", IS_EMPTY(game->site) ? "??" : game->site);
+    sprintf(pgn + strlen(pgn), "[Date \"%s\"]\n", IS_EMPTY(game->date) ? "????.??.??" : game->date);
+
+    if(!IS_EMPTY(game->fen) && !STREQ(game->fen, STARTING_FEN))
+        sprintf(pgn + strlen(pgn), "[FEN \"%s\"]\n", game->fen);
+
+    sprintf(pgn + strlen(pgn), "[White \"%s\"]\n", IS_EMPTY(game->white) ? "??" : game->white);
+    sprintf(pgn + strlen(pgn), "[Black \"%s\"]\n", IS_EMPTY(game->black) ? "??" : game->black);
+
+    sprintf(pgn + strlen(pgn), "[Result \"%s\"]\n", IS_EMPTY(game->result) ? "*" : game->result);
+
     sprintf(pgn + strlen(pgn), "\n");
 
     for (int i = 0; i < game->move_count; i++) {
@@ -219,6 +230,7 @@ void pgn_export(game_t* game, char* pgn)
             sprintf(pgn + strlen(pgn), "%s ", game->moves[i].move);
         }
     }
+    sprintf(pgn + strlen(pgn), "%s", IS_EMPTY(game->result) ? "*" : game->result);
     sprintf(pgn + strlen(pgn), "\n");
 }
 
@@ -287,51 +299,192 @@ void move_to_san(board_t* board, square_t from, square_t to, char promotion, san
     // Build SAN string
     if (piece_letter != '\0') {
         san->move[0] = piece_letter;
-        san->move[1] = '\0';
+        san->move[1] = '\0'; // Ensure proper termination
     } else {
         san->move[0] = '\0';
     }
-    DEBU("san: %s", san->move);
+    DEBU("Initial san: %s", san->move);
 
-    // Check if there is a need to specify file, rank or both
-
+    // Check if there is a need to specify file, rank, or both
     if (tolower(piece) == 'p') {
         // If the move is a pawn capture
         if (is_capture) {
-            // Specify the file if there is ambiguity
+            // Specify the file to disambiguate
             san->move[0] = 'a' + from.x;
             san->move[1] = 'x';
+            san->move[2] = '\0'; // Ensure proper termination
         }
+        DEBU("After disambiguation san: %s", san->move);
     } else {
-        // TODO: solve disambiguations
+        size_t ambiguities_count = 0;
+        square_t** ambiguities = malloc(sizeof(square_t*) * 16); // Max number of ambiguities
 
-        if(is_capture) {
-            strcat(san->move, "x");
+        for (size_t rank = 0; rank < BOARD_SIZE; rank++) {
+            for (size_t file = 0; file < BOARD_SIZE; file++) {
+                square_t current;
+                square_from_coords(&current, rank, file);
+
+                // Skip empty squares
+                if (board->grid[rank][file] == ' ') continue;
+
+                // Skip our piece
+                if (from.y == rank && from.x == file) continue;
+
+                if (
+                    piece == piece_at(board, current) &&
+                    move_is_valid(board, current, to)
+                ) {
+                    ambiguities[ambiguities_count++] = square_new_coords(rank, file);
+                }
+            }
+        }
+
+        size_t ambiguity_count = 0;
+        square_t* single_ambiguity = NULL;
+        for (size_t i = 0; i < ambiguities_count; i++) {
+            if (
+                (from.x == ambiguities[i]->x || from.y == ambiguities[i]->y) ||
+                (tolower(piece) == 'n')
+            ) {
+                single_ambiguity = ambiguities[i];
+                ambiguity_count++;
+            }
+        }
+
+        if (tolower(piece) == 'n' && !ambiguity_count && ambiguities_count)
+            ambiguity_count = ambiguities_count;
+
+        char disambiguation[3] = "";
+        DEBU("ambiguity count: %zu", ambiguity_count);
+        DEBU("ambiguities count: %zu", ambiguities_count);
+        switch (ambiguity_count) {
+        case 1:
+            if (from.rank == single_ambiguity->rank) {
+                sprintf(disambiguation, "%c", 'a' + (int)from.x);  // File disambiguation
+            } else if (from.file == single_ambiguity->file) {
+                sprintf(disambiguation, "%zu", from.rank);  // Rank disambiguation
+            } else if (tolower(piece) == 'n') {
+                sprintf(disambiguation, "%c", 'a' + (int)from.x);
+            }
+            break;
+        case 0:
+            break;
+        default:
+            sprintf(disambiguation, "%s", from.name);
+            break;
+        }
+        strcat(san->move, disambiguation); // Proper termination ensured by strcat
+        DEBU("After disambiguation san: %s", san->move);
+
+        squares_free(&ambiguities, ambiguities_count);
+
+        if (is_capture) {
+            strcat(san->move, "x"); // Proper termination ensured by strcat
         }
     }
-    DEBU("san: %s", san->move);
+    DEBU("After takes san: %s", san->move);
 
-    strcat(san->move, target_square);
-    DEBU("san: %s", san->move);
+    strcat(san->move, target_square); // Proper termination ensured by strcat
+    DEBU("After target san: %s", san->move);
 
     // Promotion
-    if(pawn_is_promoting(board, from, to)){
+    if (pawn_is_promoting(board, from, to)) {
         if (promotion) {
             char promo[3] = {'=', toupper(promotion), '\0'};
-            strcat(san->move, promo);
+            strcat(san->move, promo); // Proper termination ensured by strcat
         }
     }
-    DEBU("san: %s", san->move);
+    DEBU("After promotion san: %s", san->move);
 
     board_t temp;
     board_init_board(&temp, *board);
     move(&temp, from, to, promotion);
 
-    if(is_checkmate(&temp)){
-        strcat(san->move, "#");
-    } else if(in_check(&temp, !color)){
-        strcat(san->move, "+");
+    if (is_checkmate(&temp)) {
+        strcat(san->move, "#"); // Proper termination ensured by strcat
+    } else if (in_check(&temp, !color)) {
+        strcat(san->move, "+"); // Proper termination ensured by strcat
     }
-    DEBU("san: %s", san->move);
+    DEBU("After mate or check san: %s", san->move);
+}
 
+void get_current_date(char* buffer, size_t buffer_size)
+{
+    time_t t = time(NULL);
+    struct tm* tm_info = localtime(&t);
+
+    // Format the date as YYYY.MM.DD
+    strftime(buffer, buffer_size, "%Y.%m.%d", tm_info);
+}
+
+void game_init(game_t* game, 
+    const char* event,
+    const char* site,
+    const char* white,
+    const char* black,
+    const char* fen
+)
+{
+    if(!event) game->event[0] = '\0';
+    else game_set_event(game, event);
+
+    if(!site) game->site[0] = '\0';
+    else game_set_site(game, site);
+
+    get_current_date(game->date, MAX_HEADER_LENGTH);
+
+    if(!white) game->white[0] = '\0';
+    else game_set_white(game, white);
+
+    if(!black) game->black[0] = '\0';
+    else game_set_black(game, black);
+
+    if(!fen) game->fen[0] = '\0';
+    else game_set_fen(game, fen);
+}
+
+void game_add_move(game_t* game, san_move_t move)
+{
+    if(game->move_count >= MAX_MOVES){
+        ERRO("Maximum number of moves reached");
+        return;
+    }
+    game->moves[game->move_count++] = move;
+}
+
+void game_set_event(game_t* game, const char* event)
+{
+    if(!event) return;
+    strcpy(game->event, event);
+}
+
+void game_set_site(game_t* game, const char* site)
+{
+    if(!site) return;
+    strcpy(game->site, site);
+}
+void game_set_date(game_t* game, const char* date)
+{
+    if(!date) return;
+    strcpy(game->date, date);
+}
+void game_set_white(game_t* game, const char* white)
+{
+    if(!white) return;
+    strcpy(game->white, white);
+}
+void game_set_black(game_t* game, const char* black)
+{
+    if(!black) return;
+    strcpy(game->black, black);
+}
+void game_set_fen(game_t* game, const char* fen)
+{
+    if(!fen) return;
+    strcpy(game->fen, fen);
+}
+void game_set_result(game_t* game, const char* result)
+{
+    if(!result) return;
+    strcpy(game->result, result);
 }

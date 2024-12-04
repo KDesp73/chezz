@@ -392,7 +392,14 @@ int test_move_to_san(const char* fen, const char* move, const char* expected);
     test_move_to_san("8/8/5R2/1k6/8/1r6/5R2/2K5 w - - 0 1", "f6f4", "R6f4"), \
     test_move_to_san("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1", "f2e3", "Qf2e3"), \
     test_move_to_san("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1", "e2e3", "Qee3"), \
-    test_move_to_san("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1", "f3e3", "Q3e3")
+    test_move_to_san("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1", "f3e3", "Q3e3"), \
+    test_move_to_san("1k6/7P/8/1K6/8/8/8/8 w - - 0 1", "h7h8Q", "h8=Q+"), \
+    test_move_to_san("1k6/7P/8/1K6/8/8/8/8 w - - 0 1", "h7h8R", "h8=R+"), \
+    test_move_to_san("1k6/7P/8/1K6/8/8/8/8 w - - 0 1", "h7h8B", "h8=B"), \
+    test_move_to_san("rnbqkbnr/1pp1ppp1/7p/p1PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1", "c5d6", "cxd6"), \
+    test_move_to_san("rnbqkbnr/1pp1ppp1/7p/p1PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1", "c5d6", "cxd6"), \
+    test_move_to_san("rnbqkbnr/1pp1ppp1/7p/p1PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1", "e5d6", "exd6"), \
+    test_move_to_san("rnbqkbnr/1pp1ppp1/7p/p1Pp4/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1", "c5d6", "cxd6")
 
 
 #endif // TESTS_H
