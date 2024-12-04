@@ -1,5 +1,6 @@
 #include "notation.h"
 #include "board.h"
+#define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 #include "move.h"
 #include "piece.h"
@@ -216,8 +217,8 @@ void pgn_export(game_t* game, char* pgn)
     if(!IS_EMPTY(game->fen) && !STREQ(game->fen, STARTING_FEN))
         sprintf(pgn + strlen(pgn), "[FEN \"%s\"]\n", game->fen);
 
-    sprintf(pgn + strlen(pgn), "[White \"%s\"]\n", IS_EMPTY(game->white) ? "??" : game->white);
-    sprintf(pgn + strlen(pgn), "[Black \"%s\"]\n", IS_EMPTY(game->black) ? "??" : game->black);
+    sprintf(pgn + strlen(pgn), "[White \"%s\"]\n", IS_EMPTY(game->white) ? "Player 1" : game->white);
+    sprintf(pgn + strlen(pgn), "[Black \"%s\"]\n", IS_EMPTY(game->black) ? "Player 2" : game->black);
 
     sprintf(pgn + strlen(pgn), "[Result \"%s\"]\n", IS_EMPTY(game->result) ? "*" : game->result);
 
@@ -272,6 +273,11 @@ void pgn_import(game_t* game, const char* pgn) {
         token = strtok(NULL, "\n");
     }
     game->move_count = move_count;
+}
+
+void pgn_export_file(game_t* game, const char* path)
+{
+
 }
 
 void move_to_san(board_t* board, square_t from, square_t to, char promotion, san_move_t* san)
@@ -425,6 +431,8 @@ void game_init(game_t* game,
     const char* fen
 )
 {
+    game->move_count = 0;
+
     if(!event) game->event[0] = '\0';
     else game_set_event(game, event);
 

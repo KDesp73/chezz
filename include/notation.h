@@ -45,6 +45,7 @@ void game_set_result(game_t* game, const char* result);
 
 void pgn_import(game_t* game, const char* pgn);
 void pgn_export(game_t* game, char* pgn);
+void pgn_export_file(game_t* game, const char* path);
 
 void move_to_san(board_t* board, square_t from, square_t to, char promotion, san_move_t* san);
 

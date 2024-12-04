@@ -232,7 +232,7 @@ square_t** valid_moves(board_t* board, square_t piece, size_t* count)
     return moves;
 }
 
-_Bool move_name(board_t* board, const char* move_str)
+_Bool move_name(board_t* board, game_t* game, const char* move_str)
 {
     if (strlen(move_str) != 4 && strlen(move_str) != 5) {
         printf("Invalid move_str format. Use 4 or 5 characters (e.g., e2e4 or h7h8Q).\n");
@@ -250,6 +250,17 @@ _Bool move_name(board_t* board, const char* move_str)
     square_from_name(&from_square, from);
     square_from_name(&to_square, to);
 
-    return move(board, from_square, to_square, promotion);
+    san_move_t san;
+    move_to_san(board, from_square, to_square, promotion, &san);
+    _Bool ret = move(board, from_square, to_square, promotion);
+
+    if(ret) {
+        game_add_move(game, san);
+        if(board->result != 0) {
+            game_set_result(game, result_score[board->result]);
+        }
+    }
+
+    return ret;
 }
 
