@@ -1,5 +1,6 @@
 #include "notation.h"
 #include "board.h"
+#include "ui.h"
 #define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 #include "move.h"
@@ -9,8 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
-// #undef DEBU
-// #define DEBU(fmt, ...)
+#undef DEBU
+#define DEBU(fmt, ...)
 
 _Bool is_number(const char* str) {
     if (str == NULL || *str == '\0') {
@@ -604,4 +605,63 @@ void game_set_result(game_t* game, const char* result)
 {
     if(!result) return;
     strcpy(game->result, result);
+}
+
+void game_print(game_t game)
+{
+    printf("[Event \"%s\"]\n", IS_EMPTY(game.event) ? "??" : game.event);
+    printf("[Site \"%s\"]\n", IS_EMPTY(game.site) ? "??" : game.site);
+    printf("[Date \"%s\"]\n", IS_EMPTY(game.date) ? "????.??.??" : game.date);
+
+    if(!IS_EMPTY(game.fen) && !STREQ(game.fen, STARTING_FEN))
+        printf("[FEN \"%s\"]\n", game.fen);
+
+    printf("[White \"%s\"]\n", IS_EMPTY(game.white) ? "Player 1" : game.white);
+    printf("[Black \"%s\"]\n", IS_EMPTY(game.black) ? "Player 2" : game.black);
+
+    printf("[Result \"%s\"]\n", IS_EMPTY(game.result) ? "*" : game.result);
+
+    printf("\n");
+
+    for (int i = 0; i < game.move_count; i++) {
+        if (i % 2 == 0) {
+            printf("%d. %s ", (i / 2) + 1, game.moves[i].move);
+        } else {
+            printf("%s ", game.moves[i].move);
+        }
+    }
+    printf("%s", IS_EMPTY(game.result) ? "*" : game.result);
+    printf("\n");
+}
+
+void press_enter_to_continue()
+{
+    printf("Press Enter to continue...\n");
+    getchar();  // Waits for the user to press Enter
+}
+
+void game_run(game_t game)
+{
+    board_t board;
+    board_init_fen(&board, IS_EMPTY(game.fen) ? NULL : game.fen);
+    clib_ansi_clear_screen();
+    PRINT_FULL(&board, NULL);
+    press_enter_to_continue();
+
+    for(size_t i = 0; i < game.move_count; i++) {
+        square_t from, to;
+        char promotion;
+
+        INFO("move: %s", game.moves[i].move);
+        san_to_move(&board, game.moves[i], &from, &to, &promotion);
+
+        if(!move(&board, from, to, promotion)){
+            ERRO("Invalid pgn. Move %s is not valid", game.moves[i].move);
+            return;
+        }
+
+        clib_ansi_clear_screen();
+        PRINT_FULL(&board, &from, &to, NULL);
+        press_enter_to_continue();
+    }
 }

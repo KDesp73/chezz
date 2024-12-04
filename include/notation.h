@@ -34,6 +34,8 @@ void game_init(game_t* game,
     const char* fen
 );
 
+void game_run(game_t game);
+void game_print(game_t game);
 void game_add_move(game_t* game, san_move_t move);
 void game_set_event(game_t* game, const char* event);
 void game_set_site(game_t* game, const char* site);

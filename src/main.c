@@ -44,6 +44,10 @@ int main(int argc, char** argv){
     pgn_export(&game, pgn);
     printf("\n%s\n", pgn);
 
+    game_t new_game;
+    pgn_import(&new_game, pgn);
+
+    game_run(new_game);
 
     return 0;
 }

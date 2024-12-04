@@ -14,9 +14,6 @@ int test_san_to_move(const char* fen, const char* san, const char* expected_move
     san_move_t san_move;
     strcpy(san_move.move, san);
 
-    INFO("san: %s", san);
-    INFO("expected: %s", expected_move);
-
     char from[3], to[3], expected_promotion;
     strncpy(from, expected_move, 2);
     from[2] = '\0';
