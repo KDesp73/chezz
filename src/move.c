@@ -1,5 +1,6 @@
 #include "move.h"
 #include "board.h"
+#include <stdint.h>
 #define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 #include "piece.h"
@@ -29,12 +30,14 @@ _Bool move(board_t *board, square_t from, square_t to, char promotion)
 
     size_t piece_count_before = number_of_pieces(board, PIECE_COLOR_NONE); // Count all pieces before the move
 
-    update_castling_rights(board, from);
+    uint8_t castling_rights_to_revoke = update_castling_rights(board, from);
     char* enpassant_square = update_enpassant_square(board, from, to);
 
     // Execute the move
     if(king_is_castling(board, from, to)){ 
+        DEBU("King is castling");
         if(!king_can_castle(board, from, to)){
+            DEBU("King can't castle");
             board->error = ERROR_INVALID_MOVE;
             return 0;
         }
@@ -53,6 +56,8 @@ _Bool move(board_t *board, square_t from, square_t to, char promotion)
     } else {
         move_freely(board, from, to);
     }
+
+    revoke_castling_rights(board, castling_rights_to_revoke);
     strncpy(board->enpassant_square, enpassant_square, 3);
 
     size_t piece_count_after = number_of_pieces(board, PIECE_COLOR_NONE);

@@ -245,7 +245,8 @@ int test_move_is_valid(const char* fen, const char* from, const char* to, _Bool 
     test_move_is_valid("rnbqkbnr/pppp1pp1/8/4p3/4P1Pp/PP6/2PP1P1P/RNBQKBNR b KQkq g3 0 1", "h4", "g3", 1), \
     test_move_is_valid("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR b kq - 0 1", "f7", "f6", 0), \
     test_move_is_valid("r3kbnr/ppNp1ppp/4b3/1B1Pp2q/4nP2/4P1P1/PPP4P/R1BQK1NR b kq - 0 1", "f7", "f5", 0), \
-    test_move_is_valid("8/5p1p/6k1/6Q1/7P/8/8/3K4 b - - 0 1", "g6", "g7", 0)
+    test_move_is_valid("8/5p1p/6k1/6Q1/7P/8/8/3K4 b - - 0 1", "g6", "g7", 0), \
+    test_move_is_valid("r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 5 4", "e1", "g1", 1)
 
 
 int test_pawn_is_enpassanting(const char* fen, const char* from, const char* to, _Bool expected);
@@ -290,7 +291,8 @@ int test_move(const char* fen, const char* from, const char* to, _Bool expected)
     test_move("r3k2r/8/8/4q3/8/8/8/R3K2R w KQkq - 0 1", "e1", "c1", 0), \
     test_move("r3k2r/8/8/8/8/6q1/5N2/R3K2R w KQkq - 0 1", "e1", "c1", 1), \
     test_move("r3k2r/8/8/8/8/6q1/5N2/R3K2R w KQkq - 0 1", "e1", "g1", 0), \
-    test_move("r3k2r/8/8/8/8/6q1/5N2/R3K2R w KQkq - 0 1", "f2", "e4", 0)
+    test_move("r3k2r/8/8/8/8/6q1/5N2/R3K2R w KQkq - 0 1", "f2", "e4", 0), \
+    test_move("r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 5 4", "e1", "g1", 1)
 
 int test_king_in_check(const char* fen, int color, _Bool expected);
 #define TEST_KING_IN_CHECK \

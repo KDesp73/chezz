@@ -91,29 +91,36 @@ int main(int argc, char** argv){
             // TEST_IS_PINNED,
             // TEST_PAWN_IS_ENPASSANTING,
             // TEST_PAWN_CAN_ENPASSANT,
-            // TEST_MOVE,
+            TEST_MOVE,
             // TEST_KING_IN_CHECK,
             // TEST_BOARD_INIT_FEN,
             // TEST_INSUFFICIENT_MATERIAL,
             // TEST_MOVE_IS_VALID,
             // TEST_VALID_MOVES,
             // TEST_STALEMATE,
-            TEST_CHECKMATE,
+            // TEST_CHECKMATE,
             // TEST_IS_ATTACKED_BY,
             // TEST_ZOBRIST,
             END
         );
     }
 
+    run(NULL);
+
     board_t board;
     board_init_fen(&board, STARTING_FEN);
     MOVE(&board, "e2e4");
     MOVE(&board, "e7e5");
+    MOVE(&board, "g1f3");
+    MOVE(&board, "b8c6");
+    MOVE(&board, "f1c4");
+    MOVE(&board, "g8f6");
+    MOVE(&board, "e1g1");
 
     char fen[256];
     fen_export(&board, fen);
 
-    INFO("fen: %s", fen);
+    printf("%s\n", fen);
 
     return 0;
 }

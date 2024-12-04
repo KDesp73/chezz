@@ -146,7 +146,7 @@ _Bool in_check(const board_t* board, int color);
     in_check(board, color)
 
 char* update_enpassant_square(board_t* board, square_t from, square_t to);
-void update_castling_rights(board_t* board, square_t from);
+uint8_t update_castling_rights(board_t* board, square_t from);
 void update_halfmove(board_t* board, square_t from, square_t to, size_t piece_count_before, size_t piece_count_after, char piece);
 
 size_t number_of_pieces(const board_t* board, int color);

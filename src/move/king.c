@@ -182,7 +182,7 @@ _Bool king_is_castling(const board_t* board, square_t from, square_t to)
 {
     char piece = piece_at((board_t*) board, from);
 
-    if (tolower(piece) != 'p')  return 0;
+    if (tolower(piece) != 'k')  return 0;
 
     int color = piece_color(piece);
 
@@ -193,15 +193,20 @@ _Bool king_is_castling(const board_t* board, square_t from, square_t to)
 _Bool king_can_castle(board_t* board, square_t from, square_t to)
 {
     // King is not in a starting square
-    if (strcmp(from.name, "e1") && strcmp(from.name, "e8")) 
+    if (strcmp(from.name, "e1") && strcmp(from.name, "e8")) {
+        DEBU("Not on a starting square");
         return 0;
+    }
 
 
     char piece = piece_at(board, from);
     int color = piece_color(piece);
     int file_diff = (int) from.file - (int) to.file;
 
-    if(IN_CHECK(board, color)) return 0;
+    if(IN_CHECK(board, color)) {
+        DEBU("In check");
+        return 0;
+    }
 
     if (color == PIECE_COLOR_WHITE) {
         return (file_diff == -2 && has_castling_rights(board, CASTLE_WHITE_KINGSIDE)) ||
@@ -226,11 +231,11 @@ void king_castle(board_t* board, square_t from, square_t to)
     square_from_name(&kingside_rook_target, color == PIECE_COLOR_WHITE ? "f1" : "f8");
     square_from_name(&queenside_rook_target, color == PIECE_COLOR_WHITE ? "d1" : "d8");
 
+    DEBU("filediff: %d", file_diff);
+    move_freely(board, from, to);
     if(file_diff == -2){
-        move_freely(board, from, to);
-        move_freely(board,kingside_rook, kingside_rook_target);
+        move_freely(board, kingside_rook, kingside_rook_target);
     } else if(file_diff == 2){
-        move_freely(board, from, to);
-        move_freely(board,queenside_rook, queenside_rook_target);
+        move_freely(board, queenside_rook, queenside_rook_target);
     }
 }

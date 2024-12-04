@@ -466,22 +466,24 @@ no_enpassant:
     return strdup("-");
 }
 
-void update_castling_rights(board_t* board, square_t from)
+uint8_t update_castling_rights(board_t* board, square_t from)
 {
     char piece = piece_at(board, from);
     int color = piece_color(piece);
 
     // Moving a rook
     if(tolower(piece) == 'r'){
-        if(color == PIECE_COLOR_WHITE && !strcmp(from.name, "h1")) revoke_castling_rights(board, CASTLE_WHITE_KINGSIDE);
-        else if(color == PIECE_COLOR_WHITE && !strcmp(from.name, "a1")) revoke_castling_rights(board, CASTLE_WHITE_QUEENSIDE);
-        else if(color == PIECE_COLOR_BLACK && !strcmp(from.name, "h8")) revoke_castling_rights(board, CASTLE_BLACK_KINGSIDE);
-        else if(color == PIECE_COLOR_BLACK && !strcmp(from.name, "a8")) revoke_castling_rights(board, CASTLE_BLACK_QUEENSIDE);
+        if(color == PIECE_COLOR_WHITE && !strcmp(from.name, "h1")) return CASTLE_WHITE_KINGSIDE;
+        else if(color == PIECE_COLOR_WHITE && !strcmp(from.name, "a1")) return CASTLE_WHITE_QUEENSIDE;
+        else if(color == PIECE_COLOR_BLACK && !strcmp(from.name, "h8")) return CASTLE_BLACK_KINGSIDE;
+        else if(color == PIECE_COLOR_BLACK && !strcmp(from.name, "a8")) return CASTLE_BLACK_QUEENSIDE;
     } else if(piece == 'k'){
-        revoke_castling_rights(board, 0b1100);
+        return 0b1100;
     } else if(piece == 'K'){
-        revoke_castling_rights(board, 0b0011);
+        return 0b0011;
     }
+
+    return 0b0000;
 }
 
 void update_halfmove(board_t* board, square_t from, square_t to, size_t piece_count_before, size_t piece_count_after, char piece)
