@@ -104,33 +104,6 @@ void board_init_fen(board_t* board, const char* fen);
 void board_init_board(board_t* board, board_t src);
 void board_free(board_t* board);
 
-typedef struct {
-    _Bool errors;
-    _Bool highlights;
-    _Bool turn;
-    _Bool checks;
-    _Bool coords;
-    _Bool castling;
-    _Bool enpassant;
-    _Bool halfmove;
-    _Bool fullmove;
-    _Bool hash;
-} print_config_t;
-
-#define MINIMAL_CONFIG \
-    (print_config_t) {.errors = 0,.highlights = 0,.turn = 0,.checks = 0, .castling = 0, .enpassant = 0, .halfmove = 0, .fullmove = 0, .hash = 0, .coords = 1}
-#define FULL_CONFIG \
-    (print_config_t) {.errors = 1,.highlights = 1,.turn = 1,.checks = 1, .castling = 1, .enpassant = 1, .halfmove = 1, .fullmove = 1, .hash = 1, .coords = 1}
-
-void board_print(const board_t* board, print_config_t config, square_t* first, ...);
-
-#define PRINT_PLAIN(board) \
-    board_print(board, MINIMAL_CONFIG, NULL)
-#define PRINT_FULL(board, first, ...) \
-    board_print(board, FULL_CONFIG, first, ##__VA_ARGS__)
-
-void print_castling_rights(const board_t* board);
-
 int has_castling_rights(const board_t* board, uint8_t castling_right);
 void revoke_castling_rights(board_t* board, uint8_t castling_rights);
 

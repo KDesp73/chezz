@@ -1,4 +1,5 @@
 #include "board.h"
+#include "ui.h"
 #include "tests.h"
 #include "extern/test.h"
 

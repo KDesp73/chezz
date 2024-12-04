@@ -53,6 +53,7 @@ $(BUILD_DIR): ## Create the build directory if it doesn't exist
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DIR)/test
 	mkdir -p $(BUILD_DIR)/move
+	mkdir -p $(BUILD_DIR)/ui
 
 $(TARGET): $(OBJ_FILES) ## Build the shell executable
 	@echo "[INFO] Building the project"

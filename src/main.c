@@ -1,6 +1,6 @@
 #include "board.h"
 #include "move.h"
-#include "notation.h"
+#include "ui.h"
 #include "piece.h"
 #include <stdint.h>
 #include <string.h>
@@ -14,67 +14,6 @@
 #include <stdlib.h>
 #include "tests.h"
 #include <inttypes.h>
-
-void run(const char* fen)
-{
-    board_t board;
-    board_init_fen(&board, fen);
-    clib_ansi_clear_screen();
-    PRINT_FULL(&board, NULL);
-
-    while (1) {
-        char move_input[6]; // +1 for \0, +1 for safety
-        printf("Enter move (e.g., e2e4): ");
-        if (scanf("%5s", move_input) != 1) {
-            printf("Invalid input. Try again.\n");
-            continue;
-        }
-
-        if (strlen(move_input) != 4 && strlen(move_input) != 5) {
-            printf("Invalid move format. Use 4 or 5 characters (e.g., e2e4 or h7h8Q).\n");
-            continue;
-        }
-
-        char from[3], to[3], promotion;
-        strncpy(from, move_input, 2);
-        from[2] = '\0';
-        strncpy(to, move_input + 2, 2);
-        to[2] = '\0';
-        promotion = move_input[4];
-
-        if(!square_is_valid(from) || !square_is_valid(to)){
-            printf("Invalid squares\n");
-            continue;
-        }
-
-        square_t from_square, to_square;
-        square_from_name(&from_square, from);
-        square_from_name(&to_square, to);
-
-        char piece = piece_at(&board, from_square);
-        if (piece == EMPTY_SQUARE) {
-            clib_ansi_clear_screen();
-            PRINT_FULL(&board, NULL);
-            continue;
-        }
-
-        if(!move(&board, from_square, to_square, promotion)){
-            clib_ansi_clear_screen();
-            PRINT_FULL(&board, NULL);
-            continue;
-        }
-
-
-        clib_ansi_clear_screen();
-        PRINT_FULL(&board, &from_square, &to_square, NULL);
-
-        if(board.result > 0){
-            printf("%s %s\n", result_message[board.result], result_score[board.result]);
-            board_free(&board);
-            return;
-        }
-    }
-}
 
 int main(int argc, char** argv){
     init_zobrist();
@@ -105,7 +44,20 @@ int main(int argc, char** argv){
         );
     }
 
-    run(NULL);
+    board_t board;
+    board_init_fen(&board, "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1");
+
+    square_t square;
+    square_from_name(&square, "f1");
+
+    size_t count;
+    square_t** valid = valid_moves(&board, square, &count);
+
+    tui_board_print_squares(&board, FULL_CONFIG, valid, count);
+
+
+    squares_free(&valid, count);
+    board_free(&board);
 
     return 0;
 }

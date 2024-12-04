@@ -3,6 +3,7 @@
 #include "square.h"
 #include "tests.h"
 #include "extern/test.h"
+#include "ui.h"
 
 int test_move_is_valid(const char* fen, const char* from, const char* to, _Bool expected)
 {
