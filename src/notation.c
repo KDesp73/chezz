@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#undef DEBU
-#define DEBU(fmt, ...)
+// #undef DEBU
+// #define DEBU(fmt, ...)
 
 _Bool is_number(const char* str) {
     if (str == NULL || *str == '\0') {
@@ -277,7 +277,116 @@ void pgn_import(game_t* game, const char* pgn) {
 
 void pgn_export_file(game_t* game, const char* path)
 {
+    char pgn[2048];
+    pgn_export(game, pgn);
 
+    clib_file_write(path, pgn, "w");
+}
+
+void remove_chars(char* str, const char* chars_to_remove)
+{
+    size_t i = 0, j = 0;
+    size_t len = strlen(str);
+
+    while (i < len) {
+        // Check if the current character should be removed
+        if (strchr(chars_to_remove, str[i]) == NULL) {
+            str[j++] = str[i];
+        }
+        i++;
+    }
+
+    // Null-terminate the string
+    str[j] = '\0';
+}
+
+void san_to_move(board_t *board, san_move_t san, square_t *from, square_t *to, char *promotion)
+{
+    // Initialize the output parameters
+    *promotion = '\0';
+
+    char* move = san.move;
+    size_t len = strlen(move);
+
+
+    if(STREQ(move, "O-O")){
+        square_from_name(from, (board->turn) ? "e1" : "e8");
+        square_from_name(to, (board->turn) ? "g1" : "g8");
+        return;
+    } else if(STREQ(move, "O-O-O")){
+        square_from_name(from, (board->turn) ? "e1" : "e8");
+        square_from_name(to, (board->turn) ? "c1" : "c8");
+        return;
+    }
+
+    // Strip move of irrelevant information
+    _Bool is_promotion = strchr(move, '=') != NULL;
+    remove_chars(move, "x+#=");
+    if(is_promotion){
+        *promotion = move[strlen(move) - 1];
+        move[strlen(move) - 1] = '\0';
+    }
+    DEBU("move: %s", move);
+
+    char target[3];
+    target[0] = move[strlen(move)-2];
+    target[1] = move[strlen(move)-1];
+    target[2] = '\0';
+    DEBU("target square: %s", target);
+    square_from_name(to, target);
+
+    char piece = '\0';
+
+    // Piece is a pawn
+    if((strlen(move) == 3 && move[0] >= 'a' && move[0] <= 'h') || strlen(move) == 2){
+        piece = (board->turn) ? 'P' : 'p';
+    } else {
+        piece = (board->turn) ? move[0] : tolower(move[0]);
+    }
+
+    size_t count;
+    square_t** pieces = square_is_accessible_by(board, *to, piece, &count);
+
+    if(count == 1) {
+        square_from_name(from, pieces[0]->name);
+        goto cleanup;
+    }
+
+    int file = 0;
+    int rank = 0;
+
+    // Move is: cd4
+    if(strlen(move) == 3) file = move[0] - 'a' + 1;
+    else if(strlen(move) == 4) { // Move is: Nbd2
+        if(move[1] >= 'a' && move[1] <= 'h') file = move[1] - 'a' + 1;
+        else rank = move[1] - '0';
+    } else if(strlen(move) == 5) {
+        char temp[3];
+        temp[0] = move[1];
+        temp[1] = move[2];
+        temp[2] = '\0';
+        square_from_name(from, temp);
+        goto cleanup;
+    } else return;
+
+    if(file)
+        DEBU("file %c", file + 'a' - 1);
+    if(rank)
+        DEBU("rank %d", rank);
+
+    for(size_t i = 0; i < count; i++) {
+        if(file && pieces[i]->file == file){
+            square_from_name(from, pieces[i]->name);
+            goto cleanup;
+        }
+        if(rank && pieces[i]->rank == rank) {
+            square_from_name(from, pieces[i]->name);
+            goto cleanup;
+        }
+    }
+
+cleanup:
+    squares_free(&pieces, count);
 }
 
 void move_to_san(board_t* board, square_t from, square_t to, char promotion, san_move_t* san)

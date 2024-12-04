@@ -1,5 +1,8 @@
 TODO: pgn import
 TODO: pgn run
+TODO: expand the api
+TODO: README.md
+TODO: docs
 DONE: pin check
 DONE: check check
 DONE: en passant captures

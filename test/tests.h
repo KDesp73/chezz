@@ -401,5 +401,34 @@ int test_move_to_san(const char* fen, const char* move, const char* expected);
     test_move_to_san("rnbqkbnr/1pp1ppp1/7p/p1PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1", "e5d6", "exd6"), \
     test_move_to_san("rnbqkbnr/1pp1ppp1/7p/p1Pp4/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1", "c5d6", "cxd6")
 
-
+int test_san_to_move(const char* fen, const char* san, const char* expected_move);
+#define TEST_SAN_TO_MOVE \
+    test_san_to_move("rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR b KQkq g3 0 2", "Qh4#", "d8h4"), \
+    test_san_to_move(STARTING_FEN, "e4", "e2e4"), \
+    test_san_to_move(STARTING_FEN, "e3", "e2e3"), \
+    test_san_to_move(STARTING_FEN, "Nf3", "g1f3"), \
+    test_san_to_move(STARTING_FEN, "Nc3", "b1c3"), \
+    test_san_to_move("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 w - - 0 9",  "Bxb4+", "a3b4"), \
+    test_san_to_move("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 w - - 0 9",  "Bxa6", "c4a6"), \
+    test_san_to_move("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 w - - 0 9",  "Nh4", "f3h4"), \
+    test_san_to_move("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 w - - 0 9",  "g4", "g2g4"), \
+    test_san_to_move("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 b - - 0 9",  "Qg5", "f6g5"), \
+    test_san_to_move("r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",  "O-O", "e1g1"), \
+    test_san_to_move("r3kb1r/ppp1qppp/2np1n2/4p3/4P1b1/1B1P1N1P/PPP2PP1/RNBQ1RK1 b kq - 0 7",  "O-O-O", "e8c8"), \
+    test_san_to_move("r3kb1r/ppp1qppp/2np1n2/4p3/4P1b1/1B1P1N1P/PPP2PP1/RNBQ1RK1 w kq - 0 7",  "hxg4", "h3g4"), \
+    test_san_to_move("r3kb1r/ppp1qppp/2np1n2/4p3/4P1b1/1B1P1N1P/PPP2PP1/RNBQ1RK1 w kq - 0 7",  "Nbd2", "b1d2"), \
+    test_san_to_move("2kr3r/ppp1bpp1/3pqn1p/n3p3/2N1PBb1/1B1P1N1P/PPPQ1PP1/R4RK1 w - - 8 12",  "Rac1", "a1c1"), \
+    test_san_to_move("2kr3r/ppp1bpp1/3pqn1p/n3p3/2N1PBb1/1B1P1N1P/PPPQ1PP1/R4RK1 w - - 8 12",  "Rfc1", "f1c1"), \
+    test_san_to_move("8/8/5R2/1k6/8/1r6/5R2/2K5 w - - 0 1",  "R2f4", "f2f4"), \
+    test_san_to_move("8/8/5R2/1k6/8/1r6/5R2/2K5 w - - 0 1",  "R6f4", "f6f4"), \
+    test_san_to_move("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1",  "Qf2e3", "f2e3"), \
+    test_san_to_move("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1",  "Qee3", "e2e3"), \
+    test_san_to_move("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1",  "Q3e3", "f3e3"), \
+    test_san_to_move("1k6/7P/8/1K6/8/8/8/8 w - - 0 1",  "h8=Q+", "h7h8Q"), \
+    test_san_to_move("1k6/7P/8/1K6/8/8/8/8 w - - 0 1",  "h8=R+", "h7h8R"), \
+    test_san_to_move("1k6/7P/8/1K6/8/8/8/8 w - - 0 1",  "h8=B", "h7h8B"), \
+    test_san_to_move("rnbqkbnr/1pp1ppp1/7p/p1PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1",  "cxd6", "c5d6"), \
+    test_san_to_move("rnbqkbnr/1pp1ppp1/7p/p1PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1",  "cxd6", "c5d6"), \
+    test_san_to_move("rnbqkbnr/1pp1ppp1/7p/p1PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1",  "exd6", "e5d6"), \
+    test_san_to_move("rnbqkbnr/1pp1ppp1/7p/p1Pp4/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1",  "cxd6", "c5d6")
 #endif // TESTS_H

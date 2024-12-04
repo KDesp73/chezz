@@ -23,7 +23,7 @@ int main(int argc, char** argv){
         "Player 1",
         "Player 2",
         fen
-        );
+    );
 
 
     board_t board;

@@ -181,6 +181,39 @@ _Bool square_is_attacked_coords(const board_t *board, int y, int x, int attacked
     return 0; // Square is not under attack
 }
 
+square_t** square_is_accessible_by(const board_t* board, square_t square, char piece, size_t* count)
+{
+    square_t** squares = malloc(64 * sizeof(square_t*));
+    if (!squares) return NULL;  // Check for malloc failure
+
+    size_t square_count = 0;
+
+    for(size_t rank = 0; rank < BOARD_SIZE; rank++){
+        for(size_t file = 0; file < BOARD_SIZE; file++){
+            square_t current;
+            square_from_coords(&current, rank, file);
+            
+            if(board->grid[rank][file] == ' ') continue;
+            if(rank == square.y && file == square.x) continue;
+            if(piece != piece_at(board, current)) continue;
+
+            if(move_is_valid(board, current, square)){
+                squares[square_count++] = square_new_coords(rank, file);
+            }
+        }
+    }
+    if (square_count == 0) {
+        free(squares);
+        *count = 0;
+        return NULL;
+    }
+
+    squares = realloc(squares, square_count * sizeof(square_t*));
+
+    *count = square_count;
+    return squares;
+}
+
 square_t** square_is_attacked_by(const board_t* board, square_t square, int attacked_by, size_t* count)
 {
     if (!board || square.rank < 1 || square.rank > BOARD_SIZE || 
