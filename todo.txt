@@ -1,7 +1,6 @@
 TODO: fen export
 TODO: pgn import
 TODO: pgn export
-TODO: promotion
 DONE: pin check
 DONE: check check
 DONE: en passant captures
@@ -13,3 +12,4 @@ DONE: mate check
 DONE: stack allocations when possible (refactoring)
 DONE: checkmate fix case where mate but piece can be taken
 DONE: 3 move repetition check
+DONE: promotion

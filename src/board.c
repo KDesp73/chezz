@@ -488,10 +488,11 @@ void update_halfmove(board_t* board, square_t from, square_t to, size_t piece_co
 {
     int color = piece_color(piece);
     int direction = (color) ? 1 : -1;
+    _Bool is_pawn_move = tolower(piece) == 'p';
     _Bool is_pawn_advancement = (tolower(piece) == 'p') && (from.rank == (color == PIECE_COLOR_WHITE) ? 7 : 2 && to.rank == from.rank + direction);
     _Bool is_capture = (piece_count_after != piece_count_before);
 
-    if (is_pawn_advancement || is_capture) {
+    if (is_pawn_advancement || is_capture || is_pawn_move) {
         board->halfmove = 0;
     } else {
         board->halfmove++;

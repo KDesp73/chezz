@@ -50,6 +50,7 @@ void fen_import(board_t *board, const char *fen)
         ERRO("Error reading input\n");
         return;
     }
+    enpassant[2] = '\0';
 
     // Initialize the board state
     board->turn = (turn == 'w');  // White's turn if 'w', else Black's turn
@@ -73,8 +74,12 @@ void fen_import(board_t *board, const char *fen)
 no_castling:
 
     // Copy the en passant square, ensure null-terminated string
-    if(!strcmp(enpassant, "- ") || (strlen(enpassant) != 2) || !square_is_valid(enpassant)){
-        ERRO("Invalid enpassant target square '%s'", enpassant);
+    if(
+        !strcmp(enpassant, "-") || 
+        !strcmp(enpassant, "- ") || 
+        !square_is_valid(enpassant)
+    ){
+        // ERRO("Invalid enpassant target square '%s'", enpassant);
         strncpy(board->enpassant_square, "- ", 3);
     } else {
         strncpy(board->enpassant_square, enpassant, 3);
@@ -110,13 +115,7 @@ no_castling:
                 square.x++;
             }
         } else {
-            switch (b[i]) {
-            case 'K':
-            case 'Q':
-            case 'R':
-            case 'B':
-            case 'N':
-            case 'P':
+            switch (tolower(b[i])) {
             case 'k':
             case 'q':
             case 'r':
@@ -133,5 +132,69 @@ no_castling:
 
         i++;  // Increment the index only once per loop iteration
     }
+}
 
+void fen_export(board_t* board, char fen[]) {
+    // 1. Piece Placement
+    int empty_count;
+    int rank, file;
+    char board_fen[256] = ""; // Buffer for the piece placement part of FEN
+
+    for (rank = 7; rank >= 0; rank--) {
+        empty_count = 0;
+        for (file = 0; file < BOARD_SIZE; file++) {
+            square_t square;
+            square_from_coords(&square, rank, file);
+            char piece = piece_at(board, square);
+            if (piece == EMPTY_SQUARE) {
+                empty_count++;
+            } else {
+                if (empty_count > 0) {
+                    sprintf(board_fen + strlen(board_fen), "%d", empty_count);  // Add number of empty squares
+                    empty_count = 0;
+                }
+                sprintf(board_fen + strlen(board_fen), "%c", piece);  // Add piece
+            }
+        }
+        if (empty_count > 0) {
+            sprintf(board_fen + strlen(board_fen), "%d", empty_count);  // Add number of empty squares at the end of the row
+        }
+        if (rank > 0) {
+            sprintf(board_fen + strlen(board_fen), "/");  // Row separator
+        }
+    }
+
+    // 2. Active Color
+    char active_color = (board->turn == PIECE_COLOR_WHITE) ? 'w' : 'b';
+
+    // 3. Castling Rights
+    char castling_rights[5] = "";  // "KQkq"
+    if (has_castling_rights(board, CASTLE_WHITE_KINGSIDE)) strcat(castling_rights, "K");
+    if (has_castling_rights(board, CASTLE_WHITE_QUEENSIDE)) strcat(castling_rights, "Q");
+    if (has_castling_rights(board, CASTLE_BLACK_KINGSIDE)) strcat(castling_rights, "k");
+    if (has_castling_rights(board, CASTLE_BLACK_QUEENSIDE)) strcat(castling_rights, "q");
+    if (strlen(castling_rights) == 0) {
+        strcat(castling_rights, "-");  // No castling rights
+    }
+
+    // 4. En Passant Target Square
+    char en_passant[3] = "-";  // Default to no en passant
+    if (board->enpassant_square[0] != '-') {
+        strcpy(en_passant, board->enpassant_square);
+    }
+
+    // 5. Halfmove Clock
+    int halfmove_clock = board->halfmove;
+
+    // 6. Fullmove Number
+    int fullmove_number = board->fullmove;
+
+    // Create the final FEN string
+    sprintf(fen, "%s %c %s %s %d %d",
+            board_fen,             // Piece placement
+            active_color,          // Active color
+            castling_rights,       // Castling rights
+            en_passant,            // En passant
+            halfmove_clock,        // Halfmove clock
+            fullmove_number);      // Fullmove number
 }

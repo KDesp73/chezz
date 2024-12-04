@@ -1,5 +1,6 @@
 #include "board.h"
 #include "move.h"
+#include "notation.h"
 #include "piece.h"
 #include <stdint.h>
 #include <string.h>
@@ -104,7 +105,15 @@ int main(int argc, char** argv){
         );
     }
 
-    run("8/7P/1k6/8/6K1/8/2p5/8 w - - 0 1");
+    board_t board;
+    board_init_fen(&board, STARTING_FEN);
+    MOVE(&board, "e2e4");
+    MOVE(&board, "e7e5");
+
+    char fen[256];
+    fen_export(&board, fen);
+
+    INFO("fen: %s", fen);
 
     return 0;
 }

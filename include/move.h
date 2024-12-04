@@ -5,6 +5,10 @@
 void move_freely(board_t* board, square_t from, square_t to);
 _Bool move(board_t* board, square_t from, square_t to, char promotion);
 
+_Bool move_name(board_t* board, const char* move);
+#define MOVE(board, move) \
+        move_name(board, move)
+
 _Bool piece_can_move(board_t* board, square_t piece, square_t target);
 _Bool pawn_can_move(board_t* board, square_t piece, square_t target);
 _Bool pawn_can_attack(board_t* board, square_t piece, square_t target, _Bool strict);

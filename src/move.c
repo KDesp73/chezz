@@ -229,3 +229,24 @@ square_t** valid_moves(board_t* board, square_t piece, size_t* count)
     return moves;
 }
 
+_Bool move_name(board_t* board, const char* move_str)
+{
+    if (strlen(move_str) != 4 && strlen(move_str) != 5) {
+        printf("Invalid move_str format. Use 4 or 5 characters (e.g., e2e4 or h7h8Q).\n");
+        return 0;
+    }
+
+    char from[3], to[3], promotion;
+    strncpy(from, move_str, 2);
+    from[2] = '\0';
+    strncpy(to, move_str + 2, 2);
+    to[2] = '\0';
+    promotion = move_str[4];
+
+    square_t from_square, to_square;
+    square_from_name(&from_square, from);
+    square_from_name(&to_square, to);
+
+    return move(board, from_square, to_square, promotion);
+}
+
