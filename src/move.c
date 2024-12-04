@@ -35,9 +35,7 @@ _Bool move(board_t *board, square_t from, square_t to, char promotion)
 
     // Execute the move
     if(king_is_castling(board, from, to)){ 
-        DEBU("King is castling");
         if(!king_can_castle(board, from, to)){
-            DEBU("King can't castle");
             board->error = ERROR_INVALID_MOVE;
             return 0;
         }
@@ -59,6 +57,7 @@ _Bool move(board_t *board, square_t from, square_t to, char promotion)
 
     revoke_castling_rights(board, castling_rights_to_revoke);
     strncpy(board->enpassant_square, enpassant_square, 3);
+    free(enpassant_square);
 
     size_t piece_count_after = number_of_pieces(board, PIECE_COLOR_NONE);
 
@@ -226,10 +225,6 @@ square_t** valid_moves(board_t* board, square_t piece, size_t* count)
             }
         }
     }
-
-    // Optional: Shrink to fit
-    void* temp = realloc(moves, sizeof(square_t*) * *count);
-    if (temp) moves = temp;
 
     return moves;
 }

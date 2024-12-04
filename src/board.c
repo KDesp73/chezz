@@ -111,8 +111,12 @@ void board_print(const board_t* board, print_config_t config, square_t* first, .
     if(config.hash)
         printf("Hash : 0x%" PRIx64 "\n", calculate_zobrist_hash(board));
 
-    free(yellow_bg);
     printf("\n");
+    free(yellow_bg);
+    if(count > 0){
+        free(squares);
+        squares = NULL;
+    }
 }
 
 void board_init_board(board_t* board, board_t src)
@@ -383,6 +387,7 @@ square_t** square_is_attacked_by(const board_t* board, square_t square, int atta
     while (current != NULL) {
         if (!attack_is_valid(board, *current, square, 0)) {
             for (size_t j = i; attackers[j] != NULL; j++) {
+                square_free(&attackers[j]);
                 attackers[j] = attackers[j + 1];
             }
             *count -= 1;

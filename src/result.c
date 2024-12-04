@@ -17,6 +17,7 @@ _Bool is_checkmate_color(board_t* board, int color) {
     square_t king;
     find_king(&king, board, color);
     square_t** moves = valid_moves(board, king, &valid_count);
+    squares_free(&moves, valid_count);
     
     // If the king is in check and there are no valid moves, it might be checkmate
     if (IN_CHECK(board, color) && valid_count == 0) {
@@ -49,7 +50,11 @@ _Bool is_checkmate_color(board_t* board, int color) {
             return 1; // Checkmate (no way to capture or block the attacker)
         }
 
-        if(tolower(piece_at(board, *attacker) == 'k')) return 1;
+        if(tolower(piece_at(board, *attacker) == 'k')) {
+            squares_free(&attackers, attackers_count);
+            squares_free(&my_attackers, my_attackers_count);
+            return 1;
+        }
 
         // No checkmate (we can capture or block the attacker)
         squares_free(&attackers, attackers_count);
@@ -85,6 +90,7 @@ _Bool is_stalemate_color(board_t* board, int color)
             // Check if the piece belongs to the player
             if (piece != EMPTY_SQUARE && piece_color(piece) == color) {
                 square_t** moves = valid_moves(board, square, &valid_count);
+                squares_free(&moves, valid_count);
 
                 // If any valid move exists, it's not a stalemate
                 if (valid_count > 0) {

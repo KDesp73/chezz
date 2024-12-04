@@ -105,20 +105,22 @@ int main(int argc, char** argv){
         );
     }
 
-    run(NULL);
+    run("r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4");
 
     board_t board;
     board_init_fen(&board, STARTING_FEN);
     MOVE(&board, "e2e4");
     MOVE(&board, "e7e5");
-    MOVE(&board, "g1f3");
+    MOVE(&board, "d1h5");
     MOVE(&board, "b8c6");
     MOVE(&board, "f1c4");
     MOVE(&board, "g8f6");
-    MOVE(&board, "e1g1");
 
-    char fen[256];
+
+    char fen[128];
     fen_export(&board, fen);
+
+    board_free(&board);
 
     printf("%s\n", fen);
 
