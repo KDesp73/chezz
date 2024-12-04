@@ -76,11 +76,10 @@ no_castling:
     // Copy the en passant square, ensure null-terminated string
     if(
         !strcmp(enpassant, "-") || 
-        !strcmp(enpassant, "- ") || 
         !square_is_valid(enpassant)
     ){
         // ERRO("Invalid enpassant target square '%s'", enpassant);
-        strncpy(board->enpassant_square, "- ", 3);
+        strncpy(board->enpassant_square, "-", 3);
     } else {
         strncpy(board->enpassant_square, enpassant, 3);
     }
