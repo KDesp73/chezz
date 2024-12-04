@@ -1,7 +1,7 @@
 # Compiler and flags
 CC = gcc
 AR = ar
-CFLAGS = -Wall -Iinclude -fPIC
+CFLAGS = -Iinclude -fPIC
 LDFLAGS =
 
 # Directories
@@ -16,9 +16,12 @@ OUTPUT_NAME = libchess
 SO_NAME = $(OUTPUT_NAME).so
 A_NAME = $(OUTPUT_NAME).a
 
+EXEC = chess
+CHECK = $(BUILD_DIR)/bin/check
+
 # Determine the build type
 ifneq ($(type), RELEASE)
-    CFLAGS += -DDEBUG -ggdb
+    CFLAGS += -Wall -DDEBUG -ggdb
 else
     CFLAGS += -O3
 endif
@@ -41,7 +44,7 @@ counter = 0
 # Targets
 
 .PHONY: all
-all: check_tools $(BUILD_DIR) shared static test exec ## Build all libraries
+all: check_tools $(BUILD_DIR) shared static check exec ## Build all libraries
 	@echo "Build complete."
 
 .PHONY: check_tools
@@ -55,6 +58,7 @@ $(BUILD_DIR): ## Create the build directory if it doesn't exist
 	mkdir -p $(BUILD_DIR)/test
 	mkdir -p $(BUILD_DIR)/move
 	mkdir -p $(BUILD_DIR)/ui
+	mkdir -p $(BUILD_DIR)/bin
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c ## Compile source files
 	$(eval counter=$(shell echo $$(($(counter)+1))))
@@ -68,13 +72,20 @@ $(BUILD_DIR)/%.o: $(TEST_DIR)/%.c ## Compile test files
 
 .PHONY: exec
 exec: $(BUILD_DIR) static ## Build executable using static library
-	@echo "[INFO] Building executable: chess"
-	@$(CC) src/main.c -o chess -L. -l:$(A_NAME) -Iinclude
+	@echo "[INFO] Building executable: $(EXEC)"
+	@$(CC) src/main.c -o $(EXEC) -L. -l:$(A_NAME) -Iinclude
+
+.PHONY: check
+check: $(BUILD_DIR) static ## Build the tests
+	@echo "[INFO] Building test executable: $(CHECK)"
+	@$(CC) $(TEST_FILES) -o $(CHECK) -L. -l:$(A_NAME) -Iinclude
 
 .PHONY: test
-test: $(BUILD_DIR) static ## Build and run tests
-	@echo "[INFO] Building test executable: check"
-	@$(CC) $(TEST_FILES) -o check -L. -l:$(A_NAME) -Iinclude
+test: ## Build and run the tests
+	make clean
+	make all
+	clear
+	./$(CHECK)
 
 .PHONY: shared
 shared: $(OBJ_FILES) ## Build shared library
@@ -89,7 +100,7 @@ static: $(OBJ_FILES) ## Build static library
 .PHONY: clean
 clean: ## Remove all build files and libraries
 	@echo "[INFO] Cleaning up build directory and libraries."
-	@rm -rf $(BUILD_DIR) $(SO_NAME) $(A_NAME) chess check
+	@rm -rf $(BUILD_DIR) $(SO_NAME) $(A_NAME) $(EXEC) $(CHECK)
 
 .PHONY: help
 help: ## Show this help message

@@ -1,8 +1,12 @@
 #include "notation.h"
+#include "board.h"
 #include "extern/clib.h"
+#include "move.h"
 #include "piece.h"
+#include "square.h"
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 
 _Bool is_number(const char* str) {
     if (str == NULL || *str == '\0') {
@@ -256,4 +260,78 @@ void pgn_import(game_t* game, const char* pgn) {
         token = strtok(NULL, "\n");
     }
     game->move_count = move_count;
+}
+
+void move_to_san(board_t* board, square_t from, square_t to, char promotion, san_move_t* san)
+{
+    char piece = piece_at(board, from);
+    int color = piece_color(piece);
+    char* target_square = to.name;
+
+    // Castling moves
+    if (king_is_castling(board, from, to)) {
+        if (to.file > from.file) {
+            strcpy(san->move, "O-O"); // Kingside castling
+        } else {
+            strcpy(san->move, "O-O-O"); // Queenside castling
+        }
+        return;
+    }
+
+    // Default: normal move
+    char piece_letter = (tolower(piece) == 'p') ? '\0' : toupper(piece); // Pawn moves omit the piece letter
+
+    // Check if the move is a capture
+    _Bool is_capture = board->grid[COORDS(to)] != ' ' || pawn_is_enpassanting(board, from, to);
+
+    // Build SAN string
+    if (piece_letter != '\0') {
+        san->move[0] = piece_letter;
+        san->move[1] = '\0';
+    } else {
+        san->move[0] = '\0';
+    }
+    DEBU("san: %s", san->move);
+
+    // Check if there is a need to specify file, rank or both
+
+    if (tolower(piece) == 'p') {
+        // If the move is a pawn capture
+        if (is_capture) {
+            // Specify the file if there is ambiguity
+            san->move[0] = 'a' + from.x;
+            san->move[1] = 'x';
+        }
+    } else {
+        // TODO: solve disambiguations
+
+        if(is_capture) {
+            strcat(san->move, "x");
+        }
+    }
+    DEBU("san: %s", san->move);
+
+    strcat(san->move, target_square);
+    DEBU("san: %s", san->move);
+
+    // Promotion
+    if(pawn_is_promoting(board, from, to)){
+        if (promotion) {
+            char promo[3] = {'=', toupper(promotion), '\0'};
+            strcat(san->move, promo);
+        }
+    }
+    DEBU("san: %s", san->move);
+
+    board_t temp;
+    board_init_board(&temp, *board);
+    move(&temp, from, to, promotion);
+
+    if(is_checkmate(&temp)){
+        strcat(san->move, "#");
+    } else if(in_check(&temp, !color)){
+        strcat(san->move, "+");
+    }
+    DEBU("san: %s", san->move);
+
 }

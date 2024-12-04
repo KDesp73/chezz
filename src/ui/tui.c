@@ -1,5 +1,6 @@
 #include "board.h"
 #include "move.h"
+#include "notation.h"
 #include "ui.h"
 #define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
@@ -52,12 +53,17 @@ void tui_run(const char* fen)
             continue;
         }
 
+        san_move_t san;
+        move_to_san(&board, from_square, to_square, promotion, &san);
+
         if(!move(&board, from_square, to_square, promotion)){
             clib_ansi_clear_screen();
             PRINT_FULL(&board, NULL);
             continue;
         }
 
+        printf("%s\n", san.move);
+        sleep(2);
 
         clib_ansi_clear_screen();
         PRINT_FULL(&board, &from_square, &to_square, NULL);

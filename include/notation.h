@@ -6,12 +6,13 @@
 void fen_import(board_t* board, const char* fen);
 void fen_export(board_t* board, char fen[]);
 
-#define MAX_MOVES 200
+#define MAX_MOVES 300
 #define MAX_HEADER_LENGTH 256
 
 typedef struct {
-    char move[10];  // For example, "e4", "Nf3"
+    char move[16];  // For example, "e4", "Nf3"
 } san_move_t;
+
 typedef struct {
     char event[MAX_HEADER_LENGTH];
     char site[MAX_HEADER_LENGTH];
@@ -25,5 +26,7 @@ typedef struct {
 
 void pgn_import(game_t* game, const char* pgn);
 void pgn_export(game_t* game, char* pgn);
+
+void move_to_san(board_t* board, square_t from, square_t to, char promotion, san_move_t* san);
 
 #endif // NOTATION_H

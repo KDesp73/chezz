@@ -1,6 +1,8 @@
 #include "move.h"
 #include "board.h"
+#include "notation.h"
 #include <stdint.h>
+#include <unistd.h>
 #define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 #include "piece.h"
@@ -25,6 +27,7 @@ _Bool move(board_t *board, square_t from, square_t to, char promotion)
         board->error = ERROR_INVALID_MOVE;
         return 0;
     }
+
     char from_before = piece_at(board, from);
     int color = piece_color(from_before);
 

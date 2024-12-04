@@ -375,4 +375,24 @@ int test_hash_uniqueness();
 #define TEST_ZOBRIST \
     test_hash_uniqueness()
 
+int test_move_to_san(const char* fen, const char* move, const char* expected);
+#define TEST_MOVE_TO_SAN \
+    test_move_to_san("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 w - - 0 9", "a3b4", "Bxb4+"), \
+    test_move_to_san("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 w - - 0 9", "c4a6", "Bxa6"), \
+    test_move_to_san("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 w - - 0 9", "f3h4", "Nh4"), \
+    test_move_to_san("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 w - - 0 9", "g2g4", "g4"), \
+    test_move_to_san("r1b2bnr/1p1pkp1p/p1p2qp1/4p3/1nB1P3/BP1P1N2/P1PN1PPP/R2Q1RK1 b - - 0 9", "f6g5", "Qg5"), \
+    test_move_to_san("r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4", "e1g1", "O-O"), \
+    test_move_to_san("r3kb1r/ppp1qppp/2np1n2/4p3/4P1b1/1B1P1N1P/PPP2PP1/RNBQ1RK1 b kq - 0 7", "e8c8", "O-O-O"), \
+    test_move_to_san("r3kb1r/ppp1qppp/2np1n2/4p3/4P1b1/1B1P1N1P/PPP2PP1/RNBQ1RK1 w kq - 0 7", "h3g4", "hxg4"), \
+    test_move_to_san("r3kb1r/ppp1qppp/2np1n2/4p3/4P1b1/1B1P1N1P/PPP2PP1/RNBQ1RK1 w kq - 0 7", "b1d2", "Nbd2"), \
+    test_move_to_san("2kr3r/ppp1bpp1/3pqn1p/n3p3/2N1PBb1/1B1P1N1P/PPPQ1PP1/R4RK1 w - - 8 12", "a1c1", "Rac1"), \
+    test_move_to_san("2kr3r/ppp1bpp1/3pqn1p/n3p3/2N1PBb1/1B1P1N1P/PPPQ1PP1/R4RK1 w - - 8 12", "f1c1", "Rfc1"), \
+    test_move_to_san("8/8/5R2/1k6/8/1r6/5R2/2K5 w - - 0 1", "f2f4", "R2f4"), \
+    test_move_to_san("8/8/5R2/1k6/8/1r6/5R2/2K5 w - - 0 1", "f6f4", "R6f4"), \
+    test_move_to_san("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1", "f2e3", "Qf2e3"), \
+    test_move_to_san("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1", "e2e3", "Qee3"), \
+    test_move_to_san("8/2k5/8/8/8/5Q2/2K1QQ2/8 w - - 0 1", "f3e3", "Q3e3")
+
+
 #endif // TESTS_H
