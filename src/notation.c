@@ -197,3 +197,63 @@ void fen_export(board_t* board, char fen[]) {
             halfmove_clock,        // Halfmove clock
             fullmove_number);      // Fullmove number
 }
+
+void pgn_export(game_t* game, char* pgn)
+{
+    sprintf(pgn, "[Event \"%s\"]\n", game->event);
+    sprintf(pgn + strlen(pgn), "[Site \"%s\"]\n", game->site);
+    sprintf(pgn + strlen(pgn), "[Date \"%s\"]\n", game->date);
+    sprintf(pgn + strlen(pgn), "[White \"%s\"]\n", game->white);
+    sprintf(pgn + strlen(pgn), "[Black \"%s\"]\n", game->black);
+    sprintf(pgn + strlen(pgn), "[Result \"%s\"]\n", game->result);
+    sprintf(pgn + strlen(pgn), "\n");
+
+    for (int i = 0; i < game->move_count; i++) {
+        if (i % 2 == 0) {
+            sprintf(pgn + strlen(pgn), "%d. %s ", (i / 2) + 1, game->moves[i].move);
+        } else {
+            sprintf(pgn + strlen(pgn), "%s ", game->moves[i].move);
+        }
+    }
+    sprintf(pgn + strlen(pgn), "\n");
+}
+
+void pgn_import(game_t* game, const char* pgn) {
+    char line[1024];
+    char* token;
+    int move_count = 0;
+    int reading_moves = 0;
+    
+    // Clear the game data
+    memset(game, 0, sizeof(game_t));
+
+    // Parse the PGN string
+    const char* pgn_ptr = pgn;
+
+    while (sscanf(pgn_ptr, "[Event \"%[^\"]\"]", game->event) ||
+           sscanf(pgn_ptr, "[Site \"%[^\"]\"]", game->site) ||
+           sscanf(pgn_ptr, "[Date \"%[^\"]\"]", game->date) ||
+           sscanf(pgn_ptr, "[White \"%[^\"]\"]", game->white) ||
+           sscanf(pgn_ptr, "[Black \"%[^\"]\"]", game->black) ||
+           sscanf(pgn_ptr, "[Result \"%[^\"]\"]", game->result)) {
+
+        // Advance the pointer past the current tag
+        pgn_ptr = strchr(pgn_ptr, '\n') + 1;  // Skip to the next line
+    }
+
+    // Now extract the moves
+    token = strtok((char*)pgn_ptr, "\n");
+    while (token != NULL) {
+        if (token[0] == '.') {
+            // Skip move numbers (e.g., "1.", "2."), just record moves
+            token = strtok(NULL, "\n");
+            continue;
+        }
+
+        // Store the move
+        strncpy(game->moves[move_count].move, token, sizeof(game->moves[move_count].move));
+        move_count++;
+        token = strtok(NULL, "\n");
+    }
+    game->move_count = move_count;
+}
