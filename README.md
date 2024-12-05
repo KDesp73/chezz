@@ -24,7 +24,7 @@ make install
 
 ## Examples
 
-See [examples/]()
+See [examples/](https://github.com/KDesp73/chezz/tree/main/examples)
 
 ## License
 
