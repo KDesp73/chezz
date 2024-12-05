@@ -12,42 +12,7 @@
 int main(int argc, char** argv){
     init_zobrist();
 
-    // tui_run(NULL);
-
-    const char* fen = NULL;
-
-    game_t game;
-    game_init(&game,
-        "Test",
-        "KDesp73 Chess",
-        "Player 1",
-        "Player 2",
-        fen
-    );
-
-
-    board_t board;
-    board_init_fen(&board, fen);
-
-    MOVE(&board, &game, "f2f3");
-    MOVE(&board, &game, "e7e5");
-    MOVE(&board, &game, "g2g4");
-    MOVE(&board, &game, "d8h4");
-
-    PRINT_PLAIN(&board);
-
-    char fen_str[1024];
-    fen_export(&board, fen_str);
-    printf("\n%s\n", fen_str);
-
-    char pgn[2048];
-    pgn_export(&game, pgn);
-    printf("\n%s\n", pgn);
-
-    game_t new_game;
-    pgn_import(&new_game, pgn);
-
-    game_run(new_game);
+    tui_run(NULL);
 
     return 0;
 }

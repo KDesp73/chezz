@@ -57,6 +57,7 @@ typedef enum {
     RESULT_DRAW_DUE_TO_50_MOVE_RULE
 } result_t ;
 
+#define SCORE_COUNT 7
 static const char result_score[][8] = {
     "-",
     "1-0",

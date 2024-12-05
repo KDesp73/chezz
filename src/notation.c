@@ -236,16 +236,14 @@ void pgn_export(game_t* game, char* pgn)
     sprintf(pgn + strlen(pgn), "\n");
 }
 
-void pgn_import(game_t* game, const char* pgn) {
+// TODO: has issues with moves
+void pgn_import(game_t* game, const char* pgn)
+{
     char line[1024];
-    char* token;
     int move_count = 0;
-    int reading_moves = 0;
-    
-    // Clear the game data
+
     memset(game, 0, sizeof(game_t));
 
-    // Parse the PGN string
     const char* pgn_ptr = pgn;
 
     while (sscanf(pgn_ptr, "[Event \"%[^\"]\"]", game->event) ||
@@ -255,24 +253,38 @@ void pgn_import(game_t* game, const char* pgn) {
            sscanf(pgn_ptr, "[Black \"%[^\"]\"]", game->black) ||
            sscanf(pgn_ptr, "[Result \"%[^\"]\"]", game->result)) {
 
-        // Advance the pointer past the current tag
-        pgn_ptr = strchr(pgn_ptr, '\n') + 1;  // Skip to the next line
+        pgn_ptr = strchr(pgn_ptr, '\n');
+        if (pgn_ptr) pgn_ptr++;  // Skip to the next line
+        else break;              // No more headers
     }
 
-    // Now extract the moves
-    token = strtok((char*)pgn_ptr, "\n");
+    const char* moves_start = pgn_ptr;
+    while (*moves_start && *moves_start != '1') {
+        moves_start++; // Skip non-move data
+    }
+
+    char* token;
+    char moves_copy[4096];
+    strncpy(moves_copy, moves_start, sizeof(moves_copy) - 1);
+    moves_copy[sizeof(moves_copy) - 1] = '\0';
+
+    token = strtok(moves_copy, " ");
     while (token != NULL) {
-        if (token[0] == '.') {
-            // Skip move numbers (e.g., "1.", "2."), just record moves
-            token = strtok(NULL, "\n");
+        // Skip move numbers (e.g., "1.", "2.")
+        if (strchr(token, '.')) {
+            token = strtok(NULL, " ");
             continue;
         }
 
-        // Store the move
-        strncpy(game->moves[move_count].move, token, sizeof(game->moves[move_count].move));
-        move_count++;
-        token = strtok(NULL, "\n");
+        if (move_count < MAX_MOVES) {
+            strncpy(game->moves[move_count].move, token, sizeof(game->moves[move_count].move) - 1);
+            game->moves[move_count].move[sizeof(game->moves[move_count].move) - 1] = '\0';
+            move_count++;
+        }
+
+        token = strtok(NULL, " ");
     }
+
     game->move_count = move_count;
 }
 
@@ -652,16 +664,31 @@ void game_run(game_t game)
         square_t from, to;
         char promotion;
 
-        INFO("move: %s", game.moves[i].move);
+
+        for(size_t j = 0; j < SCORE_COUNT; j++){
+            if(STREQ(game.moves[i].move, result_score[j])) {
+                board.result = i;
+                goto end;
+            }
+        }
+
         san_to_move(&board, game.moves[i], &from, &to, &promotion);
 
         if(!move(&board, from, to, promotion)){
-            ERRO("Invalid pgn. Move %s is not valid", game.moves[i].move);
-            return;
+            // ERRO("Invalid pgn. Move %s is not valid", game.moves[i].move);
+            goto end;
         }
 
         clib_ansi_clear_screen();
         PRINT_FULL(&board, &from, &to, NULL);
         press_enter_to_continue();
     }
+
+end:
+    if(board.result > 0) {
+        printf("%s %s\n", result_message[board.result], result_score[board.result]);
+    } else {
+        printf("Game did not end\n");
+    }
+    board_free(&board);
 }

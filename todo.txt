@@ -1,4 +1,3 @@
-TODO: pgn run
 TODO: expand the api
 TODO: README.md
 TODO: docs
@@ -17,3 +16,4 @@ DONE: promotion
 DONE: fen export
 DONE: pgn export
 DONE: pgn import
+DONE: pgn run
