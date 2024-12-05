@@ -11,7 +11,7 @@ INCLUDE_DIR = include
 BUILD_DIR = build
 DIST_DIR = dist
 INSTALL_DIR = /usr/lib/
-INCLUDE_INSTALL_DIR = /usr/local/include/chess
+INCLUDE_INSTALL_DIR = /usr/local/include/chess/
 
 # Target and version info
 OUTPUT_NAME = libchess
@@ -108,12 +108,12 @@ clean: ## Remove all build files and libraries
 install: all ## Install library and headers
 	# Install shared library
 	sudo mkdir -p $(INSTALL_DIR)
-	sudo cp $(LIB_NAME) $(INSTALL_DIR)
-	sudo chmod 755 $(INSTALL_DIR)/libwebc.so
+	sudo cp $(SO_NAME) $(INSTALL_DIR)
+	sudo chmod 755 $(INSTALL_DIR)/$(SO_NAME)
 	
 	# Install static library
-	sudo cp $(STATIC_LIB_NAME) $(INSTALL_DIR)
-	sudo chmod 644 $(INSTALL_DIR)/libwebc.a
+	sudo cp $(A_NAME) $(INSTALL_DIR)
+	sudo chmod 644 $(INSTALL_DIR)/$(A_NAME)
 	
 	# Install header files
 	sudo rm -rf $(INCLUDE_INSTALL_DIR)
