@@ -2,6 +2,9 @@
 
 Chess Library and 2 player game written in C 
 
+![image](https://github.com/user-attachments/assets/4e377992-daeb-4152-9592-5066781b246a)
+
+
 ## Installation
 
 ### Installation Directories
