@@ -1,6 +1,7 @@
 TODO: expand the api
 TODO: README.md
 TODO: docs
+TODO: bitboard representation
 DONE: pin check
 DONE: check check
 DONE: en passant captures
