@@ -10,6 +10,8 @@ TEST_DIR = test
 INCLUDE_DIR = include
 BUILD_DIR = build
 DIST_DIR = dist
+INSTALL_DIR = /usr/lib/
+INCLUDE_INSTALL_DIR = /usr/local/include/chess
 
 # Target and version info
 OUTPUT_NAME = libchess
@@ -101,6 +103,23 @@ static: $(OBJ_FILES) ## Build static library
 clean: ## Remove all build files and libraries
 	@echo "[INFO] Cleaning up build directory and libraries."
 	@rm -rf $(BUILD_DIR) $(SO_NAME) $(A_NAME) $(EXEC) $(CHECK)
+
+.PHONY: install
+install: all ## Install library and headers
+	# Install shared library
+	sudo mkdir -p $(INSTALL_DIR)
+	sudo cp $(LIB_NAME) $(INSTALL_DIR)
+	sudo chmod 755 $(INSTALL_DIR)/libwebc.so
+	
+	# Install static library
+	sudo cp $(STATIC_LIB_NAME) $(INSTALL_DIR)
+	sudo chmod 644 $(INSTALL_DIR)/libwebc.a
+	
+	# Install header files
+	sudo rm -rf $(INCLUDE_INSTALL_DIR)
+	sudo mkdir -p $(INCLUDE_INSTALL_DIR)
+	sudo cp -r $(INCLUDE_DIR)/* $(INCLUDE_INSTALL_DIR)
+	sudo chmod 644 $(INCLUDE_INSTALL_DIR)/*.h
 
 .PHONY: help
 help: ## Show this help message

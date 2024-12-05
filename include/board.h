@@ -33,7 +33,6 @@ typedef enum {
     ERROR_FRIENDLY_PIECE,
     ERROR_KINGS_TOUCHING,
     ERROR_INVALID_CASTLE,
-    
 } error_t;
 
 static const char error_messages[][256] = {
