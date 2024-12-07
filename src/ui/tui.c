@@ -6,7 +6,6 @@
 #include "extern/clib.h"
 #include <stdio.h>
 #include <inttypes.h>
-#include "hashing.h"
 #include "zobrist.h"
 #include "piece.h"
 

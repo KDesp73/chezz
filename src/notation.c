@@ -533,6 +533,7 @@ void move_to_san(board_t* board, square_t from, square_t to, char promotion, san
     } else if (in_check(&temp, !color)) {
         strcat(san->move, "+"); // Proper termination ensured by strcat
     }
+    board_free(&temp);
     DEBU("After mate or check san: %s", san->move);
 }
 
