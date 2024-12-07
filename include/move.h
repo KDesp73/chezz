@@ -20,8 +20,8 @@ _Bool queen_can_move(board_t* board, square_t piece, square_t target);
 _Bool king_can_move(board_t* board, square_t piece, square_t target);
 
 square_t** valid_moves(board_t* board, square_t piece, size_t* count);
-_Bool move_is_valid(const board_t* board, square_t from, square_t to);
-_Bool attack_is_valid(const board_t* board, square_t from, square_t to, _Bool strict);
+_Bool move_is_valid(board_t* board, square_t from, square_t to);
+_Bool attack_is_valid(board_t* board, square_t from, square_t to, _Bool strict);
 
 _Bool king_is_castling(const board_t* board, square_t from, square_t to);
 _Bool king_can_castle(board_t* board, square_t from, square_t to);

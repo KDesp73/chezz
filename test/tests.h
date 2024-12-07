@@ -332,7 +332,8 @@ int test_checkmate(const char* fen, _Bool expected);
     test_checkmate("1R5k1/R7/8/8/8/8/8/6K1 b - - 0 1", 1), \
     test_checkmate("6kR/5p2/8/8/8/8/8/B6K1 b - - 0 1", 1), \
     test_checkmate("5rk1/5p1p/8/8/8/8/8/B5RK b - - 0 1", 1), \
-    test_checkmate("rnbqkb1r/ppppp2p/5n2/5ppQ/8/4P3/PPPP1PPP/RNB1KBNR w KQkq - 0 1", 0)
+    test_checkmate("rnbqkb1r/ppppp2p/5n2/5ppQ/8/4P3/PPPP1PPP/RNB1KBNR w KQkq - 0 1", 0), \
+    test_checkmate("r1b1kb1r/ppp2ppp/5n2/4q3/8/2N5/PPPB1PPP/R2QKBNR w KQkq - 0 1", 0)
 
 int test_insufficient_material(const char* fen, _Bool expected);
 #define TEST_INSUFFICIENT_MATERIAL \

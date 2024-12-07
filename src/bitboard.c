@@ -11,10 +11,6 @@ move_t encode_move(int from, int to, int promotion, int flags)
            ((flags & 0x3) << 16);
 }
 
-_Bool is_valid_move(uint64_t* bitboards, move_t move, int color);
-void print_move(move_t move);
-void apply_move(uint64_t* bitboards, move_t move, int color);
-void decode_move(move_t move, int* from, int* to, int* promotion, int* flags);
 void decode_move(move_t move, int* from, int* to, int* promotion, int* flags)
 {
     *from = move & 0x3F;

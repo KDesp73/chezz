@@ -33,6 +33,10 @@ typedef enum {
     ERROR_FRIENDLY_PIECE,
     ERROR_KINGS_TOUCHING,
     ERROR_INVALID_CASTLE,
+    ERROR_INVALID_SQUARE,
+    ERROR_PIECE_IS_PINNED,
+    ERROR_CANNOT_MOVE_OPPONENTS_PIECES,
+    ERROR_KING_IS_IN_CHECK,
 } error_t;
 
 static const char error_messages[][256] = {
@@ -43,7 +47,11 @@ static const char error_messages[][256] = {
     "Invalid piece",
     "Attacking friendly piece",
     "Kings cannot touch",
-    "Invalid castling"
+    "Invalid castling",
+    "Invalid square",
+    "Piece is pinned",
+    "Cannot move opponent's pieces",
+    "King is in check"
 };
 
 typedef enum {

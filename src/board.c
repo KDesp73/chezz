@@ -64,11 +64,12 @@ void board_init_fen(board_t* board, const char* fen)
         return;
     }
 
+
+    fen_import(board, fen);
+
     board->error = 0;
     board->result = RESULT_NONE;
     init_hash_table(&board->history, 1000, fen);
-
-    fen_import(board, fen);
 }
 
 int has_castling_rights(const board_t* board, uint8_t castling_rights)

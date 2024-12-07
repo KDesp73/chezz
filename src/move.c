@@ -104,7 +104,7 @@ _Bool piece_can_move(board_t* board, square_t piece, square_t target)
     }
 }
 
-_Bool move_is_valid(const board_t* board, square_t from, square_t to)
+_Bool move_is_valid(board_t* board, square_t from, square_t to)
 {
     if(!piece_can_move((board_t*) board, from, to)) {
         return 0;
@@ -113,6 +113,7 @@ _Bool move_is_valid(const board_t* board, square_t from, square_t to)
     int color = PIECE_COLOR(board, from);
 
     if(board->turn != color) {
+        board->error = ERROR_CANNOT_MOVE_OPPONENTS_PIECES;
         return 0;
     }
 
@@ -121,7 +122,10 @@ _Bool move_is_valid(const board_t* board, square_t from, square_t to)
         memcpy(temp.grid, board->grid, 64);
 
         move_freely(&temp, from, to);
-        return !IN_CHECK(&temp, color);
+        _Bool ret = !IN_CHECK(&temp, color);
+
+        if(!ret) board->error = ERROR_PIECE_IS_PINNED;
+        return ret;
     }
 
 
@@ -137,7 +141,7 @@ _Bool move_is_valid(const board_t* board, square_t from, square_t to)
     return 1;
 }
 
-_Bool attack_is_valid(const board_t* board, square_t from, square_t to, _Bool strict)
+_Bool attack_is_valid(board_t* board, square_t from, square_t to, _Bool strict)
 {
     if(!piece_can_attack((board_t*) board, from, to, strict)) {
         return 0;
@@ -146,6 +150,7 @@ _Bool attack_is_valid(const board_t* board, square_t from, square_t to, _Bool st
     int color = PIECE_COLOR(board, from);
 
     if(strict && board->turn != color) {
+        board->error = ERROR_CANNOT_MOVE_OPPONENTS_PIECES;
         return 0;
     }
 
@@ -154,7 +159,10 @@ _Bool attack_is_valid(const board_t* board, square_t from, square_t to, _Bool st
         memcpy(temp.grid, board->grid, 64);
 
         move_freely(&temp, from, to);
-        return !IN_CHECK(&temp, color);
+        _Bool ret = !IN_CHECK(&temp, color);
+
+        if(!ret) board->error = ERROR_PIECE_IS_PINNED;
+        return ret;
     }
 
 
@@ -164,7 +172,10 @@ _Bool attack_is_valid(const board_t* board, square_t from, square_t to, _Bool st
         board_init_board(&temp, *board);
 
         move_freely(&temp, from, to);
-        return !IN_CHECK(&temp, color);
+        _Bool ret = !IN_CHECK(&temp, color);
+
+        if(!ret) board->error = ERROR_KING_IS_IN_CHECK;
+        return ret;
     }
 
     return 1;

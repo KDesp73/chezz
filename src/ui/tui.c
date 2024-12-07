@@ -10,7 +10,7 @@
 #include "zobrist.h"
 #include "piece.h"
 
-void tui_run(const char* fen)
+void tui_run(const char* fen, ui_config_t config)
 {
     game_t game;
     game_init(&game, NULL, "KDesp73 Chess", NULL, NULL, fen);
@@ -18,7 +18,7 @@ void tui_run(const char* fen)
     board_t board;
     board_init_fen(&board, fen);
     clib_ansi_clear_screen();
-    PRINT_FULL(&board, NULL);
+    tui_board_print(&board, config, NULL);
 
     while (1) {
         char move_input[6]; // +1 for \0, +1 for safety
@@ -41,7 +41,7 @@ void tui_run(const char* fen)
         promotion = move_input[4];
 
         if(!square_is_valid(from) || !square_is_valid(to)){
-            printf("Invalid squares\n");
+            board.error = ERROR_INVALID_SQUARE;
             continue;
         }
 
@@ -52,7 +52,7 @@ void tui_run(const char* fen)
         char piece = piece_at(&board, from_square);
         if (piece == EMPTY_SQUARE) {
             clib_ansi_clear_screen();
-            PRINT_FULL(&board, NULL);
+            tui_board_print(&board, config, NULL);
             continue;
         }
 
@@ -61,14 +61,16 @@ void tui_run(const char* fen)
 
         if(!move(&board, from_square, to_square, promotion)){
             clib_ansi_clear_screen();
-            PRINT_FULL(&board, NULL);
+            tui_board_print(&board, config, NULL);
             continue;
+        } else {
+            board.error = 0;
         }
 
         game_add_move(&game, san);
 
         clib_ansi_clear_screen();
-        PRINT_FULL(&board, &from_square, &to_square, NULL);
+        tui_board_print(&board, config, &from_square, &to_square);
 
         if(board.result > 0){
             printf("%s %s\n", result_message[board.result], result_score[board.result]);
@@ -96,15 +98,17 @@ void tui_board_print_squares(const board_t* board, ui_config_t config, square_t*
     const char* padding = "   ";
     printf("%s┌───┬───┬───┬───┬───┬───┬───┬───┐\n", (config.coords) ? padding : "");
 
-    for (int i = 7; i >= 0; --i) {
-        if(config.coords) printf(" %d ", i + 1);
+    for (int i = (config.perspective) ? 7 : 0; (config.perspective) ? i >= 0 : i <= 7; i += (config.perspective) ? -1 : 1) {
+        if(config.coords) 
+            printf(" %d ", (config.perspective ? 8 - i : i + 1));
+
         for (int j = 0; j <= 7; ++j) {
             int highlighted = 0;
 
             if(squares != NULL){
                 for (size_t sc = 0; sc < count; ++sc) {
                     if(squares[sc] == NULL) continue;
-                    if (i == squares[sc]->rank - 1 && j == squares[sc]->file - 1) {
+                    if (i == squares[sc]->y && j == ((config.perspective) ? squares[sc]->x : 7 - squares[sc]->x)) {
                         highlighted = 1;
                         break;
                     }
@@ -112,15 +116,16 @@ void tui_board_print_squares(const board_t* board, ui_config_t config, square_t*
             }
 
             printf("│");
+            char c = board->grid[i][(config.perspective) ? j : 7-j];
             if (config.highlights && highlighted) {
-                printf("%s %c %s", yellow_bg, board->grid[i][j], reset);
+                printf("%s %c %s", yellow_bg, c, reset);
             } else {
-                printf(" %c ", board->grid[i][j]);
+                printf(" %c ", c);
             }
         }
         printf("│\n");
 
-        if (i > 0) {
+        if (i != (config.perspective ? 0 : 7)) {
             printf("%s├───┼───┼───┼───┼───┼───┼───┼───┤\n", (config.coords) ? padding : "");
         }
     }
@@ -128,8 +133,14 @@ void tui_board_print_squares(const board_t* board, ui_config_t config, square_t*
     
     if(config.coords){
         printf("%s", padding);
-        for(int i = 0; i < BOARD_SIZE; i++){
-            printf("  %c ", 'A' + i);
+        if(config.perspective) {
+            for(int i = 0; i < BOARD_SIZE; i++){
+                printf("  %c ", 'A' + i);
+            }
+        } else {
+            for(int i = BOARD_SIZE - 1; i >= 0; i--){ // Reverse letters when perspective is 0
+                printf("  %c ", 'A' + i);
+            }
         }
         printf("\n");
     }
