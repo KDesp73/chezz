@@ -3,6 +3,7 @@
 
 #include "bitboard.h"
 #include "board.h"
+#include <stdio.h>
 
 void fen_import(board_t* board, const char* fen);
 void fen_export(board_t* board, char fen[]);
@@ -34,6 +35,7 @@ void game_init(game_t* game,
     const char* fen
 );
 
+void game_stream(game_t game, FILE* stream);
 void game_run(game_t game);
 void game_print(game_t game);
 void game_add_move(game_t* game, san_move_t move);

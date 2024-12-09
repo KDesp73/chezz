@@ -120,6 +120,7 @@ _Bool square_is_attacked_coords(const board_t *board, int y, int x, int attacked
 _Bool square_is_attacked_fr(const board_t *board, int rank, int file, int attacked_by);
 square_t** square_is_attacked_by(const board_t* board, square_t square, int attacked_by, size_t* count);
 square_t** square_is_accessible_by(const board_t* board, square_t square, char piece, size_t* count);
+square_t** attack_path_to_king(board_t* board, square_t king, square_t attacker, size_t* path_count);
 
 void find_king(square_t* square, const board_t* board, int color);
 

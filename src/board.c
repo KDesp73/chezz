@@ -196,13 +196,19 @@ square_t** square_is_accessible_by(const board_t* board, square_t square, char p
             
             if(board->grid[rank][file] == ' ') continue;
             if(rank == square.y && file == square.x) continue;
-            if(piece != piece_at(board, current)) continue;
+            if(piece != 0 && piece != 1){
+                if(piece != piece_at(board, current)) continue;
+            } else {
+                if(piece != PIECE_COLOR(board, current)) continue;
+            }
+            
 
-            if(move_is_valid(board, current, square)){
+            if(move_is_valid((board_t*) board, current, square)){
                 squares[square_count++] = square_new_coords(rank, file);
             }
         }
     }
+
     if (square_count == 0) {
         free(squares);
         *count = 0;
@@ -463,3 +469,71 @@ _Bool in_check(const board_t *board, int color)
     find_king(&king, board, color);
     return square_is_attacked(board, king, !color);
 }
+
+#undef DEBU
+#define DEBU(fmt, ...)
+
+square_t** attack_path_to_king(board_t* board, square_t king, square_t attacker, size_t* path_count)
+{
+    assert(board != NULL);
+    assert(path_count != NULL);
+
+    *path_count = 0; // Initialize the count of squares in the attack path
+    square_t** path = NULL;
+
+    char attacker_piece = tolower(piece_at(board, attacker));
+    if (attacker_piece != 'q' && attacker_piece != 'r' && attacker_piece != 'b') {
+        DEBU("Non-sliding pieces have no intermediate attack path");
+        return path;
+    }
+
+    // Determine the direction of the attack
+    int dx = (attacker.x > king.x) - (attacker.x < king.x); // +1, -1, or 0
+    int dy = (attacker.y > king.y) - (attacker.y < king.y); // +1, -1, or 0
+    dx = -dx;
+    dy = -dy;
+
+    // Ensure alignment for valid sliding piece paths
+    if ((attacker_piece == 'r' && dx != 0 && dy != 0) ||  // Rooks can't move diagonally
+        (attacker_piece == 'b' && (dx == 0 || dy == 0))) { // Bishops can't move straight
+        DEBU("Invalid alignment");
+        return path; 
+    }
+
+    // Calculate the attack path
+    square_t current = attacker;
+    while (true) {
+        square_set_x(&current, current.x + dx);
+        square_set_y(&current, current.y + dy);
+
+        // Stop if out of bounds
+        if (current.x < 0 || current.x >= BOARD_SIZE ||
+            current.y < 0 || current.y >= BOARD_SIZE) {
+            break; // Prevent infinite loop if something goes wrong
+        }
+
+        if (current.x == king.x && current.y == king.y) {
+            DEBU("Reached the king, stop");
+            break; 
+        }
+
+        // Allocate memory for the new square in the path
+        path = realloc(path, (*path_count + 1) * sizeof(square_t*));
+        if (!path) {
+            perror("Memory allocation failed for attack path");
+            exit(EXIT_FAILURE);
+        }
+
+        path[*path_count] = malloc(sizeof(square_t));
+        if (!path[*path_count]) {
+            perror("Memory allocation failed for attack path square");
+            exit(EXIT_FAILURE);
+        }
+
+        square_from_coords(path[*path_count], current.y, current.x);
+        (*path_count)++;
+    }
+
+    return path;
+}
+

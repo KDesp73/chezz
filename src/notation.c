@@ -1,6 +1,7 @@
 #include "notation.h"
 #include "board.h"
 #include "ui.h"
+#include <assert.h>
 #define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 #include "move.h"
@@ -143,6 +144,8 @@ no_castling:
 }
 
 void fen_export(board_t* board, char fen[]) {
+    memset(fen, 0, strlen(fen));
+
     // 1. Piece Placement
     int empty_count;
     int rank, file;
@@ -693,3 +696,55 @@ end:
     }
     board_free(&board);
 }
+
+void game_stream(game_t game, FILE* stream)
+{
+    assert(stream != NULL);
+
+    board_t board;
+    board_init_fen(&board, IS_EMPTY(game.fen) ? NULL : game.fen);
+
+    // Stream initial state
+    char fen[256];
+    fen_export(&board, fen);
+    fprintf(stream, "%s\n", fen);
+
+    for (size_t i = 0; i < game.move_count; i++) {
+        square_t from, to;
+        char promotion;
+
+        // Check for result condition
+        for (size_t j = 0; j < SCORE_COUNT; j++) {
+            if (STREQ(game.moves[i].move, result_score[j])) {
+                board.result = j; // Store the result index
+                goto end;
+            }
+        }
+
+        // Parse and apply the move
+        san_to_move(&board, game.moves[i], &from, &to, &promotion);
+        if (!move(&board, from, to, promotion)) {
+            // Invalid move detected
+            fprintf(stream, "Invalid move: %s\n", game.moves[i].move);
+            goto end;
+        }
+
+        // Export and stream the updated board state in FEN format
+        fen_export(&board, fen);
+        fprintf(stream, "%s\n", fen);
+    }
+
+end:
+    // Stream game result or error
+    if (board.result >= 0) {
+        const char* message = result_message[board.result];
+        const char* score = result_score[board.result];
+        fprintf(stream, "Game Over: %s %s\n", message, score);
+    } else {
+        fprintf(stream, "Game did not end.\n");
+    }
+
+    board_free(&board);
+}
+
+

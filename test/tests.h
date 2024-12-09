@@ -335,6 +335,7 @@ int test_checkmate(const char* fen, _Bool expected);
     test_checkmate("rnbqkb1r/ppppp2p/5n2/5ppQ/8/4P3/PPPP1PPP/RNB1KBNR w KQkq - 0 1", 0), \
     test_checkmate("r1b1kb1r/ppp2ppp/5n2/4q3/8/2N5/PPPB1PPP/R2QKBNR w KQkq - 0 1", 0)
 
+
 int test_insufficient_material(const char* fen, _Bool expected);
 #define TEST_INSUFFICIENT_MATERIAL \
     test_insufficient_material("8/8/4k3/8/8/2K5/8/8 w - - 0 1", 1), \
@@ -432,4 +433,9 @@ int test_san_to_move(const char* fen, const char* san, const char* expected_move
     test_san_to_move("rnbqkbnr/1pp1ppp1/7p/p1PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1",  "cxd6", "c5d6"), \
     test_san_to_move("rnbqkbnr/1pp1ppp1/7p/p1PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1",  "exd6", "e5d6"), \
     test_san_to_move("rnbqkbnr/1pp1ppp1/7p/p1Pp4/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1",  "cxd6", "c5d6")
+
+int test_attack_path_to_king(const char* fen, const char* king, char* first, ...);
+#define TEST_ATTACK_PATH_TO_KING
+
+
 #endif // TESTS_H

@@ -10,8 +10,8 @@ TEST_DIR = test
 INCLUDE_DIR = include
 BUILD_DIR = build
 DIST_DIR = dist
-INSTALL_DIR = /usr/lib/
-INCLUDE_INSTALL_DIR = /usr/local/include/chess/
+INSTALL_DIR = /usr/lib
+INCLUDE_INSTALL_DIR = /usr/local/include/chess
 
 # Target and version info
 OUTPUT_NAME = libchess
