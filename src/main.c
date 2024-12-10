@@ -1,3 +1,4 @@
+#include "bitboard.h"
 #include "version.h"
 #include <stdlib.h>
 #define CLIB_IMPLEMENTATION
@@ -20,9 +21,7 @@ int is_true(const char* str)
     );
 }
 
-int main(int argc, char** argv){
-    init_zobrist();
-
+void main_exe(int argc, char** argv){
     CliArguments args = clib_cli_make_arguments(6,
         clib_cli_create_argument('h', "help", "Prints this message", no_argument),
         clib_cli_create_argument('v', "version", "Prints library version", no_argument),
@@ -82,6 +81,15 @@ cleanup:
     free(fmt);
     free(opts);
     clib_cli_clean_arguments(&args);
+
+}
+
+int main(int argc, char** argv){
+    init_zobrist();
+
+    Move move = MoveEncode(0, 63, PROMOTION_NONE, FLAG_NORMAL);
+    Uint32Print(move);
+    MovePrint(move);
 
     return 0;
 }

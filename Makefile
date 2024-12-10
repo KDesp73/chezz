@@ -58,7 +58,9 @@ $(BUILD_DIR): ## Create the build directory if it doesn't exist
 	@echo "[INFO] Creating build directory"
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DIR)/test
-	mkdir -p $(BUILD_DIR)/move
+	mkdir -p $(BUILD_DIR)/grid
+	mkdir -p $(BUILD_DIR)/grid/move
+	mkdir -p $(BUILD_DIR)/bitboard
 	mkdir -p $(BUILD_DIR)/ui
 	mkdir -p $(BUILD_DIR)/bin
 
@@ -120,6 +122,9 @@ install: all ## Install library and headers
 	sudo mkdir -p $(INCLUDE_INSTALL_DIR)
 	sudo cp -r $(INCLUDE_DIR)/* $(INCLUDE_INSTALL_DIR)
 	sudo chmod 644 $(INCLUDE_INSTALL_DIR)/*.h
+
+compile_commands.json:
+	bear -- make all
 
 .PHONY: help
 help: ## Show this help message

@@ -1,28 +1,25 @@
 #ifndef BITBOARD_H
 #define BITBOARD_H
 
-/* Move structure
-Bits 0-5: Source square (0-63)
-Bits 6-11: Destination square (0-63)
-Bits 12-15: Promotion piece (0: None, 1: Queen, 2: Rook, 3: Bishop, 4: Knight)
-Bits 16-17: Flags (0: Normal, 1: Castling, 2: En Passant, etc.)
-*/
-
-#include "board.h"
 #include "common.h"
 #include "square.h"
 #include <stdint.h>
 
+#define PIECE_TYPE_COUNT 12
 
+/* Move structure
+Bits 0-5: Source square (0-63)
+Bits 6-11: Destination square (0-63)
+Bits 12-15: Promotion piece (0: None, 1: Queen, 2: Rook, 3: Bishop, 4: Knight)
+Bits 16-21: Flags (0: Normal, 1: Castling, 2: En Passant, etc.)
+*/
 typedef uint32_t Move;
 typedef uint64_t Bitboard;
-typedef int Square;
-
-#define PIECE_TYPE_COUNT 12
+typedef uint8_t Square;
 
 typedef struct {
     Bitboard bitboards[PIECE_TYPE_COUNT];
-    int enpassant_square;
+    Square enpassant_square;
     state_t state;
 } Board;
 
@@ -41,14 +38,35 @@ enum {
     INDEX_WHITE_KING,
 };
 
-_Bool MoveIsValid(Board board, Move move, int color);
-Move MoveEncode(Square from, Square to, int promotion, int flags);
-void MoveApply(Board board, Move move, int color);
-void MoveDecode(Move move, Square* from, Square* to, int* promotion, int* flags);
+typedef enum {
+    FLAG_NORMAL = 0,
+    FLAG_CASTLING,
+    FLAG_ENPASSANT,
+    FLAG_PAWN_DOUBLE_MOVE,
+    FLAG_PROMOTION,
+    FLAG_PROMOTION_WITH_CAPTURE,
+} Flag;
+
+typedef enum {
+    PROMOTION_NONE = 0,
+    PROMOTION_QUEEN,
+    PROMOTION_ROOK,
+    PROMOTION_BISHOP,
+    PROMOTION_KNIGHT
+} Promotion;
+
+void Uint32Print(uint32_t value);
+
+_Bool MoveIsValid(Board board, Move move, uint8_t color);
+Move MoveEncode(Square from, Square to, uint8_t promotion, uint8_t flag);
+void MoveDecode(Move move, Square* from, Square* to, uint8_t* promotion, uint8_t* flag);
+void MoveApply(Board board, Move move, uint8_t color);
 void MovePrint(Move move);
 
-// Adaptors
-Move SquaresToMove(square_t from, square_t to, int promotion, int flags);
-void MoveToSquares(Move move, square_t* from, square_t* to, int* promotion, int* flags);
+void SquareName(char buffer[3], Square square);
+
+// Adapters
+Move SquaresToMove(square_t from, square_t to, uint8_t promotion, uint8_t flags);
+void MoveToSquares(Move move, square_t* from, square_t* to, uint8_t* promotion, uint8_t* flags);
 
 #endif // BITBOARD_H
