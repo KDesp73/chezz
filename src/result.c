@@ -133,14 +133,14 @@ _Bool is_stalemate_color(board_t* board, int color)
 
 _Bool is_stalemate(board_t* board)
 {
-    return (board->turn == PIECE_COLOR_WHITE && is_stalemate_color(board, PIECE_COLOR_WHITE)) ||
-        (board->turn == PIECE_COLOR_BLACK && is_stalemate_color(board, PIECE_COLOR_BLACK));
+    return (board->state.turn == PIECE_COLOR_WHITE && is_stalemate_color(board, PIECE_COLOR_WHITE)) ||
+        (board->state.turn == PIECE_COLOR_BLACK && is_stalemate_color(board, PIECE_COLOR_BLACK));
 }
 
 _Bool is_threefold_repetition(board_t* board)
 {
     uint64_t hash = calculate_zobrist_hash(board);
-    return update_hash_table(&board->history, hash);
+    return update_hash_table(&board->state.history, hash);
 }
 
 _Bool is_insufficient_material(board_t* board)

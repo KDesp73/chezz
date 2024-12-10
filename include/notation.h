@@ -1,7 +1,6 @@
 #ifndef NOTATION_H
 #define NOTATION_H
 
-#include "bitboard.h"
 #include "board.h"
 #include <stdio.h>
 

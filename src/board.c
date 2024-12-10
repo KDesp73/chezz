@@ -22,39 +22,39 @@ void board_init_board(board_t* board, board_t src)
     memcpy(board->grid, src.grid, sizeof(src.grid));
 
     // Copy turn
-    board->turn = src.turn;
+    board->state.turn = src.state.turn;
 
     // Copy en passant square
     strncpy(board->enpassant_square, src.enpassant_square, sizeof(board->enpassant_square));
 
     // Copy castling rights
-    board->castling_rights = src.castling_rights;
+    board->state.castling_rights = src.state.castling_rights;
 
     // Copy halfmove and fullmove counters
-    board->halfmove = src.halfmove;
-    board->fullmove = src.fullmove;
+    board->state.halfmove = src.state.halfmove;
+    board->state.fullmove = src.state.fullmove;
 
     // Copy error state
-    board->error = src.error;
+    board->state.error = src.state.error;
 
     // Copy result
-    board->result = src.result;
+    board->state.result = src.state.result;
 
     // Initialize the history hash table
-    init_hash_table_(&board->history, src.history.capacity, calculate_zobrist_hash(board));
+    init_hash_table_(&board->state.history, src.state.history.capacity, calculate_zobrist_hash(board));
 
     // Copy history entries
-    for (size_t i = 0; i < src.history.capacity; i++) {
-        if (src.history.entries[i].hash) {
-            board->history.entries[i] = src.history.entries[i];
-            board->history.size++;
+    for (size_t i = 0; i < src.state.history.capacity; i++) {
+        if (src.state.history.entries[i].hash) {
+            board->state.history.entries[i] = src.state.history.entries[i];
+            board->state.history.size++;
         }
     }
 }
 
 void board_free(board_t* board)
 {
-    free_hash_table(&board->history);
+    free_hash_table(&board->state.history);
 }
 
 void board_init_fen(board_t* board, const char* fen)
@@ -67,19 +67,19 @@ void board_init_fen(board_t* board, const char* fen)
 
     fen_import(board, fen);
 
-    board->error = 0;
-    board->result = RESULT_NONE;
-    init_hash_table(&board->history, 1000, fen);
+    board->state.error = 0;
+    board->state.result = RESULT_NONE;
+    init_hash_table(&board->state.history, 1000, fen);
 }
 
 int has_castling_rights(const board_t* board, uint8_t castling_rights)
 {
-    return board->castling_rights & castling_rights;
+    return board->state.castling_rights & castling_rights;
 }
 
 void revoke_castling_rights(board_t* board, uint8_t castling_rights)
 {
-    board->castling_rights &= ~castling_rights;
+    board->state.castling_rights &= ~castling_rights;
 }
 
 _Bool square_is_attacked(const board_t *board, square_t square, int attacked_by)
@@ -320,7 +320,7 @@ square_t** square_is_attacked_by(const board_t* board, square_t square, int atta
     square_t* current = attackers[i];
 
     while (current != NULL) {
-        if (!attack_is_valid(board, *current, square, 0)) {
+        if (!attack_is_valid((board_t*) board, *current, square, 0)) {
             for (size_t j = i; attackers[j] != NULL; j++) {
                 square_free(&attackers[j]);
                 attackers[j] = attackers[j + 1];
@@ -435,9 +435,9 @@ void update_halfmove(board_t* board, square_t from, square_t to, size_t piece_co
     _Bool is_capture = (piece_count_after != piece_count_before);
 
     if (is_pawn_advancement || is_capture || is_pawn_move) {
-        board->halfmove = 0;
+        board->state.halfmove = 0;
     } else {
-        board->halfmove++;
+        board->state.halfmove++;
     }
 }
 

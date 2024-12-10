@@ -1,6 +1,7 @@
 TODO: expand the api
 TODO: docs
 TODO: bitboard representation
+TODO: testing framework
 DONE: pin check
 DONE: check check
 DONE: en passant captures

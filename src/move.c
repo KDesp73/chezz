@@ -24,7 +24,7 @@ void move_freely(board_t* board, square_t from, square_t to)
 _Bool move(board_t *board, square_t from, square_t to, char promotion)
 {
     if (!move_is_valid(board, from, to)) {
-        board->error = ERROR_INVALID_MOVE;
+        board->state.error = ERROR_INVALID_MOVE;
         return 0;
     }
 
@@ -39,19 +39,19 @@ _Bool move(board_t *board, square_t from, square_t to, char promotion)
     // Execute the move
     if(king_is_castling(board, from, to)){ 
         if(!king_can_castle(board, from, to)){
-            board->error = ERROR_INVALID_MOVE;
+            board->state.error = ERROR_INVALID_MOVE;
             return 0;
         }
         king_castle(board, from, to);
     } else if(pawn_is_enpassanting(board, from, to)) {
         if(!pawn_can_enpassant(board, from, to)){
-            board->error = ERROR_INVALID_MOVE;
+            board->state.error = ERROR_INVALID_MOVE;
             return 0;
         }
         pawn_enpassant(board, from, to);
     } else if(pawn_is_promoting(board, from, to)) {
         if(!pawn_promote(board, from, to, promotion)) {
-            board->error = ERROR_INVALID_MOVE;
+            board->state.error = ERROR_INVALID_MOVE;
             return 0;
         }
     } else {
@@ -64,20 +64,20 @@ _Bool move(board_t *board, square_t from, square_t to, char promotion)
 
     size_t piece_count_after = number_of_pieces(board, PIECE_COLOR_NONE);
 
-    if(board->turn == PIECE_COLOR_BLACK) board->fullmove++;
+    if(board->state.turn == PIECE_COLOR_BLACK) board->state.fullmove++;
 
     update_halfmove(board, from, to, piece_count_before, piece_count_after, from_before);
 
-    board->turn = !board->turn;
+    board->state.turn = !board->state.turn;
 
     // Check for the posibility of a result
-    if(board->halfmove >= 50) board->result = RESULT_DRAW_DUE_TO_50_MOVE_RULE;
-    if(is_checkmate(board)) board->result = (color == PIECE_COLOR_WHITE)
+    if(board->state.halfmove >= 50) board->state.result = RESULT_DRAW_DUE_TO_50_MOVE_RULE;
+    if(is_checkmate(board)) board->state.result = (color == PIECE_COLOR_WHITE)
                                             ? RESULT_WHITE_WON
                                             : RESULT_BLACK_WON;
-    if(is_stalemate(board)) board->result = RESULT_STALEMATE;
-    if(is_insufficient_material(board)) board->result = RESULT_DRAW_DUE_TO_INSUFFICIENT_MATERIAL;
-    if(is_threefold_repetition(board)) board->result = RESULT_DRAW_BY_REPETITION;
+    if(is_stalemate(board)) board->state.result = RESULT_STALEMATE;
+    if(is_insufficient_material(board)) board->state.result = RESULT_DRAW_DUE_TO_INSUFFICIENT_MATERIAL;
+    if(is_threefold_repetition(board)) board->state.result = RESULT_DRAW_BY_REPETITION;
 
     return 1;
 }
@@ -112,8 +112,8 @@ _Bool move_is_valid(board_t* board, square_t from, square_t to)
 
     int color = PIECE_COLOR(board, from);
 
-    if(board->turn != color) {
-        board->error = ERROR_CANNOT_MOVE_OPPONENTS_PIECES;
+    if(board->state.turn != color) {
+        board->state.error = ERROR_CANNOT_MOVE_OPPONENTS_PIECES;
         return 0;
     }
 
@@ -124,7 +124,7 @@ _Bool move_is_valid(board_t* board, square_t from, square_t to)
         move_freely(&temp, from, to);
         _Bool ret = !IN_CHECK(&temp, color);
 
-        if(!ret) board->error = ERROR_PIECE_IS_PINNED;
+        if(!ret) board->state.error = ERROR_PIECE_IS_PINNED;
         return ret;
     }
 
@@ -149,8 +149,8 @@ _Bool attack_is_valid(board_t* board, square_t from, square_t to, _Bool strict)
 
     int color = PIECE_COLOR(board, from);
 
-    if(strict && board->turn != color) {
-        board->error = ERROR_CANNOT_MOVE_OPPONENTS_PIECES;
+    if(strict && board->state.turn != color) {
+        board->state.error = ERROR_CANNOT_MOVE_OPPONENTS_PIECES;
         return 0;
     }
 
@@ -161,7 +161,7 @@ _Bool attack_is_valid(board_t* board, square_t from, square_t to, _Bool strict)
         move_freely(&temp, from, to);
         _Bool ret = !IN_CHECK(&temp, color);
 
-        if(!ret) board->error = ERROR_PIECE_IS_PINNED;
+        if(!ret) board->state.error = ERROR_PIECE_IS_PINNED;
         return ret;
     }
 
@@ -174,7 +174,7 @@ _Bool attack_is_valid(board_t* board, square_t from, square_t to, _Bool strict)
         move_freely(&temp, from, to);
         _Bool ret = !IN_CHECK(&temp, color);
 
-        if(!ret) board->error = ERROR_KING_IS_IN_CHECK;
+        if(!ret) board->state.error = ERROR_KING_IS_IN_CHECK;
         return ret;
     }
 
@@ -267,8 +267,8 @@ _Bool move_name(board_t* board, game_t* game, const char* move_str)
 
     if(ret) {
         game_add_move(game, san);
-        if(board->result != 0) {
-            game_set_result(game, result_score[board->result]);
+        if(board->state.result != 0) {
+            game_set_result(game, result_score[board->state.result]);
         }
     }
 

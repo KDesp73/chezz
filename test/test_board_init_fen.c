@@ -10,13 +10,13 @@ int test_board_init_fen(const char* fen, _Bool turn, uint8_t castling_rights, ch
     board_t board;
     board_init_fen(&board, fen);
 
-    if(turn != board.turn){
+    if(turn != board.state.turn){
         FAIL("For fen %s. Expected turn %d. Found %d", fen, turn, !turn);
         return 0;
     }
 
-    if(castling_rights != board.castling_rights){
-        FAIL("For fen %s. Expected castling rights %d. Found %d", fen, castling_rights, board.castling_rights);
+    if(castling_rights != board.state.castling_rights){
+        FAIL("For fen %s. Expected castling rights %d. Found %d", fen, castling_rights, board.state.castling_rights);
         return 0;
     }
 
@@ -25,13 +25,13 @@ int test_board_init_fen(const char* fen, _Bool turn, uint8_t castling_rights, ch
         return 0;
     }
 
-    if(halfmove != board.halfmove){
-        FAIL("For fen %s. Expected halfmove %zu. Found %zu", fen, halfmove, board.halfmove);
+    if(halfmove != board.state.halfmove){
+        FAIL("For fen %s. Expected halfmove %zu. Found %zu", fen, halfmove, board.state.halfmove);
         return 0;
     }
 
-    if(fullmove != board.fullmove){
-        FAIL("For fen %s. Expected fullmove %zu. Found %zu", fen, fullmove, board.fullmove);
+    if(fullmove != board.state.fullmove){
+        FAIL("For fen %s. Expected fullmove %zu. Found %zu", fen, fullmove, board.state.fullmove);
         return 0;
     }
 

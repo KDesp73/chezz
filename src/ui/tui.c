@@ -40,7 +40,7 @@ void tui_run(const char* fen, ui_config_t config)
         promotion = move_input[4];
 
         if(!square_is_valid(from) || !square_is_valid(to)){
-            board.error = ERROR_INVALID_SQUARE;
+            board.state.error = ERROR_INVALID_SQUARE;
             continue;
         }
 
@@ -63,7 +63,7 @@ void tui_run(const char* fen, ui_config_t config)
             tui_board_print(&board, config, NULL);
             continue;
         } else {
-            board.error = 0;
+            board.state.error = 0;
         }
 
         game_add_move(&game, san);
@@ -71,11 +71,11 @@ void tui_run(const char* fen, ui_config_t config)
         clib_ansi_clear_screen();
         tui_board_print(&board, config, &from_square, &to_square);
 
-        if(board.result > 0){
-            printf("%s %s\n", result_message[board.result], result_score[board.result]);
+        if(board.state.result > 0){
+            printf("%s %s\n", result_message[board.state.result], result_score[board.state.result]);
             board_free(&board);
 
-            game_set_result(&game, result_score[board.result]);
+            game_set_result(&game, result_score[board.state.result]);
             char pgn_string[2048];
             pgn_export(&game, pgn_string);
 
@@ -90,8 +90,8 @@ void tui_board_print_squares(const board_t* board, ui_config_t config, square_t*
     char* yellow_bg = (char*) COLOR_BG(214);
     const char* reset = ANSI_RESET;
 
-    if(config.errors && board->error > 0){
-        ERRO("%s", error_messages[board->error]);
+    if(config.errors && board->state.error > 0){
+        ERRO("%s", error_messages[board->state.error]);
     }
 
     const char* padding = "   ";
@@ -154,9 +154,9 @@ void tui_board_print_squares(const board_t* board, ui_config_t config, square_t*
     }
 
     if(config.halfmove)
-        printf("Halfmove: %zu\n", board->halfmove);
+        printf("Halfmove: %zu\n", board->state.halfmove);
     if(config.fullmove)
-        printf("Fullmove: %zu\n", board->fullmove);
+        printf("Fullmove: %zu\n", board->state.fullmove);
 
 
     if(config.checks){
@@ -167,7 +167,7 @@ void tui_board_print_squares(const board_t* board, ui_config_t config, square_t*
     }
 
     if(config.turn)
-        printf("%s's turn\n", board->turn ? "White" : "Black");
+        printf("%s's turn\n", board->state.turn ? "White" : "Black");
 
     if(config.hash)
         printf("Hash : 0x%" PRIx64 "\n", calculate_zobrist_hash(board));

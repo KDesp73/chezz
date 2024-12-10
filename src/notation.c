@@ -63,20 +63,20 @@ void fen_import(board_t *board, const char *fen)
     enpassant[2] = '\0';
 
     // Initialize the board state
-    board->turn = (turn == 'w');  // White's turn if 'w', else Black's turn
+    board->state.turn = (turn == 'w');  // White's turn if 'w', else Black's turn
     if(turn != 'w' && turn != 'b') {
         ERRO("Active color should be 'w' or 'b'. Defaulting to white.");
-        board->turn = PIECE_COLOR_WHITE;
+        board->state.turn = PIECE_COLOR_WHITE;
     }
 
     // Initialize castling rights to zero
-    board->castling_rights = 0b0000;
+    board->state.castling_rights = 0b0000;
     for(size_t i = 0; i < strlen(castling); i++) {
         switch (castling[i]) {
-        case 'K': board->castling_rights |= CASTLE_WHITE_KINGSIDE; break;
-        case 'Q': board->castling_rights |= CASTLE_WHITE_QUEENSIDE; break;
-        case 'k': board->castling_rights |= CASTLE_BLACK_KINGSIDE; break;
-        case 'q': board->castling_rights |= CASTLE_BLACK_QUEENSIDE; break;
+        case 'K': board->state.castling_rights |= CASTLE_WHITE_KINGSIDE; break;
+        case 'Q': board->state.castling_rights |= CASTLE_WHITE_QUEENSIDE; break;
+        case 'k': board->state.castling_rights |= CASTLE_BLACK_KINGSIDE; break;
+        case 'q': board->state.castling_rights |= CASTLE_BLACK_QUEENSIDE; break;
         case '-': goto no_castling;
         default: WARN("Illegal character '%c' found in castling", castling[i]); break;
         }
@@ -97,15 +97,15 @@ no_castling:
     if(!is_number(halfmove)){
         ERRO("half move clock should be a number");
     } else {
-        board->halfmove = atoi(halfmove);
-        if(board->halfmove < 0) board->halfmove *= -1; // in case of negative number
+        board->state.halfmove = atoi(halfmove);
+        if(board->state.halfmove < 0) board->state.halfmove *= -1; // in case of negative number
     }
 
     if(!is_number(fullmove)){
         ERRO("full move clock should be a number");
     } else {
-        board->fullmove = atoi(fullmove);
-        if(board->fullmove < 0) board->fullmove *= -1; // in case of negative number
+        board->state.fullmove = atoi(fullmove);
+        if(board->state.fullmove < 0) board->state.fullmove *= -1; // in case of negative number
     }
 
     square_t square;
@@ -176,7 +176,7 @@ void fen_export(board_t* board, char fen[]) {
     }
 
     // 2. Active Color
-    char active_color = (board->turn == PIECE_COLOR_WHITE) ? 'w' : 'b';
+    char active_color = (board->state.turn == PIECE_COLOR_WHITE) ? 'w' : 'b';
 
     // 3. Castling Rights
     char castling_rights[5] = "";  // "KQkq"
@@ -195,10 +195,10 @@ void fen_export(board_t* board, char fen[]) {
     }
 
     // 5. Halfmove Clock
-    int halfmove_clock = board->halfmove;
+    int halfmove_clock = board->state.halfmove;
 
     // 6. Fullmove Number
-    int fullmove_number = board->fullmove;
+    int fullmove_number = board->state.fullmove;
 
     // Create the final FEN string
     sprintf(fen, "%s %c %s %s %d %d",
@@ -326,12 +326,12 @@ void san_to_move(board_t *board, san_move_t san, square_t *from, square_t *to, c
 
 
     if(STREQ(move, "O-O")){
-        square_from_name(from, (board->turn) ? "e1" : "e8");
-        square_from_name(to, (board->turn) ? "g1" : "g8");
+        square_from_name(from, (board->state.turn) ? "e1" : "e8");
+        square_from_name(to, (board->state.turn) ? "g1" : "g8");
         return;
     } else if(STREQ(move, "O-O-O")){
-        square_from_name(from, (board->turn) ? "e1" : "e8");
-        square_from_name(to, (board->turn) ? "c1" : "c8");
+        square_from_name(from, (board->state.turn) ? "e1" : "e8");
+        square_from_name(to, (board->state.turn) ? "c1" : "c8");
         return;
     }
 
@@ -355,9 +355,9 @@ void san_to_move(board_t *board, san_move_t san, square_t *from, square_t *to, c
 
     // Piece is a pawn
     if((strlen(move) == 3 && move[0] >= 'a' && move[0] <= 'h') || strlen(move) == 2){
-        piece = (board->turn) ? 'P' : 'p';
+        piece = (board->state.turn) ? 'P' : 'p';
     } else {
-        piece = (board->turn) ? move[0] : tolower(move[0]);
+        piece = (board->state.turn) ? move[0] : tolower(move[0]);
     }
 
     size_t count;
@@ -671,7 +671,7 @@ void game_run(game_t game)
 
         for(size_t j = 0; j < SCORE_COUNT; j++){
             if(STREQ(game.moves[i].move, result_score[j])) {
-                board.result = i;
+                board.state.result = i;
                 goto end;
             }
         }
@@ -689,8 +689,8 @@ void game_run(game_t game)
     }
 
 end:
-    if(board.result > 0) {
-        printf("%s %s\n", result_message[board.result], result_score[board.result]);
+    if(board.state.result > 0) {
+        printf("%s %s\n", result_message[board.state.result], result_score[board.state.result]);
     } else {
         printf("Game did not end\n");
     }
@@ -716,7 +716,7 @@ void game_stream(game_t game, FILE* stream)
         // Check for result condition
         for (size_t j = 0; j < SCORE_COUNT; j++) {
             if (STREQ(game.moves[i].move, result_score[j])) {
-                board.result = j; // Store the result index
+                board.state.result = j; // Store the result index
                 goto end;
             }
         }
@@ -736,9 +736,9 @@ void game_stream(game_t game, FILE* stream)
 
 end:
     // Stream game result or error
-    if (board.result >= 0) {
-        const char* message = result_message[board.result];
-        const char* score = result_score[board.result];
+    if (board.state.result >= 0) {
+        const char* message = result_message[board.state.result];
+        const char* score = result_score[board.state.result];
         fprintf(stream, "Game Over: %s %s\n", message, score);
     } else {
         fprintf(stream, "Game did not end.\n");
