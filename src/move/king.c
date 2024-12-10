@@ -1,7 +1,8 @@
-#include "extern/clib.h"
 #include "move.h"
 #include "piece.h"
 #include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
 #include "board.h"
 
 #undef DEBU
@@ -209,11 +210,11 @@ _Bool king_can_castle(board_t* board, square_t from, square_t to)
     }
 
     if (color == PIECE_COLOR_WHITE) {
-        return (file_diff == -2 && has_castling_rights(board, CASTLE_WHITE_KINGSIDE)) ||
-               (file_diff == 2 && has_castling_rights(board, CASTLE_WHITE_QUEENSIDE));
+        return (file_diff == -2 && has_castling_rights(board->state, CASTLE_WHITE_KINGSIDE)) ||
+               (file_diff == 2 && has_castling_rights(board->state, CASTLE_WHITE_QUEENSIDE));
     } else if (color == PIECE_COLOR_BLACK) {
-        return (file_diff == -2 && has_castling_rights(board, CASTLE_BLACK_KINGSIDE)) ||
-               (file_diff == 2 && has_castling_rights(board, CASTLE_BLACK_QUEENSIDE));
+        return (file_diff == -2 && has_castling_rights(board->state, CASTLE_BLACK_KINGSIDE)) ||
+               (file_diff == 2 && has_castling_rights(board->state, CASTLE_BLACK_QUEENSIDE));
     }
 
     return 0;

@@ -58,7 +58,7 @@ _Bool move(board_t *board, square_t from, square_t to, char promotion)
         move_freely(board, from, to);
     }
 
-    revoke_castling_rights(board, castling_rights_to_revoke);
+    revoke_castling_rights(&board->state, castling_rights_to_revoke);
     strncpy(board->enpassant_square, enpassant_square, 3);
     free(enpassant_square);
 

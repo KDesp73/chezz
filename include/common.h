@@ -89,5 +89,7 @@ enum {
     CASTLE_BLACK_QUEENSIDE = 0b1000,
 };
 
+int has_castling_rights(state_t state, uint8_t castling_right);
+void revoke_castling_rights(state_t* state, uint8_t castling_rights);
 
 #endif // COMMON_H

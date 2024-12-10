@@ -142,10 +142,10 @@ uint64_t calculate_zobrist_hash(const board_t* board)
     }
 
     // Add castling rights
-    if (has_castling_rights(board, CASTLE_WHITE_KINGSIDE)) hash ^= zobrist_castling[0];
-    if (has_castling_rights(board, CASTLE_WHITE_QUEENSIDE)) hash ^= zobrist_castling[1];
-    if (has_castling_rights(board, CASTLE_BLACK_KINGSIDE)) hash ^= zobrist_castling[2];
-    if (has_castling_rights(board, CASTLE_BLACK_QUEENSIDE)) hash ^= zobrist_castling[3];
+    if (has_castling_rights(board->state, CASTLE_WHITE_KINGSIDE)) hash ^= zobrist_castling[0];
+    if (has_castling_rights(board->state, CASTLE_WHITE_QUEENSIDE)) hash ^= zobrist_castling[1];
+    if (has_castling_rights(board->state, CASTLE_BLACK_KINGSIDE)) hash ^= zobrist_castling[2];
+    if (has_castling_rights(board->state, CASTLE_BLACK_QUEENSIDE)) hash ^= zobrist_castling[3];
 
     // Add en passant target square
     if (board->enpassant_square[0] != '-') {

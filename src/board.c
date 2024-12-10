@@ -72,16 +72,6 @@ void board_init_fen(board_t* board, const char* fen)
     init_hash_table(&board->state.history, 1000, fen);
 }
 
-int has_castling_rights(const board_t* board, uint8_t castling_rights)
-{
-    return board->state.castling_rights & castling_rights;
-}
-
-void revoke_castling_rights(board_t* board, uint8_t castling_rights)
-{
-    board->state.castling_rights &= ~castling_rights;
-}
-
 _Bool square_is_attacked(const board_t *board, square_t square, int attacked_by)
 {
     return square_is_attacked_coords(board, square.y, square.x, attacked_by);

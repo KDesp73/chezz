@@ -34,9 +34,6 @@ void board_init_fen(board_t* board, const char* fen);
 void board_init_board(board_t* board, board_t src);
 void board_free(board_t* board);
 
-int has_castling_rights(const board_t* board, uint8_t castling_right);
-void revoke_castling_rights(board_t* board, uint8_t castling_rights);
-
 _Bool square_is_attacked(const board_t* board, square_t square, int attacked_by);
 _Bool square_is_attacked_coords(const board_t *board, int y, int x, int attacked_by);
 _Bool square_is_attacked_fr(const board_t *board, int rank, int file, int attacked_by);

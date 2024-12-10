@@ -206,16 +206,16 @@ void tui_board_print(const board_t* board, ui_config_t config, square_t* first, 
 
 void tui_print_castling_rights(const board_t* board)
 {
-    const char* white_kingside = has_castling_rights(board, CASTLE_WHITE_KINGSIDE)
+    const char* white_kingside = has_castling_rights(board->state, CASTLE_WHITE_KINGSIDE)
                                 ? COLOR_BG(2)
                                 : COLOR_BG(1);
-    const char* white_queenside = has_castling_rights(board, CASTLE_WHITE_QUEENSIDE)
+    const char* white_queenside = has_castling_rights(board->state, CASTLE_WHITE_QUEENSIDE)
                                 ? COLOR_BG(2)
                                 : COLOR_BG(1);
-    const char* black_kingside = has_castling_rights(board, CASTLE_BLACK_KINGSIDE)
+    const char* black_kingside = has_castling_rights(board->state, CASTLE_BLACK_KINGSIDE)
                                 ? COLOR_BG(2) 
                                 : COLOR_BG(1);
-    const char* black_queenside = has_castling_rights(board, CASTLE_BLACK_QUEENSIDE)
+    const char* black_queenside = has_castling_rights(board->state, CASTLE_BLACK_QUEENSIDE)
                                 ? COLOR_BG(2) 
                                 : COLOR_BG(1);
 

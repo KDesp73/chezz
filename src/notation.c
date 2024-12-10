@@ -180,10 +180,10 @@ void fen_export(board_t* board, char fen[]) {
 
     // 3. Castling Rights
     char castling_rights[5] = "";  // "KQkq"
-    if (has_castling_rights(board, CASTLE_WHITE_KINGSIDE)) strcat(castling_rights, "K");
-    if (has_castling_rights(board, CASTLE_WHITE_QUEENSIDE)) strcat(castling_rights, "Q");
-    if (has_castling_rights(board, CASTLE_BLACK_KINGSIDE)) strcat(castling_rights, "k");
-    if (has_castling_rights(board, CASTLE_BLACK_QUEENSIDE)) strcat(castling_rights, "q");
+    if (has_castling_rights(board->state, CASTLE_WHITE_KINGSIDE)) strcat(castling_rights, "K");
+    if (has_castling_rights(board->state, CASTLE_WHITE_QUEENSIDE)) strcat(castling_rights, "Q");
+    if (has_castling_rights(board->state, CASTLE_BLACK_KINGSIDE)) strcat(castling_rights, "k");
+    if (has_castling_rights(board->state, CASTLE_BLACK_QUEENSIDE)) strcat(castling_rights, "q");
     if (strlen(castling_rights) == 0) {
         strcat(castling_rights, "-");  // No castling rights
     }
