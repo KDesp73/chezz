@@ -1,4 +1,5 @@
-#include "bitboard.h"
+#include "board.h"
+#include "notation.h"
 #include "version.h"
 #include <stdlib.h>
 #define CLIB_IMPLEMENTATION
@@ -87,9 +88,10 @@ cleanup:
 int main(int argc, char** argv){
     init_zobrist();
 
-    Move move = MoveEncode(0, 63, PROMOTION_NONE, FLAG_NORMAL);
-    Uint32Print(move);
-    MovePrint(move);
+    Board board;
+    BoardInitFen(&board, "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4");
+    BoardPrint(board);
+
 
     return 0;
 }

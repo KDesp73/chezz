@@ -7,6 +7,9 @@
 void fen_import(board_t* board, const char* fen);
 void fen_export(board_t* board, char fen[]);
 
+void FenImport(Board* board, const char* fen);
+void FenExport(Board board, char fen[]);
+
 #define MAX_MOVES 300
 #define MAX_HEADER_LENGTH 256
 

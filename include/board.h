@@ -6,6 +6,13 @@
 #include "square.h"
 #include <stdint.h>
 
+/*--------------------------------------------.
+| 2D character array representation of the    |
+| chess board. All methods and types follow   | 
+| the snake_case for differentiation          |
+| from the below methodology                  |
+`--------------------------------------------*/
+
 #define BLACK_ROOK 'r'
 #define BLACK_KNIGHT 'n'
 #define BLACK_BISHOP 'b'
@@ -22,7 +29,7 @@
 
 #define EMPTY_SQUARE ' '
 
-#define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define STARTING_FEN "rnbqkbnr/pppppppp/9/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 typedef struct {
     char grid[8][8];
@@ -57,5 +64,64 @@ _Bool is_checkmate(board_t* board);
 _Bool is_stalemate(board_t* board);
 _Bool is_insufficient_material(board_t* board);
 _Bool is_threefold_repetition(board_t* board);
+
+
+/*--------------------------------------------.
+| Bitboard representation of the chess board. |
+| All methods and types follow the PascalCase | 
+| for differentiation from the above          |
+| methodology                                 |
+`--------------------------------------------*/
+
+#define PIECE_TYPE_COUNT 12
+
+typedef uint64_t Bitboard;
+
+typedef struct {
+    Bitboard bitboards[PIECE_TYPE_COUNT];
+    Square enpassant_square;
+    state_t state;
+} Board;
+
+enum {
+    INDEX_BLACK_PAWN,
+    INDEX_BLACK_KNIGHT,
+    INDEX_BLACK_BISHOP,
+    INDEX_BLACK_ROOK,
+    INDEX_BLACK_QUEEN,
+    INDEX_BLACK_KING,
+    INDEX_WHITE_PAWN,
+    INDEX_WHITE_KNIGHT,
+    INDEX_WHITE_BISHOP,
+    INDEX_WHITE_ROOK,
+    INDEX_WHITE_QUEEN,
+    INDEX_WHITE_KING,
+};
+
+typedef enum {
+    FLAG_NORMAL = 0,
+    FLAG_CASTLING,
+    FLAG_ENPASSANT,
+    FLAG_PAWN_DOUBLE_MOVE,
+    FLAG_PROMOTION,
+    FLAG_PROMOTION_WITH_CAPTURE,
+} Flag;
+
+typedef enum {
+    PROMOTION_NONE = 0,
+    PROMOTION_QUEEN,
+    PROMOTION_ROOK,
+    PROMOTION_BISHOP,
+    PROMOTION_KNIGHT
+} Promotion;
+
+void BoardInitFen(Board* board, const char* fen);
+void BoardPrint(Board board);
+
+void Uint32Print(uint32_t value);
+
+_Bool IsSquareAttacked(Board board, Square square, uint8_t color);
+_Bool IsKingInCheck(Board board, uint8_t color);
+
 
 #endif // BOARD_H

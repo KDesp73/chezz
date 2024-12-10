@@ -34,4 +34,43 @@ _Bool pawn_is_promoting(const board_t* board, square_t from, square_t to);
 _Bool pawn_promote(board_t* board, square_t from, square_t to, char promotion);
 
 
+/*--------------------------------------.
+| Bitboard move representation.         |
+| Moves are 32-bit integers             |
+| where bits:                           |
+| - 0-5 represent the source            |
+| - 6-11 represent the destination      |
+| - 12-15 represent the promotion piece |
+| - 16-21 represent the flags           |
+`--------------------------------------*/
+
+typedef uint32_t Move;
+
+_Bool MoveIsValid(Board board, Move move, uint8_t color);
+Move MoveEncode(Square from, Square to, uint8_t promotion, uint8_t flag);
+void MoveDecode(Move move, Square* from, Square* to, uint8_t* promotion, uint8_t* flag);
+void MoveApply(Board board, Move move, uint8_t color);
+void MovePrint(Move move);
+
+// Piece Movement Functions
+_Bool CanMovePawn(Board board, Square from, Square to, uint8_t color, Flag* flag);
+_Bool CanMoveKnight(Board board, Square from, Square to, uint8_t color);
+_Bool CanMoveBishop(Board board, Square from, Square to, uint8_t color);
+_Bool CanMoveRook(Board board, Square from, Square to, uint8_t color);
+_Bool CanMoveQueen(Board board, Square from, Square to, uint8_t color);
+_Bool CanMoveKing(Board board, Square from, Square to, uint8_t color);
+_Bool CanMoveCastle(Board board, Square from, Square to, uint8_t color, Flag* flag);
+
+// Special Move Functions
+_Bool CanCastle(Board board, Square from, Square to, uint8_t color);
+_Bool CanEnPassant(Board board, Square from, Square to, uint8_t color, Flag* flag);
+_Bool CanPawnDoubleMove(Board board, Square from, Square to, uint8_t color);
+
+// Move List Generation
+void GenerateLegalMoves(Board board, uint8_t color, Move* moves, size_t* move_count);
+
+// Adapters
+Move SquaresToMove(square_t from, square_t to, uint8_t promotion, uint8_t flags);
+void MoveToSquares(Move move, square_t* from, square_t* to, uint8_t* promotion, uint8_t* flags);
+
 #endif // MOVE_H

@@ -2,6 +2,7 @@
 #define COORDS_H
 
 #include <stddef.h>
+#include <stdint.h>
 typedef struct {
     size_t rank;
     size_t file;
@@ -39,5 +40,20 @@ _Bool square_cmp(square_t square1, square_t square2);
 
 void square_print(const square_t square);
 void squares_print(square_t** squares, size_t count);
+
+
+/*------------------------------------.
+| Bitboard representation of squares. |
+| Square is an 8-bit integer ranging  |
+| from 0-63.                          |
+|                                     |
+| We start counting from a8 and       |
+| finish with h1                      |
+`------------------------------------*/
+
+typedef uint8_t Square;
+
+void SquareToName(char buffer[3], Square square);
+Square NameToSquare(const char buffer[3]);
 
 #endif // COORDS_H

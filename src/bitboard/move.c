@@ -71,8 +71,8 @@ void MovePrint(Move move)
     MoveDecode(move, &from, &to, &promotion, &flags);
 
     char square_from[3], square_to[3];
-    SquareName(square_from, from);
-    SquareName(square_to, to);
+    SquareToName(square_from, from);
+    SquareToName(square_to, to);
     printf("Move: %s -> %s, Promotion: %d, Flags: %d\n",
             square_from, square_to,
             promotion, flags);
