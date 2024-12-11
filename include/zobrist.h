@@ -11,8 +11,12 @@
 static uint64_t zobrist_table[PIECE_TYPES][BOARD_SIZE][BOARD_SIZE];
 static uint64_t zobrist_castling[CASTLING_OPTIONS];
 static uint64_t zobrist_en_passant[BOARD_SIZE];
+static uint64_t zobrist_black_to_move;
 
 void init_zobrist();
+
 uint64_t calculate_zobrist_hash(const board_t* board);
+
+uint64_t CalculateZobristHash(Board board);
 
 #endif // ZOBRIST_H

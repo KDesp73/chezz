@@ -332,7 +332,7 @@ void TuiBoardPrintSquares(Board board, ui_config_t config, Square* squares, size
     }
 
     if (config.checks) {
-        // Check-related logic can be added here if needed
+
     }
 
     if (config.turn) {
@@ -340,7 +340,7 @@ void TuiBoardPrintSquares(Board board, ui_config_t config, Square* squares, size
     }
 
     if (config.hash) {
-        // Hash-related logic can be added here if needed
+        printf("Hash : 0x%" PRIx64 "\n", CalculateZobristHash(board));
     }
 
     printf("\n");
