@@ -235,15 +235,15 @@ void tui_print_castling_rights(state_t state)
     freec(black_queenside);
 }
 
-void TuiBoardPrintSquares(Board board, ui_config_t config, Square* squares, size_t count)
+void TuiBoardPrintSquares(const Board* board, ui_config_t config, Square* squares, size_t count)
 {
     const char* yellow_bg = "\033[48;5;214m"; // Background yellow color
     const char* reset = "\033[0m";             // Reset color formatting
 
     const char* padding = "   ";
 
-    if (config.errors && board.state.error > 0) {
-        fprintf(stderr, "Error: %s\n", error_messages[board.state.error]);
+    if (config.errors && board->state.error > 0) {
+        fprintf(stderr, "Error: %s\n", error_messages[board->state.error]);
     }
 
     printf("%s┌───┬───┬───┬───┬───┬───┬───┬───┐\n", (config.coords) ? padding : "");
@@ -279,8 +279,8 @@ void TuiBoardPrintSquares(Board board, ui_config_t config, Square* squares, size
 
             char piece = ' '; // Default empty square
             for (int i = 0; i < PIECE_TYPE_COUNT; ++i) {
-                if (board.bitboards[i] & (1ULL << (rank * 8 + file))) {
-                    piece = "pnbrqkPNBRQK"[i];
+                if (board->bitboards[i] & (1ULL << (rank * 8 + file))) {
+                    piece = PIECES[i];
                     break;
                 }
             }
@@ -309,26 +309,21 @@ void TuiBoardPrintSquares(Board board, ui_config_t config, Square* squares, size
     }
 
     if (config.castling) {
-        printf("\nCastling rights: ");
-        if (board.state.castling_rights & 0b0001) printf("K");
-        if (board.state.castling_rights & 0b0010) printf("Q");
-        if (board.state.castling_rights & 0b0100) printf("k");
-        if (board.state.castling_rights & 0b1000) printf("q");
-        printf("\n");
+        tui_print_castling_rights(board->state);
     }
 
-    if (config.enpassant && board.enpassant_square != 64) {
+    if (config.enpassant && board->enpassant_square != 64) {
         char enpassant[3];
-        SquareToName(enpassant, board.enpassant_square);
+        SquareToName(enpassant, board->enpassant_square);
         printf("En passant square: %s\n", enpassant);
     }
 
     if (config.halfmove) {
-        printf("Halfmove clock: %zu\n", board.state.halfmove);
+        printf("Halfmove clock: %zu\n", board->state.halfmove);
     }
 
     if (config.fullmove) {
-        printf("Fullmove number: %zu\n", board.state.fullmove);
+        printf("Fullmove number: %zu\n", board->state.fullmove);
     }
 
     if (config.checks) {
@@ -336,7 +331,7 @@ void TuiBoardPrintSquares(Board board, ui_config_t config, Square* squares, size
     }
 
     if (config.turn) {
-        printf("%s's turn\n", board.state.turn ? "White" : "Black");
+        printf("%s's turn\n", board->state.turn ? "White" : "Black");
     }
 
     if (config.hash) {
@@ -346,7 +341,7 @@ void TuiBoardPrintSquares(Board board, ui_config_t config, Square* squares, size
     printf("\n");
 }
 
-void TuiBoardPrint(Board board, ui_config_t config, Square first, ...)
+void TuiBoardPrint(const Board* board, ui_config_t config, Square first, ...)
 {
     Square* squares = NULL;
     int count = 0;

@@ -103,7 +103,7 @@ const char PIECE_SYMBOLS[PIECE_TYPE_COUNT] = {
     'p', 'n', 'b', 'r', 'q', 'k', 'P', 'N', 'B', 'R', 'Q', 'K'
 };
 
-void FenExport(Board board, char buffer[])
+void FenExport(const Board* board, char buffer[])
 {
     char* ptr = buffer;
 
@@ -116,7 +116,7 @@ void FenExport(Board board, char buffer[])
             _Bool piece_found = 0;
 
             for (int piece = 0; piece < PIECE_TYPE_COUNT; piece++) {
-                if (board.bitboards[piece] & (1ULL << square)) {
+                if (board->bitboards[piece] & (1ULL << square)) {
                     if (empty_squares > 0) {
                         *ptr++ = '0' + empty_squares;
                         empty_squares = 0;
@@ -144,24 +144,24 @@ void FenExport(Board board, char buffer[])
     *ptr++ = ' ';
 
     // Side to move
-    *ptr++ = (board.state.turn) ? 'w' : 'b';
+    *ptr++ = (board->state.turn) ? 'w' : 'b';
     *ptr++ = ' ';
 
     // Castling rights
     _Bool castling_written = 0;
-    if (board.state.castling_rights & 0x1) { *ptr++ = 'K'; castling_written = 1; }
-    if (board.state.castling_rights & 0x2) { *ptr++ = 'Q'; castling_written = 1; }
-    if (board.state.castling_rights & 0x4) { *ptr++ = 'k'; castling_written = 1; }
-    if (board.state.castling_rights & 0x8) { *ptr++ = 'q'; castling_written = 1; }
+    if (board->state.castling_rights & 0x1) { *ptr++ = 'K'; castling_written = 1; }
+    if (board->state.castling_rights & 0x2) { *ptr++ = 'Q'; castling_written = 1; }
+    if (board->state.castling_rights & 0x4) { *ptr++ = 'k'; castling_written = 1; }
+    if (board->state.castling_rights & 0x8) { *ptr++ = 'q'; castling_written = 1; }
     if (!castling_written) {
         *ptr++ = '-';
     }
     *ptr++ = ' ';
 
     // En passant square
-    if (board.enpassant_square < BOARD_SIZE) {
-        int file = board.enpassant_square % 8;
-        int rank = board.enpassant_square / 8;
+    if (board->enpassant_square < BOARD_SIZE) {
+        int file = board->enpassant_square % 8;
+        int rank = board->enpassant_square / 8;
         *ptr++ = 'a' + file;
         *ptr++ = '1' + rank;
     } else {
@@ -170,10 +170,10 @@ void FenExport(Board board, char buffer[])
     *ptr++ = ' ';
 
     // Halfmove clock
-    ptr += sprintf(ptr, "%zu ", board.state.halfmove);
+    ptr += sprintf(ptr, "%zu ", board->state.halfmove);
 
     // Fullmove number
-    ptr += sprintf(ptr, "%zu", board.state.fullmove);
+    ptr += sprintf(ptr, "%zu", board->state.fullmove);
 
     // Null-terminate the buffer
     *ptr = '\0';
@@ -186,7 +186,7 @@ void MoveToSan(Board board, Move move, san_move_t* san)
     MoveDecode(move, &from, &to, &promotion, &flag);
 
     char fen[64];
-    FenExport(board, fen);
+    FenExport(&board, fen);
     board_t board_;
     fen_import(&board_, fen);
     square_t from_square, to_square;
@@ -199,7 +199,7 @@ void MoveToSan(Board board, Move move, san_move_t* san)
 Move SanToMove(Board board, san_move_t san)
 {
     char fen[64];
-    FenExport(board, fen);
+    FenExport(&board, fen);
     board_t board_;
     fen_import(&board_, fen);
 
