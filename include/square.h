@@ -57,5 +57,8 @@ void SquareToName(char buffer[3], Square square);
 Square NameToSquare(const char buffer[3]);
 
 void SquareToSquareT(square_t* square, Square src);
+int Rank(Square square);
+int File(Square square);
+_Bool IsSquareValid(Square square);
 
 #endif // COORDS_H

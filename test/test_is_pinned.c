@@ -1,7 +1,7 @@
 #include "board.h"
 #include "piece.h"
 #include "square.h"
-#include "tests.h"
+#include "grid-tests.h"
 #include "extern/test.h"
 
 int test_is_pinned(const char* fen, const char* square, _Bool expected)

@@ -5,6 +5,7 @@
 #include "square.h"
 #include "version.h"
 #include <stdlib.h>
+#include <string.h>
 #define CLIB_IMPLEMENTATION
 #include "extern/clib.h"
 #include "ui.h"
@@ -92,12 +93,10 @@ int main(int argc, char** argv){
     init_zobrist();
 
     Board board;
-    BoardInitFen(&board, "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4");
-    int index = INDEX_BLACK_KNIGHT;
-    BitboardPrint(board, index);
-    Uint64Print(board.bitboards[index]);
+    BoardInitFen(&board, "6k1/5Q1R/8/8/8/8/6K1/8 b - - 0 1");
 
-    board_free(&board);
+    BitboardPrint(GetWhite(&board));
+    PiecesPrint(&board, INDEX_WHITE_QUEEN);
 
     return 0;
 }

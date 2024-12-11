@@ -120,13 +120,29 @@ uint8_t CharToPromotion(char promotion);
 
 void BoardInitFen(Board* board, const char* fen);
 void BoardPrint(Board board);
-void BitboardPrint(Board board, int index);
+void BitboardPrint(Bitboard bitboard);
+void PiecesPrint(const Board* board, int index);
+
+Bitboard GetWhite(const Board* board);
+Bitboard GetBlack(const Board* board);
 
 void Uint32Print(uint32_t value);
 void Uint64Print(uint64_t value);
 
 _Bool IsSquareAttacked(Board board, Square square, uint8_t color);
 _Bool IsKingInCheck(Board board, uint8_t color);
+_Bool IsSquareEmpty(const Board* board, Square square);
+_Bool IsSquareOccupiedBy(const Board* board, Square square, uint8_t color);
 
+size_t NumberOfPieces(const Board* board, uint8_t color);
+
+_Bool IsCheckmate(Board* board);
+_Bool IsStalemate(Board* board);
+_Bool IsInsufficientMaterial(Board* board);
+_Bool IsThreefoldRepetition(Board* board);
+
+Square* SquareIsAttackedBy(const Board* board, Square square, int attacked_by, size_t* count);
+Square* SquareIsAccessibleBy(const Board* board, Square square, char piece, size_t* count);
+Square* AttackPathToKing(Board* board, Square king, Square attacker, size_t* path_count);
 
 #endif // BOARD_H

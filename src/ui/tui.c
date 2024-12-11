@@ -11,6 +11,87 @@
 #include "piece.h"
 #include "common.h"
 
+void TuiRun(const char* fen, ui_config_t config)
+{
+    game_t game;
+    game_init(&game, NULL, "KDesp73 Chess", NULL, NULL, fen);
+
+    Board board;
+    BoardInitFen(&board, fen);
+    clib_ansi_clear_screen();
+    TuiBoardPrint(&board, config, 64);
+
+    while (1) {
+        char move_input[6]; // +1 for \0, +1 for safety
+        printf("Enter move (e.g., e2e4): ");
+        if (scanf("%5s", move_input) != 1) {
+            printf("Invalid input. Try again.\n");
+            continue;
+        }
+
+        if (strlen(move_input) != 4 && strlen(move_input) != 5) {
+            printf("Invalid move format. Use 4 or 5 characters (e.g., e2e4 or h7h8Q).\n");
+            continue;
+        }
+
+        char from[3], to[3], promotion;
+        strncpy(from, move_input, 2);
+        from[2] = '\0';
+        strncpy(to, move_input + 2, 2);
+        to[2] = '\0';
+        promotion = move_input[4];
+
+        if(!square_is_valid(from) || !square_is_valid(to)){
+            board.state.error = ERROR_INVALID_SQUARE;
+            continue;
+        }
+
+        Square from_square, to_square;
+        from_square = NameToSquare(from);
+        to_square = NameToSquare(to);
+
+        Piece piece = PieceAt(&board, from_square);
+        if (piece.type == EMPTY_SQUARE) {
+            clib_ansi_clear_screen();
+            TuiBoardPrint(&board, config, 64);
+            continue;
+        }
+
+
+        Flag flag;
+        if(!PieceCanMove(&board, from_square, to_square, &flag)){
+            clib_ansi_clear_screen();
+            TuiBoardPrint(&board, config, 64); 
+            continue;
+        } else {
+            board.state.error = 0;
+        }
+
+        Move move = MoveEncode(from_square, to_square, CharToPromotion(promotion), flag);
+
+        MoveFreely(&board, move, board.state.turn);
+
+        san_move_t san;
+        MoveToSan(board, move, &san);
+        game_add_move(&game, san);
+
+        clib_ansi_clear_screen();
+        TuiBoardPrint(&board, config, from_square, to_square, 64); 
+
+        if(board.state.result > 0){
+            printf("%s %s\n", result_message[board.state.result], result_score[board.state.result]);
+            board_free(&board);
+
+            game_set_result(&game, result_score[board.state.result]);
+            char pgn_string[2048];
+            pgn_export(&game, pgn_string);
+
+            printf("PGN:\n%s\n", pgn_string);
+            return;
+        }
+    }
+}
+
 void tui_run(const char* fen, ui_config_t config)
 {
     game_t game;
@@ -308,6 +389,7 @@ void TuiBoardPrintSquares(const Board* board, ui_config_t config, Square* square
         printf("\n");
     }
 
+    printf("\n");
     if (config.castling) {
         tui_print_castling_rights(board->state);
     }

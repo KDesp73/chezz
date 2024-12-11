@@ -263,3 +263,4 @@ void squares_free(square_t*** squares, size_t count)
     free(*squares);
     *squares = NULL;
 }
+

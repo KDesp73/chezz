@@ -1,4 +1,6 @@
 #include "square.h"
+#include "board.h"
+#include "common.h"
 #include <assert.h>
 
 void SquareToName(char buffer[3], Square square)
@@ -32,4 +34,19 @@ void SquareToSquareT(square_t* square, Square src)
     int file = (src% 8);
     int rank = (7 - (src/ 8));
     square_from_fr(square, rank, file);
+}
+
+int Rank(Square square)
+{
+    return square / BOARD_SIZE;
+}
+
+int File(Square square)
+{
+    return square % BOARD_SIZE;
+}
+
+_Bool IsSquareValid(Square square)
+{
+    return square >= 0 && square <= 63;
 }

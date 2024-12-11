@@ -2,7 +2,7 @@
 #include "extern/test.h"
 #include "move.h"
 #include "square.h"
-#include "tests.h"
+#include "grid-tests.h"
 
 int test_pawn_can_move(const char* fen, const char* from, const char* to, _Bool expected)
 {

@@ -24,56 +24,60 @@ void Uint64Print(uint64_t value)
     printf("\n");
 }
 
-void BitboardPrint(Board board, int index)
+void PiecesPrint(const Board* board, int index)
+{
+    BitboardPrint(board->bitboards[index]);
+}
+
+void BitboardPrint(Bitboard bitboard)
 {
     const char* yellow_bg = "\033[48;5;214m"; // Background yellow color
     const char* reset = "\033[0m";             // Reset color formatting
-
     const char* padding = "   ";
-    Bitboard highlight_bitboard = board.bitboards[index];
 
+    // Assuming you have 64 squares on the board (8x8 grid)
     printf("%s┌───┬───┬───┬───┬───┬───┬───┬───┐\n", padding);
 
-    for (int rank = 7; rank >= 0; rank--){
-
-        printf(" %d ", rank + 1);
+    for (int rank = 7; rank >= 0; rank--) {
+        printf(" %d ", rank + 1);  // Rank label (1-8)
 
         for (int file = 0; file <= 7; ++file) {
+            int square_index = rank * 8 + file;
+            char piece = ' ';
+
+            // Check if a piece is on this square
+            if (bitboard & (1ULL << square_index)) {
+                piece = ' ';
+            }
+
+            // Check if the square is highlighted in the bitboard
+            int highlighted = (bitboard & (1ULL << square_index)) != 0;
+
             printf("│");
 
-            char piece = ' '; // Default empty square
-            int square_index = rank * 8 + file;
-
-            // Check if this square is occupied by a piece
-            for (int i = 0; i < PIECE_TYPE_COUNT; ++i) {
-                if (board.bitboards[i] & (1ULL << square_index)) {
-                    piece = PIECES[i];
-                    break;
-                }
-            }
-
-            // Check if the square is highlighted in the Bitboard
-            int highlighted = (highlight_bitboard & (1ULL << square_index)) != 0;
-
             if (highlighted) {
-                printf("%s %c %s", yellow_bg, piece, reset);
+                printf("%s %c %s", yellow_bg, piece, reset);  // Highlighted piece
             } else {
-                printf(" %c ", piece);
+                printf(" %c ", piece);  // Regular piece
             }
         }
+
         printf("│\n");
 
         if (rank != 0) {
             printf("%s├───┼───┼───┼───┼───┼───┼───┼───┤\n", padding);
         }
     }
+
     printf("%s└───┴───┴───┴───┴───┴───┴───┴───┘\n", padding);
 
+    // Print the file labels (a-h)
     printf("%s", padding);
     for (int file = 0; file < 8; ++file) {
         char label = 'a' + file;
         printf("  %c ", label);
     }
     printf("\n");
+    Uint64Print(bitboard);
 }
 

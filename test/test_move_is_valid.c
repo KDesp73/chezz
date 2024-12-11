@@ -1,7 +1,7 @@
 #include "board.h"
 #include "move.h"
 #include "square.h"
-#include "tests.h"
+#include "grid-tests.h"
 #include "extern/test.h"
 #include "ui.h"
 

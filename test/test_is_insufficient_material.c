@@ -1,6 +1,6 @@
 
 #include "board.h"
-#include "tests.h"
+#include "grid-tests.h"
 #include "extern/test.h"
 
 int test_insufficient_material(const char* fen, _Bool expected)

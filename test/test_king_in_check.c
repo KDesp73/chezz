@@ -1,5 +1,5 @@
 #include "board.h"
-#include "tests.h"
+#include "grid-tests.h"
 #include "extern/test.h"
 
 int test_king_in_check(const char* fen, int color, _Bool expected)

@@ -34,6 +34,7 @@ void tui_board_print(const board_t* board, ui_config_t config, square_t* first, 
 void tui_print_castling_rights(state_t state);
 void tui_run(const char* fen, ui_config_t config);
 
+void TuiRun(const char* fen, ui_config_t config);
 void TuiBoardPrintSquares(const Board* board, ui_config_t config, Square* squares, size_t count);
 void TuiBoardPrint(const Board* board, ui_config_t config, Square first, ...);
 

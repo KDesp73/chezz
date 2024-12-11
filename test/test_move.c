@@ -1,7 +1,7 @@
 #include "board.h"
 #include "move.h"
 #include "square.h"
-#include "tests.h"
+#include "grid-tests.h"
 #include "extern/test.h"
 
 int test_move(const char* fen, const char* from, const char* to, _Bool expected)

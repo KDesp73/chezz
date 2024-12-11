@@ -1,6 +1,6 @@
 #include "board.h"
 #include "extern/clib.h"
-#include "tests.h"
+#include "grid-tests.h"
 #include "extern/test.h"
 #include <stdint.h>
 #include <string.h>

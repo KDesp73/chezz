@@ -61,6 +61,7 @@ $(BUILD_DIR): ## Create the build directory if it doesn't exist
 	mkdir -p $(BUILD_DIR)/grid
 	mkdir -p $(BUILD_DIR)/grid/move
 	mkdir -p $(BUILD_DIR)/bitboard
+	mkdir -p $(BUILD_DIR)/bitboard/move
 	mkdir -p $(BUILD_DIR)/ui
 	mkdir -p $(BUILD_DIR)/bin
 

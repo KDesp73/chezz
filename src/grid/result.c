@@ -83,11 +83,11 @@ _Bool is_checkmate_color(board_t* board, int color)
     squares_free(&attackers, attackers_count);
     squares_free(&my_attackers, my_attackers_count);
 
-    // Special case: attacker is a king
-    if (tolower(piece_at(board, *attacker)) == 'k') {
-        DEBU("Attacker is a king, checkmate");
-        return 1;
-    }
+    // // Special case: attacker is a king
+    // if (tolower(piece_at(board, *attacker)) == 'k') {
+    //     DEBU("Attacker is a king, checkmate");
+    //     return 1;
+    // }
 
     DEBU("No way to capture or block, checkmate");
     return 1; // Checkmate (no way to capture or block)

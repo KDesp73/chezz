@@ -1,5 +1,5 @@
-#ifndef TESTS_H
-#define TESTS_H
+#ifndef GRID_TESTS_H
+#define GRID_TESTS_H
 
 #include "board.h"
 #include <stddef.h>
@@ -437,5 +437,28 @@ int test_san_to_move(const char* fen, const char* san, const char* expected_move
 int test_attack_path_to_king(const char* fen, const char* king, char* first, ...);
 #define TEST_ATTACK_PATH_TO_KING
 
+#define TEST_GRID \
+    TEST_SQUARE_FROM_NAME, \
+    TEST_PAWN_MOVE, \
+    TEST_ROOK_MOVE, \
+    TEST_BISHOP_MOVE, \
+    TEST_QUEEN_MOVE, \
+    TEST_KNIGHT_MOVE, \
+    TEST_KING_MOVE, \
+    TEST_IS_PINNED, \
+    TEST_PAWN_IS_ENPASSANTING, \
+    TEST_PAWN_CAN_ENPASSANT, \
+    TEST_MOVE, \
+    TEST_KING_IN_CHECK, \
+    TEST_BOARD_INIT_FEN, \
+    TEST_INSUFFICIENT_MATERIAL, \
+    TEST_MOVE_IS_VALID, \
+    TEST_VALID_MOVES, \
+    TEST_STALEMATE, \
+    TEST_CHECKMATE, \
+    TEST_IS_ATTACKED_BY, \
+    TEST_MOVE_TO_SAN, \
+    TEST_SAN_TO_MOVE
 
-#endif // TESTS_H
+
+#endif // GRID_TESTS_H
