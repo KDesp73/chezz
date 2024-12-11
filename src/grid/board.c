@@ -52,11 +52,6 @@ void board_init_board(board_t* board, board_t src)
     }
 }
 
-void board_free(board_t* board)
-{
-    free_hash_table(&board->state.history);
-}
-
 void board_init_fen(board_t* board, const char* fen)
 {
     if(fen == NULL) {

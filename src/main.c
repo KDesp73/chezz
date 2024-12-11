@@ -1,5 +1,8 @@
 #include "board.h"
+#include "common.h"
+#include "hashing.h"
 #include "notation.h"
+#include "square.h"
 #include "version.h"
 #include <stdlib.h>
 #define CLIB_IMPLEMENTATION
@@ -90,8 +93,10 @@ int main(int argc, char** argv){
 
     Board board;
     BoardInitFen(&board, "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4");
-    BoardPrint(board);
+    BitboardPrint(board, INDEX_BLACK_PAWN);
+    Uint64Print(board.bitboards[INDEX_BLACK_PAWN]);
 
+    board_free(&board);
 
     return 0;
 }

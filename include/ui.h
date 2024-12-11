@@ -31,8 +31,10 @@ void tui_board_print(const board_t* board, ui_config_t config, square_t* first, 
 #define PRINT_FULL(board, first, ...) \
     tui_board_print(board, FULL_CONFIG, first, ##__VA_ARGS__)
 
-void tui_print_castling_rights(const board_t* board);
+void tui_print_castling_rights(state_t state);
 void tui_run(const char* fen, ui_config_t config);
 
+void TuiBoardPrintSquares(Board board, ui_config_t config, Square* squares, size_t count);
+void TuiBoardPrint(Board board, ui_config_t config, Square first, ...);
 
 #endif // UI_H

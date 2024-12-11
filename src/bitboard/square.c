@@ -1,4 +1,4 @@
-#include "bitboard.h"
+#include "square.h"
 #include <assert.h>
 
 void SquareToName(char buffer[3], Square square)

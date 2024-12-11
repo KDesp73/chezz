@@ -89,6 +89,9 @@ enum {
     CASTLE_BLACK_QUEENSIDE = 0b1000,
 };
 
+#define board_free(board) \
+    free_hash_table(&((board)->state.history))
+
 int has_castling_rights(state_t state, uint8_t castling_right);
 void revoke_castling_rights(state_t* state, uint8_t castling_rights);
 

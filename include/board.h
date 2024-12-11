@@ -6,12 +6,12 @@
 #include "square.h"
 #include <stdint.h>
 
-/*--------------------------------------------.
-| 2D character array representation of the    |
-| chess board. All methods and types follow   | 
-| the snake_case for differentiation          |
-| from the below methodology                  |
-`--------------------------------------------*/
+/*------------------------------------------.
+| 2D character array representation of the  |
+| chess board. All methods and types follow | 
+| the snake_case for differentiation        |
+| from the below methodology                |
+`------------------------------------------*/
 
 #define BLACK_ROOK 'r'
 #define BLACK_KNIGHT 'n'
@@ -39,7 +39,6 @@ typedef struct {
 
 void board_init_fen(board_t* board, const char* fen);
 void board_init_board(board_t* board, board_t src);
-void board_free(board_t* board);
 
 _Bool square_is_attacked(const board_t* board, square_t square, int attacked_by);
 _Bool square_is_attacked_coords(const board_t *board, int y, int x, int attacked_by);
@@ -117,8 +116,10 @@ typedef enum {
 
 void BoardInitFen(Board* board, const char* fen);
 void BoardPrint(Board board);
+void BitboardPrint(Board board, int index);
 
 void Uint32Print(uint32_t value);
+void Uint64Print(uint64_t value);
 
 _Bool IsSquareAttacked(Board board, Square square, uint8_t color);
 _Bool IsKingInCheck(Board board, uint8_t color);
