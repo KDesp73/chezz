@@ -42,28 +42,28 @@ _Bool pawn_promote(board_t* board, square_t from, square_t to, char promotion);
 
 typedef uint32_t Move;
 
-_Bool MoveIsValid(Board board, Move move, uint8_t color);
+_Bool MoveIsValid(const Board* board, Move move, uint8_t color);
 Move MoveEncode(Square from, Square to, uint8_t promotion, uint8_t flag);
 void MoveDecode(Move move, Square* from, Square* to, uint8_t* promotion, uint8_t* flag);
-void MoveApply(Board board, Move move, uint8_t color);
+void MoveApply(Board* board, Move move, uint8_t color);
 void MovePrint(Move move);
 
 // Piece Movement Functions
-_Bool CanMovePawn(Board board, Square from, Square to, uint8_t color, Flag* flag);
-_Bool CanMoveKnight(Board board, Square from, Square to, uint8_t color);
-_Bool CanMoveBishop(Board board, Square from, Square to, uint8_t color);
-_Bool CanMoveRook(Board board, Square from, Square to, uint8_t color);
-_Bool CanMoveQueen(Board board, Square from, Square to, uint8_t color);
-_Bool CanMoveKing(Board board, Square from, Square to, uint8_t color);
-_Bool CanMoveCastle(Board board, Square from, Square to, uint8_t color, Flag* flag);
+_Bool CanMovePawn(const Board* board, Square from, Square to, uint8_t color, Flag* flag);
+_Bool CanMoveKnight(const Board* board, Square from, Square to, uint8_t color);
+_Bool CanMoveBishop(const Board* board, Square from, Square to, uint8_t color);
+_Bool CanMoveRook(const Board* board, Square from, Square to, uint8_t color);
+_Bool CanMoveQueen(const Board* board, Square from, Square to, uint8_t color);
+_Bool CanMoveKing(const Board* board, Square from, Square to, uint8_t color);
+_Bool CanMoveCastle(const Board* board, Square from, Square to, uint8_t color, Flag* flag);
 
 // Special Move Functions
-_Bool CanCastle(Board board, Square from, Square to, uint8_t color);
-_Bool CanEnPassant(Board board, Square from, Square to, uint8_t color, Flag* flag);
-_Bool CanPawnDoubleMove(Board board, Square from, Square to, uint8_t color);
+_Bool CanCastle(const Board* board, Square from, Square to, uint8_t color);
+_Bool CanEnPassant(const Board* board, Square from, Square to, uint8_t color, Flag* flag);
+_Bool CanPawnDoubleMove(const Board* board, Square from, Square to, uint8_t color);
 
 // Move List Generation
-void GenerateLegalMoves(Board board, uint8_t color, Move* moves, size_t* move_count);
+void GenerateLegalMoves(const Board* board, uint8_t color, Move* moves, size_t* move_count);
 
 // Adapters
 Move SquaresToMove(square_t from, square_t to, uint8_t promotion, uint8_t flags);

@@ -66,7 +66,7 @@ void san_to_move(board_t* board, san_move_t san, square_t* from, square_t* to, c
 `--------------------------*/
 
 void FenImport(Board* board, const char* fen);
-void FenExport(Board board, char fen[]);
+void FenExport(const Board* board, char fen[]);
 
 void MoveToSan(Board board, Move move, san_move_t* san);
 Move SanToMove(Board board, san_move_t san);

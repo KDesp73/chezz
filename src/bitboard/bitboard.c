@@ -47,7 +47,7 @@ void BitboardPrint(Board board, int index)
             // Check if this square is occupied by a piece
             for (int i = 0; i < PIECE_TYPE_COUNT; ++i) {
                 if (board.bitboards[i] & (1ULL << square_index)) {
-                    piece = "pnbrqkPNBRQK"[i];
+                    piece = PIECES[i];
                     break;
                 }
             }

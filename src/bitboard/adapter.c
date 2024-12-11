@@ -1,4 +1,4 @@
-#include "bitboard.h"
+#include "move.h"
 #include <stdio.h>
 
 Move SquaresToMove(square_t from, square_t to, uint8_t promotion, uint8_t flags)

@@ -82,6 +82,7 @@ typedef struct {
     state_t state;
 } Board;
 
+#define PIECES "pnbrqkPNBRQK"
 enum {
     INDEX_BLACK_PAWN,
     INDEX_BLACK_KNIGHT,
