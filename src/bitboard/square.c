@@ -3,6 +3,19 @@
 #include "common.h"
 #include <assert.h>
 
+Square SquareFromRF(size_t rank, size_t file)
+{
+    return rank * 8 + file;
+}
+Square SquareFromCoords(size_t y, size_t x)
+{
+    return (y + 1) * 8 + (x + 1);
+}
+Square SquareFromName(const char* name)
+{
+    return NameToSquare(name);
+}
+
 void SquareToName(char buffer[3], Square square)
 {
     assert(square >= 0 && square <= 63);

@@ -21,3 +21,23 @@ int test_move(const char* fen, const char* from, const char* to, _Bool expected)
     SUCC("Passed for fen %s, move %s%s", fen, from, to);
     return 1;
 }
+
+int TestMove(const char* fen, const char* from, const char* to, _Bool expected)
+{
+    return 0;
+    Board board;
+    BoardInitFen(&board, fen);
+
+    Square from_square, to_square;
+    from_square = SquareFromName(from);
+    to_square = SquareFromName(to);
+
+    if(expected != MoveMake(&board, MoveEncode(from_square, to_square, PROMOTION_NONE, FLAG_NORMAL))){
+        FAIL("For fen %s, move %s%s. Expected %d. Found %d", fen, from, to, expected, !expected);
+        return 0;
+    }
+
+    SUCC("Passed for fen %s, move %s%s", fen, from, to);
+    return 1;
+}
+

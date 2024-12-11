@@ -84,7 +84,8 @@ _Bool CanMoveKing(const Board* board, Square from, Square to, uint8_t color, Fla
 
 // Move List Generation
 void GenerateLegalMoves(const Board* board, uint8_t color, Move* moves, size_t* move_count);
-void GenerateLegelMoves(const Board* board, Square piece, Move* moves, size_t* move_count);
+void GenerateLegalMovesPiece(const Board* board, Square piece, Move* moves, size_t* move_count);
+
 Bitboard GeneratePawnMoves(const Board* board, Square from, uint8_t color);
 Bitboard GenerateKingMoves(const Board* board, Square from);
 Bitboard GenerateQueenMoves(const Board* board, Square from);

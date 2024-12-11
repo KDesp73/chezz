@@ -22,8 +22,3 @@ int test_hash_uniqueness()
     SUCC("No collisions found in %d tests", NUM_TESTS);
     return 1;
 }
-
-int test_zobrist_uniqueness()
-{
-    
-}

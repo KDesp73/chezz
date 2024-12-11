@@ -24,5 +24,7 @@ typedef struct {
 } Piece;
 
 Piece PieceAt(const Board* board, Square square);
+_Bool PieceIsPinned(Board* board, Square piece);
+_Bool PieceCanAttack(Board* board, Square attacker, Square target, _Bool strict);
 
 #endif // PIECE_H
