@@ -114,6 +114,9 @@ typedef enum {
     PROMOTION_KNIGHT
 } Promotion;
 
+char PromotionToChar(uint8_t promotion);
+uint8_t CharToPromotion(char promotion);
+
 void BoardInitFen(Board* board, const char* fen);
 void BoardPrint(Board board);
 void BitboardPrint(Board board, int index);

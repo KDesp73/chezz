@@ -56,4 +56,6 @@ typedef uint8_t Square;
 void SquareToName(char buffer[3], Square square);
 Square NameToSquare(const char buffer[3]);
 
+void SquareToSquareT(square_t* square, Square src);
+
 #endif // COORDS_H

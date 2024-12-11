@@ -1,4 +1,6 @@
-#include "bitboard.h"
+#include "board.h"
+#include "move.h"
+#include "square.h"
 #include <stdio.h>
 
 Move MoveEncode(Square from, Square to, uint8_t promotion, uint8_t flag)
@@ -19,7 +21,8 @@ void MoveDecode(Move move, Square* from, Square* to, uint8_t* promotion, uint8_t
 
 void MoveApply(Board board, Move move, uint8_t color)
 {
-    uint8_t from, to, promotion, flags;
+    Square from, to;
+    uint8_t promotion, flags;
     MoveDecode(move, &from, &to, &promotion, &flags);
 
     uint64_t from_bb = 1ULL << from;
@@ -95,3 +98,27 @@ _Bool MoveIsValid(Board board, Move move, uint8_t color)
     return 0;
 }
 
+char PromotionToChar(uint8_t promotion)
+{
+    switch (promotion) {
+    case PROMOTION_QUEEN: return 'Q';
+    case PROMOTION_ROOK: return 'R';
+    case PROMOTION_BISHOP: return 'B';
+    case PROMOTION_KNIGHT: return 'N';
+    case PROMOTION_NONE: 
+    default:
+          return '\0';
+    }
+}
+
+uint8_t CharToPromotion(char promotion)
+{
+    switch (promotion) {
+    case 'Q': return PROMOTION_QUEEN;
+    case 'R': return PROMOTION_ROOK;
+    case 'B': return PROMOTION_BISHOP;
+    case 'N': return PROMOTION_KNIGHT;
+    default:
+          return PROMOTION_NONE;
+    }
+}

@@ -26,3 +26,10 @@ Square NameToSquare(const char buffer[3])
 
     return square;
 }
+
+void SquareToSquareT(square_t* square, Square src)
+{
+    int file = (src% 8);
+    int rank = (7 - (src/ 8));
+    square_from_fr(square, rank, file);
+}

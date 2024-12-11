@@ -2,13 +2,11 @@
 #define NOTATION_H
 
 #include "board.h"
+#include "move.h"
 #include <stdio.h>
 
 void fen_import(board_t* board, const char* fen);
 void fen_export(board_t* board, char fen[]);
-
-void FenImport(Board* board, const char* fen);
-void FenExport(Board board, char fen[]);
 
 #define MAX_MOVES 300
 #define MAX_HEADER_LENGTH 256
@@ -28,6 +26,10 @@ typedef struct {
     san_move_t moves[MAX_MOVES];
     size_t move_count;
 } game_t;
+
+_Bool move_name(board_t* board, game_t* game, const char* move_str);
+#define MOVE(board, game, move) \
+        move_name(board, game, move)
 
 void game_init(game_t* game, 
     const char* event,
@@ -55,5 +57,18 @@ void pgn_export_file(game_t* game, const char* path);
 
 void move_to_san(board_t* board, square_t from, square_t to, char promotion, san_move_t* san);
 void san_to_move(board_t* board, san_move_t san, square_t* from, square_t* to, char* promotion);
+
+
+/*--------------------------.
+|                           |
+|                           |
+|                           |
+`--------------------------*/
+
+void FenImport(Board* board, const char* fen);
+void FenExport(Board board, char fen[]);
+
+void MoveToSan(Board board, Move move, san_move_t* san);
+Move SanToMove(Board board, san_move_t san);
 
 #endif // NOTATION_H
