@@ -28,7 +28,6 @@ square_t* square_new_fr(size_t rank, size_t file);
 void squares_free(square_t*** squares, size_t count);
 square_t** squares(size_t* count, square_t* square, ...);
 
-
 void square_set_rank(square_t* square, size_t rank);
 void square_set_file(square_t* square, size_t file);
 void square_set_x(square_t* square, size_t x);
@@ -40,29 +39,5 @@ _Bool square_cmp(square_t square1, square_t square2);
 
 void square_print(const square_t square);
 void squares_print(square_t** squares, size_t count);
-
-
-/*------------------------------------.
-| Bitboard representation of squares. |
-| Square is an 8-bit integer ranging  |
-| from 0-63.                          |
-|                                     |
-| We start counting from a8 and       |
-| finish with h1                      |
-`------------------------------------*/
-
-typedef uint8_t Square;
-
-void SquareToName(char buffer[3], Square square);
-Square NameToSquare(const char buffer[3]);
-
-void SquareToSquareT(square_t* square, Square src);
-int Rank(Square square);
-int File(Square square);
-_Bool IsSquareValid(Square square);
-
-Square SquareFromRF(size_t rank, size_t file);
-Square SquareFromCoords(size_t y, size_t x);
-Square SquareFromName(const char* name);
 
 #endif // COORDS_H

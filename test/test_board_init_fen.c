@@ -1,7 +1,6 @@
-#include "bitboard-tests.h"
 #include "board.h"
 #include "extern/clib.h"
-#include "grid-tests.h"
+#include "tests.h"
 #include "extern/test.h"
 #include "square.h"
 #include <stdint.h>
@@ -24,41 +23,6 @@ int test_board_init_fen(const char* fen, _Bool turn, uint8_t castling_rights, ch
 
     if(strcmp(enpassant_square, board.enpassant_square)){
         FAIL("For fen %s. Expected enpassant square %s. Found %s", fen, enpassant_square, board.enpassant_square);
-        return 0;
-    }
-
-    if(halfmove != board.state.halfmove){
-        FAIL("For fen %s. Expected halfmove %zu. Found %zu", fen, halfmove, board.state.halfmove);
-        return 0;
-    }
-
-    if(fullmove != board.state.fullmove){
-        FAIL("For fen %s. Expected fullmove %zu. Found %zu", fen, fullmove, board.state.fullmove);
-        return 0;
-    }
-
-    SUCC("Passed for fen %s", fen);
-    return 1;
-}
-
-int TestBoardInitFen(const char* fen, _Bool turn, uint8_t castling_rights, char enpassant_square[3], size_t halfmove, size_t fullmove)
-{
-    Board board;
-    BoardInitFen(&board, fen);
-
-    if(turn != board.state.turn){
-        FAIL("For fen %s. Expected turn %d. Found %d", fen, turn, !turn);
-        return 0;
-    }
-
-    if(castling_rights != board.state.castling_rights){
-        FAIL("For fen %s. Expected castling rights %d. Found %d", fen, castling_rights, board.state.castling_rights);
-        return 0;
-    }
-
-    Square enpassant_square_square = NameToSquare(enpassant_square);
-    if(enpassant_square_square !=board.enpassant_square){
-        FAIL("For fen %s. Expected enpassant square %s. Found %d", fen, enpassant_square, board.enpassant_square);
         return 0;
     }
 

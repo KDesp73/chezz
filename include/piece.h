@@ -18,13 +18,4 @@ _Bool piece_is_pinned(board_t* board, square_t piece);
 _Bool piece_can_attack(board_t* board, square_t attacker, square_t target, _Bool strict);
 _Bool piece_is_valid(char piece);
 
-typedef struct {
-    char type;
-    uint8_t color;
-} Piece;
-
-Piece PieceAt(const Board* board, Square square);
-_Bool PieceIsPinned(Board* board, Square piece);
-_Bool PieceCanAttack(Board* board, Square attacker, Square target, _Bool strict);
-
 #endif // PIECE_H

@@ -1,5 +1,5 @@
 #include "square.h"
-#include "grid-tests.h"
+#include "tests.h"
 #include "extern/test.h"
 
 int test_square_from_name(const char* name, size_t expected_x, size_t expected_y)

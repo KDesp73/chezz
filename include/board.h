@@ -1,10 +1,11 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "common.h"
 #include "hashing.h"
 #include "square.h"
 #include <stdint.h>
+#include <stddef.h>
+
 
 /*------------------------------------------.
 | 2D character array representation of the  |
@@ -30,6 +31,96 @@
 #define EMPTY_SQUARE ' '
 
 #define STARTING_FEN "rnbqkbnr/pppppppp/9/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+#define BOARD_SIZE 8
+
+typedef enum {
+    ERROR_NONE = 0,
+    ERROR_INVALID_MOVE,
+    ERROR_EMPTY_SQUARE,
+    ERROR_OBSTRUCTED_PATH,
+    ERROR_INVALID_PIECE,
+    ERROR_FRIENDLY_PIECE,
+    ERROR_KINGS_TOUCHING,
+    ERROR_INVALID_CASTLE,
+    ERROR_INVALID_SQUARE,
+    ERROR_PIECE_IS_PINNED,
+    ERROR_CANNOT_MOVE_OPPONENTS_PIECES,
+    ERROR_KING_IS_IN_CHECK,
+} error_t;
+
+static const char error_messages[][256] = {
+    "OK",
+    "Invalid move",
+    "Empty square",
+    "Obstructed path",
+    "Invalid piece",
+    "Attacking friendly piece",
+    "Kings cannot touch",
+    "Invalid castling",
+    "Invalid square",
+    "Piece is pinned",
+    "Cannot move opponent's pieces",
+    "King is in check"
+};
+
+typedef enum {
+    RESULT_NONE,
+    RESULT_WHITE_WON,
+    RESULT_BLACK_WON,
+    RESULT_STALEMATE,
+    RESULT_DRAW_BY_REPETITION,
+    RESULT_DRAW_DUE_TO_INSUFFICIENT_MATERIAL,
+    RESULT_DRAW_DUE_TO_50_MOVE_RULE
+} result_t ;
+
+#define SCORE_COUNT 7
+static const char result_score[][8] = {
+    "*",
+    "1-0",
+    "0-1",
+    "1/2-1/2",
+    "1/2-1/2",
+    "1/2-1/2",
+    "1/2-1/2"
+};
+static const char result_message[][256] = {
+    "No result yet",
+    "White won",
+    "Black won",
+    "Stalemate",
+    "Draw by repetition",
+    "Draw due to insufficient material",
+    "Draw due to 50 move rule"
+};
+
+typedef struct {
+    _Bool turn;
+    uint8_t castling_rights;
+    size_t halfmove;
+    size_t fullmove;
+    error_t error;
+    result_t result;
+    hash_table_t history;
+} state_t;
+
+enum {
+    CHECK_WHITE_KING = 0b01,
+    CHECK_BLACK_KING = 0b10,
+};
+
+enum {
+    CASTLE_WHITE_KINGSIDE = 0b0001,
+    CASTLE_WHITE_QUEENSIDE = 0b0010,
+    CASTLE_BLACK_KINGSIDE = 0b0100,
+    CASTLE_BLACK_QUEENSIDE = 0b1000,
+};
+
+#define board_free(board) \
+    free_hash_table(&((board)->state.history))
+
+int has_castling_rights(state_t state, uint8_t castling_right);
+void revoke_castling_rights(state_t* state, uint8_t castling_rights);
 
 typedef struct {
     char grid[8][8];
@@ -64,85 +155,5 @@ _Bool is_stalemate(board_t* board);
 _Bool is_insufficient_material(board_t* board);
 _Bool is_threefold_repetition(board_t* board);
 
-
-/*--------------------------------------------.
-| Bitboard representation of the chess board. |
-| All methods and types follow the PascalCase | 
-| for differentiation from the above          |
-| methodology                                 |
-`--------------------------------------------*/
-
-#define PIECE_TYPE_COUNT 12
-
-typedef uint64_t Bitboard;
-
-typedef struct {
-    Bitboard bitboards[PIECE_TYPE_COUNT];
-    Square enpassant_square;
-    state_t state;
-} Board;
-
-#define PIECES "pnbrqkPNBRQK"
-enum {
-    INDEX_BLACK_PAWN,
-    INDEX_BLACK_KNIGHT,
-    INDEX_BLACK_BISHOP,
-    INDEX_BLACK_ROOK,
-    INDEX_BLACK_QUEEN,
-    INDEX_BLACK_KING,
-    INDEX_WHITE_PAWN,
-    INDEX_WHITE_KNIGHT,
-    INDEX_WHITE_BISHOP,
-    INDEX_WHITE_ROOK,
-    INDEX_WHITE_QUEEN,
-    INDEX_WHITE_KING,
-};
-
-typedef enum {
-    FLAG_NORMAL = 0,
-    FLAG_CASTLING,
-    FLAG_ENPASSANT,
-    FLAG_PAWN_DOUBLE_MOVE,
-    FLAG_PROMOTION,
-    FLAG_PROMOTION_WITH_CAPTURE,
-} Flag;
-
-typedef enum {
-    PROMOTION_NONE = 0,
-    PROMOTION_QUEEN,
-    PROMOTION_ROOK,
-    PROMOTION_BISHOP,
-    PROMOTION_KNIGHT
-} Promotion;
-
-char PromotionToChar(uint8_t promotion);
-uint8_t CharToPromotion(char promotion);
-
-void BoardInitFen(Board* board, const char* fen);
-void BoardPrint(Board board);
-void BitboardPrint(Bitboard bitboard);
-void PiecesPrint(const Board* board, int index);
-
-Bitboard GetWhite(const Board* board);
-Bitboard GetBlack(const Board* board);
-
-void Uint32Print(uint32_t value);
-void Uint64Print(uint64_t value);
-
-_Bool IsSquareAttacked(Board board, Square square, uint8_t color);
-_Bool IsKingInCheck(Board board, uint8_t color);
-_Bool IsSquareEmpty(const Board* board, Square square);
-_Bool IsSquareOccupiedBy(const Board* board, Square square, uint8_t color);
-
-size_t NumberOfPieces(const Board* board, uint8_t color);
-
-_Bool IsCheckmate(Board* board);
-_Bool IsStalemate(Board* board);
-_Bool IsInsufficientMaterial(Board* board);
-_Bool IsThreefoldRepetition(Board* board);
-
-Square* SquareIsAttackedBy(const Board* board, Square square, int attacked_by, size_t* count);
-Square* SquareIsAccessibleBy(const Board* board, Square square, char piece, size_t* count);
-Square* AttackPathToKing(Board* board, Square king, Square attacker, size_t* path_count);
 
 #endif // BOARD_H

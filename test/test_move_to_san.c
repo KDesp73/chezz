@@ -3,9 +3,8 @@
 #include "move.h"
 #include "notation.h"
 #include "square.h"
-#include "grid-tests.h"
+#include "tests.h"
 #include "extern/test.h"
-#include "ui.h"
 #include <string.h>
 
 int test_move_to_san(const char* fen, const char* move, const char* expected)

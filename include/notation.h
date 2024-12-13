@@ -2,7 +2,6 @@
 #define NOTATION_H
 
 #include "board.h"
-#include "move.h"
 #include <stdio.h>
 
 void fen_import(board_t* board, const char* fen);
@@ -57,18 +56,5 @@ void pgn_export_file(game_t* game, const char* path);
 
 void move_to_san(board_t* board, square_t from, square_t to, char promotion, san_move_t* san);
 void san_to_move(board_t* board, san_move_t san, square_t* from, square_t* to, char* promotion);
-
-
-/*--------------------------.
-|                           |
-|                           |
-|                           |
-`--------------------------*/
-
-void FenImport(Board* board, const char* fen);
-void FenExport(const Board* board, char fen[]);
-
-void MoveToSan(Board board, Move move, san_move_t* san);
-Move SanToMove(Board board, san_move_t san);
 
 #endif // NOTATION_H

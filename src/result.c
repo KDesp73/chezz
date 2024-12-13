@@ -231,7 +231,6 @@ _Bool is_insufficient_material(board_t* board)
         return 1;
     }
 
-    // 6. King and bishop vs king and bishop
     if (total_white == 2 && total_black == 2 &&
         white_bishops == 1 && black_bishops == 1) {
         return 1;

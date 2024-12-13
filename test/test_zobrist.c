@@ -1,4 +1,4 @@
-#include "grid-tests.h"
+#include "tests.h"
 #include "extern/test.h"
 #include <stdlib.h>
 #include <string.h>

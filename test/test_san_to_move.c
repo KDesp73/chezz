@@ -2,7 +2,7 @@
 #include "extern/clib.h"
 #include "notation.h"
 #include "square.h"
-#include "grid-tests.h"
+#include "tests.h"
 #include "extern/test.h"
 #include <string.h>
 

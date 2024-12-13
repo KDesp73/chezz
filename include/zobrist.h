@@ -16,6 +16,5 @@ static uint64_t zobrist_black_to_move;
 void init_zobrist();
 
 uint64_t calculate_zobrist_hash(const board_t* board);
-uint64_t CalculateZobristHash(const Board* board);
 
 #endif // ZOBRIST_H

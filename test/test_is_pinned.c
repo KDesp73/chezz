@@ -1,8 +1,7 @@
-#include "bitboard-tests.h"
 #include "board.h"
 #include "piece.h"
 #include "square.h"
-#include "grid-tests.h"
+#include "tests.h"
 #include "extern/test.h"
 
 int test_is_pinned(const char* fen, const char* square, _Bool expected)
@@ -14,23 +13,6 @@ int test_is_pinned(const char* fen, const char* square, _Bool expected)
     square_from_name(&_square, square);
 
     if(expected != piece_is_pinned(&board, _square)){
-        FAIL("At fen %s square %s. Expected %d. Found %d", fen, square, expected , !expected);
-        return 0;
-    }
-
-    SUCC("Passed for fen %s square %s", fen, square);
-    return 1;
-}
-
-int TestIsPinned(const char* fen, const char* square, _Bool expected)
-{
-    return 0;
-    Board board;
-    BoardInitFen(&board, fen);
-
-    Square sqr = SquareFromName(square);
-
-    if(expected != PieceIsPinned(&board, sqr)){
         FAIL("At fen %s square %s. Expected %d. Found %d", fen, square, expected , !expected);
         return 0;
     }

@@ -1,8 +1,3 @@
-#include "board.h"
-#include "common.h"
-#include "hashing.h"
-#include "notation.h"
-#include "square.h"
 #include "version.h"
 #include <stdlib.h>
 #include <string.h>
@@ -92,11 +87,8 @@ cleanup:
 int main(int argc, char** argv){
     init_zobrist();
 
-    Board board;
-    BoardInitFen(&board, "6k1/5Q1R/8/8/8/8/6K1/8 b - - 0 1");
-
-    BitboardPrint(GetWhite(&board));
-    PiecesPrint(&board, INDEX_WHITE_QUEEN);
+    main_exe(argc, argv);
 
     return 0;
 }
+
