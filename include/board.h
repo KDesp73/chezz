@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-
+#include <stdbool.h>
 
 /*-----------------------------------.
 | 2D character array representation  |

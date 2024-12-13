@@ -106,7 +106,7 @@ clean: ## Remove all build files and libraries
 
 .PHONY: install
 install: ## Install library and headers
-	make all type=release
+	make all type=RELEASE
 	# Install shared library
 	sudo mkdir -p $(INSTALL_DIR)
 	sudo cp $(SO_NAME) $(INSTALL_DIR)
