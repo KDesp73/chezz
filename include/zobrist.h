@@ -1,7 +1,11 @@
 #ifndef ZOBRIST_H
 #define ZOBRIST_H
 
+#ifdef CHESS_DEVELOPMENT
 #include "board.h"
+#else
+#include <chess/board.h>
+#endif // CHESS_DEVELOPMENT
 #include <stdint.h>
 
 #define BOARD_SIZE 8

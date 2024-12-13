@@ -23,7 +23,7 @@ CHECK = $(BUILD_DIR)/bin/check
 
 # Determine the build type
 ifneq ($(type), RELEASE)
-    CFLAGS += -Wall -DDEBUG -ggdb
+    CFLAGS += -Wall -DDEBUG -ggdb -DCHESS_DEVELOPMENT
 else
     CFLAGS += -O3
 endif
@@ -105,7 +105,8 @@ clean: ## Remove all build files and libraries
 	@rm -rf $(BUILD_DIR) $(SO_NAME) $(A_NAME) $(EXEC) $(CHECK)
 
 .PHONY: install
-install: all ## Install library and headers
+install: ## Install library and headers
+	make all type=release
 	# Install shared library
 	sudo mkdir -p $(INSTALL_DIR)
 	sudo cp $(SO_NAME) $(INSTALL_DIR)

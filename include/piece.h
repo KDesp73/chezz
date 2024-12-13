@@ -1,8 +1,13 @@
 #ifndef PIECE_H
 #define PIECE_H
 
+#ifdef CHESS_DEVELOPMENT
 #include "board.h"
 #include "square.h"
+#else
+#include <chess/board.h>
+#include <chess/square.h>
+#endif // CHESS_DEVELOPMENT
 #include <stdint.h>
 
 #define PIECE_COLOR_BLACK 0

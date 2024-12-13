@@ -1,7 +1,11 @@
 #ifndef MOVE_H
 #define MOVE_H
 
+#ifdef CHESS_DEVELOPMENT
 #include "board.h"
+#else
+#include <chess/board.h>
+#endif // CHESS_DEVELOPMENT
 
 void move_freely(board_t* board, square_t from, square_t to);
 _Bool move(board_t* board, square_t from, square_t to, char promotion);

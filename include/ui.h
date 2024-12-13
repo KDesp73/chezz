@@ -1,8 +1,13 @@
 #ifndef UI_H
 #define UI_H
 
+#ifdef CHESS_DEVELOPMENT
 #include "board.h"
 #include "square.h"
+#else
+#include <chess/board.h>
+#include <chess/square.h>
+#endif // CHESS_DEVELOPMENT
 
 typedef struct {
     _Bool castling;

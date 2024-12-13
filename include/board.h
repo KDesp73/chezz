@@ -1,8 +1,15 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#ifdef CHESS_DEVELOPEMENT
 #include "hashing.h"
 #include "square.h"
+#else 
+#include <chess/hashing.h>
+#include <chess/square.h>
+#endif // CHESS_DEVELOPMENT
+
+
 #include <stdint.h>
 #include <stddef.h>
 

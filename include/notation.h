@@ -1,7 +1,12 @@
 #ifndef NOTATION_H
 #define NOTATION_H
 
+#ifdef CHESS_DEVELOPMENT
 #include "board.h"
+#else
+#include <chess/board.h>
+#endif // CHESS_DEVELOPMENT
+
 #include <stdio.h>
 
 void fen_import(board_t* board, const char* fen);
