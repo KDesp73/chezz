@@ -7,12 +7,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-### Added
-
-- Added print methods for bitboards
-- Implemented zobrist methods for bitboard representation
-- Implemented necessary notation methods for bitboard
-
 ### Changed
 
 - Refactored board_t to use common state_t
