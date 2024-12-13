@@ -35,7 +35,7 @@
 
 #define EMPTY_SQUARE ' '
 
-#define STARTING_FEN "rnbqkbnr/pppppppp/9/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 #define BOARD_SIZE 8
 

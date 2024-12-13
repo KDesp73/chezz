@@ -24,7 +24,7 @@ typedef struct {
 } ui_config_t;
 
 #define MINIMAL_CONFIG \
-    (ui_config_t) {.errors = 0,.highlights = 0,.turn = 0,.checks = 0, .castling = 0, .enpassant = 0, .halfmove = 0, .fullmove = 0, .hash = 0, .coords = 1, .perspective = 1}
+    (ui_config_t) {.errors = 0,.highlights = 1,.turn = 0,.checks = 0, .castling = 0, .enpassant = 0, .halfmove = 0, .fullmove = 0, .hash = 0, .coords = 1, .perspective = 1}
 #define FULL_CONFIG \
     (ui_config_t) {.errors = 1,.highlights = 1,.turn = 1,.checks = 1, .castling = 1, .enpassant = 1, .halfmove = 1, .fullmove = 1, .hash = 1, .coords = 1, .perspective = 1}
 

@@ -114,6 +114,8 @@ no_castling:
     size_t i = 0;
 
     while (i < strlen(b)) {
+        printf("Processing: %c at position %zu, %zu\n", b[i], square.x, square.y);
+
         if (b[i] == '/') {
             square.y--;  // Move to the next row
             square.x = 0;  // Reset file to 0 (a-file)

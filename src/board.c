@@ -60,6 +60,7 @@ void board_init_fen(board_t* board, const char* fen)
     }
 
     fen_import(board, fen);
+    getchar();
 
     board->state.error = 0;
     board->state.result = RESULT_NONE;
