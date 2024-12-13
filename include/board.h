@@ -7,12 +7,10 @@
 #include <stddef.h>
 
 
-/*------------------------------------------.
-| 2D character array representation of the  |
-| chess board. All methods and types follow | 
-| the snake_case for differentiation        |
-| from the below methodology                |
-`------------------------------------------*/
+/*-----------------------------------.
+| 2D character array representation  |
+| of the chess board                 |
+`-----------------------------------*/
 
 #define BLACK_ROOK 'r'
 #define BLACK_KNIGHT 'n'
